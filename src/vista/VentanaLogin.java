@@ -15,6 +15,7 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.awt.event.ActionEvent;
 import vista.VentanaRegistro;
@@ -73,22 +74,26 @@ public class VentanaLogin extends JFrame {
 		JButton btnLogin = new JButton("Login");
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Usuarios usuarioCompleto = new Usuarios();
-				usuarioCompleto = comprobarDatos();
-				String usurario = txtUsuario.getText().trim();
-				char[] contraseña = passwordField.getPassword();
-				if (usurario.isEmpty() || contraseña.length == 0) {
+				String usuario = txtUsuario.getText().trim();
+				String contraseña = new String(passwordField.getPassword());
+				if (usuario.isEmpty() || contraseña.isEmpty()) {
 					JOptionPane.showMessageDialog(null, "Campos vacios", "Error", JOptionPane.ERROR_MESSAGE);
 				} else {
+
 					try {
-						System.out.println(usuarioCompleto.getNombre());
-						controlador.login(usuarioCompleto);
+						ArrayList<Usuarios> listaUsuarios = controlador.cargarUsuarios();
+						boolean correcto = controlador.login(usuario, contraseña, listaUsuarios);
+
+						if (correcto) {
+							JOptionPane.showMessageDialog(null, "Login correcto");
+						} else {
+							JOptionPane.showMessageDialog(null, "Login incorrecto", "Error", JOptionPane.ERROR_MESSAGE);
+						}
 					} catch (IOException | InterruptedException | ExecutionException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 				}
-
 			}
 		});
 		btnLogin.setBounds(186, 237, 89, 23);
@@ -110,13 +115,4 @@ public class VentanaLogin extends JFrame {
 
 	}
 
-	public Usuarios comprobarDatos() {
-		Usuarios usuario = new Usuarios();
-
-		usuario.setNombre(txtUsuario.getText());
-		usuario.setContraseña(new String(passwordField.getPassword()));
-
-		return usuario;
-
-	}
 }
