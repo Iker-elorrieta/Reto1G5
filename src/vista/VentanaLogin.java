@@ -5,6 +5,9 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import modelo.Usuarios;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -17,7 +20,7 @@ public class VentanaLogin extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private JTextField txtEmail;
+	private JTextField txtUsuario;
 	private JTextField txtContraseña;
 
 	/**
@@ -47,19 +50,19 @@ public class VentanaLogin extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JLabel lblEmail = new JLabel("Email:");
-		lblEmail.setBounds(186, 136, 46, 14);
-		contentPane.add(lblEmail);
+		JLabel lblUsuario = new JLabel("Usuario:");
+		lblUsuario.setBounds(186, 136, 46, 14);
+		contentPane.add(lblUsuario);
 		
 		JLabel lblContraseña = new JLabel("Contraseña:");
 		lblContraseña.setBounds(186, 186, 76, 14);
 		contentPane.add(lblContraseña);
 		
-		txtEmail = new JTextField();
-		txtEmail.setToolTipText("ejemplo@gmail.com");
-		txtEmail.setBounds(285, 133, 143, 20);
-		contentPane.add(txtEmail);
-		txtEmail.setColumns(10);
+		txtUsuario = new JTextField();
+		txtUsuario.setToolTipText("");
+		txtUsuario.setBounds(285, 133, 143, 20);
+		contentPane.add(txtUsuario);
+		txtUsuario.setColumns(10);
 		
 		txtContraseña = new JTextField();
 		txtContraseña.setBounds(285, 183, 143, 20);
@@ -69,7 +72,7 @@ public class VentanaLogin extends JFrame {
 		JButton btnLogin = new JButton("Login");
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String usurario = txtEmail.getText().trim();
+				String usurario = txtUsuario.getText().trim();
 				String contraseña = txtContraseña.getText().trim();
 				if(usurario.equals("") || contraseña.equals("")){
 					JOptionPane.showMessageDialog(null, "Campos vacios", "Error", JOptionPane.ERROR_MESSAGE);
@@ -90,5 +93,14 @@ public class VentanaLogin extends JFrame {
 		btnRegistro.setBounds(336, 237, 89, 23);
 		contentPane.add(btnRegistro);
 
+	}
+	public Usuarios comprobarDatos() {
+		Usuarios usuario = new Usuarios();
+		
+		usuario.setNombre(txtUsuario.getText());
+		usuario.setContraseña(txtContrase);
+		
+		return 0;
+		
 	}
 }
