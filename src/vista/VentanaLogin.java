@@ -15,13 +15,14 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import vista.VentanaRegistro;
+import javax.swing.JPasswordField;
 
 public class VentanaLogin extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField txtUsuario;
-	private JTextField txtContraseña;
+	private JPasswordField passwordField;
 
 	/**
 	 * Launch the application.
@@ -64,11 +65,6 @@ public class VentanaLogin extends JFrame {
 		contentPane.add(txtUsuario);
 		txtUsuario.setColumns(10);
 		
-		txtContraseña = new JTextField();
-		txtContraseña.setBounds(285, 183, 143, 20);
-		contentPane.add(txtContraseña);
-		txtContraseña.setColumns(10);
-		
 		JButton btnLogin = new JButton("Login");
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -92,6 +88,10 @@ public class VentanaLogin extends JFrame {
 		});
 		btnRegistro.setBounds(336, 237, 89, 23);
 		contentPane.add(btnRegistro);
+		
+		passwordField = new JPasswordField();
+		passwordField.setBounds(285, 183, 143, 20);
+		contentPane.add(passwordField);
 
 	}
 	public Usuarios comprobarDatos() {
