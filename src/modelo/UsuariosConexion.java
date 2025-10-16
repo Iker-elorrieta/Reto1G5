@@ -31,14 +31,14 @@ public class UsuariosConexion {
             docRef.set(datos);
     }
 
-    public static Usuarios login(String email, String contraseña) throws IOException, InterruptedException, ExecutionException {
+    public void login(Usuarios usuario) throws IOException, InterruptedException, ExecutionException {
         
             Firestore db = ConectorFirebase.recogerConexion();
             CollectionReference usuarios = db.collection("usuarios");
 
-            // Buscamos usuarios por email
-            var query = usuarios.whereEqualTo("Email", email)
-                                .whereEqualTo("Contraseña", contraseña)
+            // Buscamos usuarios por usuario
+            var query = usuarios.whereEqualTo("Nombre", usuario.getNombre())
+                                .whereEqualTo("Contraseña", usuario.getContraseña())
                                 .get().get();
 
             if (!query.isEmpty()) {
@@ -52,10 +52,8 @@ public class UsuariosConexion {
                     fechaNacimiento
                 );
                 u.setIdUsuario(doc.getId());
-                return u;
             } else {
             	System.out.println("El usuario o contraseña estan incorrectos");
-                return null; 
             }
         
     }

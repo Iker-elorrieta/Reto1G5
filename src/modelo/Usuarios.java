@@ -26,6 +26,10 @@ public class Usuarios {
 		this.fecNac = fecNac;
 		
 	}
+	public Usuarios(String nombre, String contraseña) {
+		this.nombre=nombre;
+		this.contraseña=contraseña;
+	}
 
 	public String getIdUsuario() {
 		return idUsuario;
