@@ -16,25 +16,25 @@ import com.google.cloud.firestore.DocumentReference;
 
 public class UsuariosConexion {
 
-	public ArrayList<Usuarios> cargarUsuarios() throws IOException, InterruptedException, ExecutionException {
-		Firestore db = ConectorFirebase.recogerConexion();
-		QuerySnapshot query = db.collection("usuarios").get().get();
-		ArrayList<Usuarios> usuariosArray = new ArrayList<>();
-
-		List<QueryDocumentSnapshot> usuarios = query.getDocuments();
-		for (QueryDocumentSnapshot usuario : usuarios) {
-			Usuarios meter = new Usuarios();
-			meter.setIdUsuario(usuario.getId());
-			meter.setNombre(usuario.getString("Nombre"));
-			meter.setApellido(usuario.getString("Apellido"));
-			meter.setContraseña(usuario.getString("Contraseña"));
-			meter.setEmail(usuario.getString("Email"));
-			meter.setFecNac(usuario.getDate("FecNac"));
-			usuariosArray.add(meter);
-
-		}
-		return usuariosArray;
-	}
+//	public ArrayList<Usuarios> cargarUsuarios() throws IOException, InterruptedException, ExecutionException {
+//		Firestore db = ConectorFirebase.recogerConexion();
+//		QuerySnapshot query = db.collection("usuarios").get().get();
+//		ArrayList<Usuarios> usuariosArray = new ArrayList<>();
+//
+//		List<QueryDocumentSnapshot> usuarios = query.getDocuments();
+//		for (QueryDocumentSnapshot usuario : usuarios) {
+//			Usuarios meter = new Usuarios();
+//			meter.setIdUsuario(usuario.getId());
+//			meter.setNombre(usuario.getString("Nombre"));
+//			meter.setApellido(usuario.getString("Apellido"));
+//			meter.setContraseña(usuario.getString("Contraseña"));
+//			meter.setEmail(usuario.getString("Email"));
+//			meter.setFecNac(usuario.getDate("FecNac"));
+//			usuariosArray.add(meter);
+//
+//		}
+//		return usuariosArray;
+//	}
 
 	public void registrarUsuario(Usuarios usuario) throws IOException, InterruptedException, ExecutionException {
 
@@ -53,13 +53,31 @@ public class UsuariosConexion {
 		docRef.set(datos);
 	}
 
-	public boolean login(String nombre, String contraseña, ArrayList<Usuarios> listaUsuarios) {
-	    for (Usuarios u : listaUsuarios) {
-	        if (u.getNombre().equals(nombre) && u.getContraseña().equals(contraseña)) {
-	            return true;
-	        }
-	    }
-	    return false;
-	}
+	public boolean login(Usuarios usuario) throws IOException {
+		Firestore db = ConectorFirebase.recogerConexion();
+		CollectionReference usuarios = db.collection("usuarios");
+		
 
+		usuarios.whereEqualTo("Nombre", usuario.getNombre()).get().addListener(() -> {
+			try {
+				var querySnapshot = usuarios.whereEqualTo("Nombre", usuario.getNombre()).get().get();
+				if (!querySnapshot.isEmpty()) {
+					var doc = querySnapshot.getDocuments().get(0);
+					String contrasenaBD = doc.getString("Contraseña");
+					if (contrasenaBD.equals(usuario.getContraseña())) {
+						System.out.println("Login correcto");
+					} else {
+						System.out.println("Contraseña incorrecta");
+					}
+				} else {
+					System.out.println("Usuario no encontrado");
+				}		
+
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.out.println("Error de conexión");
+			}
+		}, Runnable::run);
+		return false;
+	}
 }

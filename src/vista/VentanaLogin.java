@@ -78,26 +78,25 @@ public class VentanaLogin extends JFrame {
 		JButton btnLogin = new JButton("Login");
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+
 				String usuario = txtUsuario.getText().trim();
 				String contraseña = new String(passwordField.getPassword());
 				if (usuario.isEmpty() || contraseña.isEmpty()) {
 					JOptionPane.showMessageDialog(null, "Campos vacios", "Error", JOptionPane.ERROR_MESSAGE);
 				} else {
-
+					Usuarios usuar = new Usuarios();
+					usuar.setNombre(usuario);
+					usuar.setContraseña(contraseña);
 					try {
-						ArrayList<Usuarios> listaUsuarios = controlador.cargarUsuarios();
-						boolean correcto = controlador.login(usuario, contraseña, listaUsuarios);
-
-						if (correcto) {
-							JOptionPane.showMessageDialog(null, "Login correcto");
-						} else {
-							JOptionPane.showMessageDialog(null, "Login incorrecto", "Error", JOptionPane.ERROR_MESSAGE);
-						}
-					} catch (IOException | InterruptedException | ExecutionException e1) {
+						controlador.login(usuar);
+					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
+					
+
 				}
+
 			}
 		});
 		btnLogin.setBounds(186, 237, 89, 23);
@@ -107,8 +106,8 @@ public class VentanaLogin extends JFrame {
 		btnRegistro.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
-		        VentanaRegistro registro = new VentanaRegistro();
-		        registro.setVisible(true);
+				VentanaRegistro registro = new VentanaRegistro();
+				registro.setVisible(true);
 			}
 		});
 		btnRegistro.setBounds(336, 237, 89, 23);
