@@ -15,7 +15,7 @@ public class ConectorFirebase {
 		FileInputStream srvcAccnt = new FileInputStream("usuarios.json");
 
 		FirestoreOptions opciones = FirestoreOptions.getDefaultInstance().toBuilder()
-				.setProjectId("bddethazi")
+				.setProjectId("reto1-9e159")
 				.setCredentials(GoogleCredentials.fromStream(srvcAccnt))
 				.build();
 

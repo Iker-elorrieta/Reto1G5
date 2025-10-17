@@ -58,8 +58,8 @@ public class UsuariosConexion {
 
 		
 			Firestore db = ConectorFirebase.conectar();
-			ApiFuture<QuerySnapshot> future = db.collection("usuarios").whereEqualTo("nombre", usuario)
-					.whereEqualTo("contraseña", contraseña).get();
+			ApiFuture<QuerySnapshot> future = db.collection("usuarios").whereEqualTo("Nombre", usuario)
+					.whereEqualTo("Contraseña", contraseña).get();
 
 			List<QueryDocumentSnapshot> cliente = future.get().getDocuments();
 			if (cliente != null && !cliente.isEmpty()) {
