@@ -71,6 +71,10 @@ public class VentanaLogin extends JFrame {
 		contentPane.add(txtUsuario);
 		txtUsuario.setColumns(10);
 
+		passwordField = new JPasswordField();
+		passwordField.setBounds(285, 183, 143, 20);
+		contentPane.add(passwordField);
+
 		JButton btnLogin = new JButton("Login");
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -102,16 +106,13 @@ public class VentanaLogin extends JFrame {
 		JButton btnRegistro = new JButton("Registrarse");
 		btnRegistro.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				VentanaRegistro registro = new VentanaRegistro();
-				registro.setVisible(true);
+				dispose();
+		        VentanaRegistro registro = new VentanaRegistro();
+		        registro.setVisible(true);
 			}
 		});
 		btnRegistro.setBounds(336, 237, 89, 23);
 		contentPane.add(btnRegistro);
-
-		passwordField = new JPasswordField();
-		passwordField.setBounds(285, 183, 143, 20);
-		contentPane.add(passwordField);
 
 	}
 
