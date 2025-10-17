@@ -5,27 +5,21 @@ import java.io.IOException;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.Firestore;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
-import com.google.firebase.cloud.FirestoreClient;
+import com.google.cloud.firestore.FirestoreOptions;
+
 
 public class ConectorFirebase {
 
-	private static Firestore conexion;
-	
-	public static Firestore recogerConexion() throws IOException {
-        if (conexion == null) {
-            FileInputStream serviceAccount = new FileInputStream("usuarios.json");
+	public static Firestore conectar() throws IOException {
 
-            FirebaseOptions options = FirebaseOptions.builder()
-                    .setCredentials(GoogleCredentials.fromStream(serviceAccount)) //Aqui le metes las creedenciales, que es basicamente el json de Usuarios
-                    .build();
+		FileInputStream srvcAccnt = new FileInputStream("usuarios.json");
 
-            FirebaseApp.initializeApp(options);
-            conexion = FirestoreClient.getFirestore(); //Cogemos la instancia de Firestore y se la metemos a la conexion para poder usarla
+		FirestoreOptions opciones = FirestoreOptions.getDefaultInstance().toBuilder()
+				.setProjectId("bddethazi")
+				.setCredentials(GoogleCredentials.fromStream(srvcAccnt))
+				.build();
 
-            System.out.println("Conectado correctamente a Firestore");
-        }
-        return conexion;
-    }
+		return opciones.getService();
+
+	}
 }

@@ -84,16 +84,19 @@ public class VentanaLogin extends JFrame {
 				if (usuario.isEmpty() || contraseña.isEmpty()) {
 					JOptionPane.showMessageDialog(null, "Campos vacios", "Error", JOptionPane.ERROR_MESSAGE);
 				} else {
-					Usuarios usuar = new Usuarios();
-					usuar.setNombre(usuario);
-					usuar.setContraseña(contraseña);
 					try {
-						controlador.login(usuar);
-					} catch (IOException e1) {
+						
+						boolean exito = controlador.login(usuario, contraseña);
+						if(exito) {
+							JOptionPane.showMessageDialog(null, "todo bien");
+						}else {
+							JOptionPane.showMessageDialog(null, "todo mal", "Error", JOptionPane.ERROR_MESSAGE);
+
+						}
+					} catch (IOException | InterruptedException | ExecutionException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					
 
 				}
 

@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.CollectionReference;
 import com.google.cloud.firestore.DocumentReference;
 
@@ -38,7 +39,7 @@ public class UsuariosConexion {
 
 	public void registrarUsuario(Usuarios usuario) throws IOException, InterruptedException, ExecutionException {
 
-		Firestore db = ConectorFirebase.recogerConexion();
+		Firestore db = ConectorFirebase.conectar();
 		CollectionReference usuarios = db.collection("usuarios");
 
 		Map<String, Object> datos = new HashMap<>();
@@ -53,31 +54,20 @@ public class UsuariosConexion {
 		docRef.set(datos);
 	}
 
-	public boolean login(Usuarios usuario) throws IOException {
-		Firestore db = ConectorFirebase.recogerConexion();
-		CollectionReference usuarios = db.collection("usuarios");
+	public boolean login(String usuario, String contraseña) throws IOException, InterruptedException, ExecutionException {
+
 		
+			Firestore db = ConectorFirebase.conectar();
+			ApiFuture<QuerySnapshot> future = db.collection("usuarios").whereEqualTo("nombre", usuario)
+					.whereEqualTo("contraseña", contraseña).get();
 
-		usuarios.whereEqualTo("Nombre", usuario.getNombre()).get().addListener(() -> {
-			try {
-				var querySnapshot = usuarios.whereEqualTo("Nombre", usuario.getNombre()).get().get();
-				if (!querySnapshot.isEmpty()) {
-					var doc = querySnapshot.getDocuments().get(0);
-					String contrasenaBD = doc.getString("Contraseña");
-					if (contrasenaBD.equals(usuario.getContraseña())) {
-						System.out.println("Login correcto");
-					} else {
-						System.out.println("Contraseña incorrecta");
-					}
-				} else {
-					System.out.println("Usuario no encontrado");
-				}		
-
-			} catch (Exception e) {
-				e.printStackTrace();
-				System.out.println("Error de conexión");
+			List<QueryDocumentSnapshot> cliente = future.get().getDocuments();
+			if (cliente != null && !cliente.isEmpty()) {
+				return true;
+			} else {
+				return false;
 			}
-		}, Runnable::run);
-		return false;
+
 	}
+
 }

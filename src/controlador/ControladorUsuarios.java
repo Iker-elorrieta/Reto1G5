@@ -14,8 +14,9 @@ public class ControladorUsuarios {
 		gestor.registrarUsuario(usuario);
 	}
 
-	public void login(Usuarios usuario) throws IOException {
-		gestor.login(usuario);
+	public boolean login(String usuario, String contraseña)  throws IOException, InterruptedException, ExecutionException {
+		return gestor.login(usuario, contraseña);
 	}
+
 
 }
