@@ -139,6 +139,18 @@ public class VentanaRegistro extends JFrame {
 		lblContra = new JLabel("Contraseña");
 		lblContra.setBounds(207, 307, 79, 14);
 		contentPane.add(lblContra);
+		
+		JButton btnVolver = new JButton("Volver");
+		btnVolver.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+				VentanaLogin login = new VentanaLogin();
+				login.setVisible(true);
+				
+			}
+		});
+		btnVolver.setBounds(475, 417, 89, 23);
+		contentPane.add(btnVolver);
 
 	}
 
@@ -172,5 +184,4 @@ public class VentanaRegistro extends JFrame {
 			return false;
 		}
 	}
-
 }

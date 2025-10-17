@@ -9,7 +9,7 @@ public class Main {
 	public static void main(String[] args) {
 		try {
 			// Inicializar Firebase
-			ConectorFirebase.recogerConexion();
+			ConectorFirebase.conectar();
 
 			// Mostrar ventana de registro
 			SwingUtilities.invokeLater(new Runnable() {

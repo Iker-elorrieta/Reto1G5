@@ -20,6 +20,7 @@ import java.util.concurrent.ExecutionException;
 import java.awt.event.ActionEvent;
 import vista.VentanaRegistro;
 import javax.swing.JPasswordField;
+import java.awt.Font;
 
 public class VentanaLogin extends JFrame {
 
@@ -58,21 +59,23 @@ public class VentanaLogin extends JFrame {
 		contentPane.setLayout(null);
 
 		JLabel lblUsuario = new JLabel("Usuario:");
-		lblUsuario.setBounds(186, 136, 46, 14);
+		lblUsuario.setFont(new Font("Segoe UI", Font.PLAIN, 30));
+		lblUsuario.setBounds(127, 101, 148, 36);
 		contentPane.add(lblUsuario);
 
 		JLabel lblContraseña = new JLabel("Contraseña:");
-		lblContraseña.setBounds(186, 186, 76, 14);
+		lblContraseña.setFont(new Font("Segoe UI", Font.PLAIN, 30));
+		lblContraseña.setBounds(127, 173, 188, 36);
 		contentPane.add(lblContraseña);
 
 		txtUsuario = new JTextField();
 		txtUsuario.setToolTipText("");
-		txtUsuario.setBounds(285, 133, 143, 20);
+		txtUsuario.setBounds(331, 101, 199, 37);
 		contentPane.add(txtUsuario);
 		txtUsuario.setColumns(10);
 
 		passwordField = new JPasswordField();
-		passwordField.setBounds(285, 183, 143, 20);
+		passwordField.setBounds(331, 173, 199, 37);
 		contentPane.add(passwordField);
 
 		JButton btnLogin = new JButton("Login");
@@ -102,7 +105,7 @@ public class VentanaLogin extends JFrame {
 
 			}
 		});
-		btnLogin.setBounds(186, 237, 89, 23);
+		btnLogin.setBounds(127, 299, 199, 52);
 		contentPane.add(btnLogin);
 
 		JButton btnRegistro = new JButton("Registrarse");
@@ -113,7 +116,7 @@ public class VentanaLogin extends JFrame {
 				registro.setVisible(true);
 			}
 		});
-		btnRegistro.setBounds(336, 237, 89, 23);
+		btnRegistro.setBounds(371, 299, 199, 52);
 		contentPane.add(btnRegistro);
 
 	}

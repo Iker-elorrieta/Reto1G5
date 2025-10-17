@@ -5,7 +5,6 @@ import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,18 +55,16 @@ public class UsuariosConexion {
 
 	public boolean login(String usuario, String contraseña) throws IOException, InterruptedException, ExecutionException {
 
+		Firestore db = ConectorFirebase.conectar();
+		ApiFuture<QuerySnapshot> future = db.collection("usuarios").whereEqualTo("Nombre", usuario)
+				.whereEqualTo("Contraseña", contraseña).get();
 
-		
-			Firestore db = ConectorFirebase.conectar();
-			ApiFuture<QuerySnapshot> future = db.collection("usuarios").whereEqualTo("Nombre", usuario)
-					.whereEqualTo("Contraseña", contraseña).get();
-
-			List<QueryDocumentSnapshot> cliente = future.get().getDocuments();
-			if (cliente != null && !cliente.isEmpty()) {
-				return true;
-			} else {
-				return false;
-			}
+		List<QueryDocumentSnapshot> cliente = future.get().getDocuments();
+		if (cliente != null && !cliente.isEmpty()) {
+			return true;
+		} else {
+			return false;
+		}
 
 	}
 
