@@ -5,12 +5,16 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import controlador.Controlador;
 import modelo.Workout;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
 import java.beans.PropertyChangeEvent;
 
 public class VentanaWorkouts extends JFrame {
@@ -23,6 +27,7 @@ public class VentanaWorkouts extends JFrame {
 	private DefaultTableModel modelo2;
 	private ArrayList<Workout> listaWorkouts; // lista simulada de workouts
 	private JTable table_1;
+	private Controlador controlador;
 
 	/**
 	 * Launch the application.
@@ -42,6 +47,7 @@ public class VentanaWorkouts extends JFrame {
 	 * Create the frame.
 	 */
 	public VentanaWorkouts() {
+		controlador = new Controlador();
 		setTitle("Workouts");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 937, 623);
@@ -107,7 +113,13 @@ public class VentanaWorkouts extends JFrame {
 		scrollPane_1.setViewportView(table_1);
 
 		// Simular datos (esto luego lo cambiamos por los de la BD)
-		cargarWorkoutsSimulados();
+		try {
+			controlador.leerWorkoutsBD();
+		} catch (IOException | InterruptedException | ExecutionException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+//		cargarWorkoutsSimulados();
 		mostrarWorkouts(listaWorkouts);
 
 	}

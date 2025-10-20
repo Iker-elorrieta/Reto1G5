@@ -6,7 +6,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import controlador.ControladorUsuarios;
+import controlador.Controlador;
 import modelo.Usuarios;
 
 import javax.swing.JLabel;
@@ -35,7 +35,7 @@ public class VentanaRegistro extends JFrame {
 	private JLabel lblContra;
 	private JButton btnRegistro;
 	private JPasswordField txtContra;
-	private ControladorUsuarios controlador;
+	private Controlador controlador;
 
 	/**
 	 * Launch the application.
@@ -57,7 +57,7 @@ public class VentanaRegistro extends JFrame {
 	 * Create the frame.
 	 */
 	public VentanaRegistro() {
-		controlador = new ControladorUsuarios();
+		controlador = new Controlador();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 852, 597);
 		contentPane = new JPanel();

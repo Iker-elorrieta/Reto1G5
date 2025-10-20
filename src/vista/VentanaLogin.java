@@ -6,7 +6,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import controlador.ControladorUsuarios;
+import controlador.Controlador;
 import modelo.Usuarios;
 
 import javax.swing.JLabel;
@@ -28,7 +28,7 @@ public class VentanaLogin extends JFrame {
 	private JPanel contentPane;
 	private JTextField txtUsuario;
 	private JPasswordField passwordField;
-	private ControladorUsuarios controlador;
+	private Controlador controlador;
 
 	/**
 	 * Launch the application.
@@ -50,7 +50,7 @@ public class VentanaLogin extends JFrame {
 	 * Create the frame.
 	 */
 	public VentanaLogin() {
-		controlador = new ControladorUsuarios();
+		controlador = new Controlador();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 705, 471);
 		contentPane = new JPanel();
