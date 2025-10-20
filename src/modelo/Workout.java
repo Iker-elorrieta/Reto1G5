@@ -1,10 +1,13 @@
 package modelo;
 
+import java.util.List;
+
 public class Workout {
 	private String nombre;
 	private String video;
 	private int nivel;
 	private int numEjers;
+	private List<Ejercicios> ejercicios;
 	
 	public Workout() {
 		this.nombre="";
