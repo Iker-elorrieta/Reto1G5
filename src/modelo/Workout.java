@@ -1,5 +1,6 @@
 package modelo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Workout {
@@ -7,7 +8,7 @@ public class Workout {
 	private String video;
 	private int nivel;
 	private int numEjers;
-	private List<Ejercicios> ejercicios;
+	private ArrayList<Ejercicios> ejercicios;
 	
 	public Workout() {
 		this.nombre="";
@@ -15,11 +16,20 @@ public class Workout {
 		this.nivel=0;
 		
 	}
+	
 	public Workout( String nombre, String video, int nivel, int numEjers) {
 		this.nombre=nombre;
 		this.video=video;
 		this.nivel=nivel;
 		this.numEjers=numEjers;
+	}
+	
+	public Workout( String nombre, String video, int nivel, int numEjers, ArrayList<Ejercicios> ejercicios) {
+		this.nombre=nombre;
+		this.video=video;
+		this.nivel=nivel;
+		this.numEjers=numEjers;
+		this.ejercicios=ejercicios;
 	}
 	public String getNombre() {
 		return nombre;
@@ -45,5 +55,12 @@ public class Workout {
 	public void setNumEjers(int numEjers) {
 		this.numEjers = numEjers;
 	}
+	public ArrayList<Ejercicios> getEjercicios() {
+		return ejercicios;
+	}
+	public void setEjercicios(ArrayList<Ejercicios> ejercicios) {
+		this.ejercicios = ejercicios;
+	}
+	
 	
 }

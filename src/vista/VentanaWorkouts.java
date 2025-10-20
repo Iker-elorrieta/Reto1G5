@@ -9,9 +9,8 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import modelo.Ejercicios;
 import modelo.Workout;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeEvent;
 
 public class VentanaWorkouts extends JFrame {
 
@@ -21,12 +20,9 @@ public class VentanaWorkouts extends JFrame {
 	private JComboBox<String> comboNivel;
 	private DefaultTableModel modelo;
 	private DefaultTableModel modelo2;
-	private ArrayList<Workout> listaWorkouts; // lista simulada de workouts
+	private ArrayList<Workout> listaWorkouts; 
 	private JTable table_1;
 
-	/**
-	 * Launch the application.
-	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(() -> {
 			try {
@@ -38,9 +34,6 @@ public class VentanaWorkouts extends JFrame {
 		});
 	}
 
-	/**
-	 * Create the frame.
-	 */
 	public VentanaWorkouts() {
 		setTitle("Workouts");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -65,19 +58,15 @@ public class VentanaWorkouts extends JFrame {
 				filtrarPorNivel();
 			}
 		});
-
 		comboNivel.setBounds(150, 80, 100, 25);
 		contentPane.add(comboNivel);
 
 		JButton btnHistorico = new JButton("Ver histórico");
 		btnHistorico.setBounds(750, 80, 140, 25);
 		contentPane.add(btnHistorico);
-		btnHistorico.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(VentanaWorkouts.this,
-						"Aquí se abriría la pantalla del histórico de workouts");
-			}
-		});
+		btnHistorico.addActionListener(e -> 
+			JOptionPane.showMessageDialog(VentanaWorkouts.this, "Aquí se abriría la pantalla del histórico de workouts")
+		);
 
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(30, 120, 406, 400);
@@ -86,49 +75,90 @@ public class VentanaWorkouts extends JFrame {
 		modelo = new DefaultTableModel(new Object[][] {},
 				new String[] { "Nombre", "Nº Ejercicios", "Nivel", "Video (URL)" }) {
 			public boolean isCellEditable(int row, int column) {
-				return false; // No editable
+				return false;
 			}
 		};
 
 		table = new JTable(modelo);
-		table.getTableHeader().setReorderingAllowed(false); // ← evita mover columnas
+		table.getTableHeader().setReorderingAllowed(false);
 		scrollPane.setViewportView(table);
 
 		JScrollPane scrollPane_1 = new JScrollPane();
 		scrollPane_1.setBounds(484, 120, 406, 400);
 		contentPane.add(scrollPane_1);
-		modelo2 = new DefaultTableModel(new Object[][] {}, new String[] { "Ejercicios" }) {
+
+		modelo2 = new DefaultTableModel(new Object[][] {}, 
+				new String[] { "Nombre", "Descripción", "Nivel", "Descanso (s)" }) {
 			public boolean isCellEditable(int row, int column) {
-				return false; // No editable
+				return false;
 			}
 		};
 		table_1 = new JTable(modelo2);
-		table_1.getTableHeader().setReorderingAllowed(false); // ← evita mover columnas
+		table_1.getTableHeader().setReorderingAllowed(false);
 		scrollPane_1.setViewportView(table_1);
 
-		// Simular datos (esto luego lo cambiamos por los de la BD)
+		// Cargar datos simulados
 		cargarWorkoutsSimulados();
 		mostrarWorkouts(listaWorkouts);
 
+		// --- Escuchar selección en la tabla ---
+		table.getSelectionModel().addListSelectionListener(e -> {
+			if (!e.getValueIsAdjusting()) {
+				int fila = table.getSelectedRow();
+				if (fila >= 0) {
+					Workout seleccionado = listaWorkouts.get(fila);
+					mostrarEjercicios(seleccionado.getEjercicios());
+				}
+			}
+		});
 	}
 
+	// -------------------------
+	// MÉTODOS AUXILIARES
+	// -------------------------
 	private void cargarWorkoutsSimulados() {
-		listaWorkouts = new ArrayList<>();
-		listaWorkouts.add(new Workout("Full Body Beginner", "https://youtu.be/xyz1", 0, 5));
-		listaWorkouts.add(new Workout("Cardio Express", "https://youtu.be/xyz2", 1, 4));
-		listaWorkouts.add(new Workout("Fuerza Nivel 1", "https://youtu.be/xyz3", 1, 6));
-		listaWorkouts.add(new Workout("HIIT Avanzado", "https://youtu.be/xyz4", 2, 8));
-		listaWorkouts.add(new Workout("Resistencia Total", "https://youtu.be/xyz5", 3, 10));
+	    listaWorkouts = new ArrayList<>();
+
+	    // Workout 1
+	    Workout w1 = new Workout("Full Body Beginner", "https://youtu.be/xyz1", 0, 3);
+	    ArrayList<Ejercicios> ej1 = new ArrayList<>();
+	    ej1.add(new Ejercicios("Sentadillas", "Ejercicio básico para piernas", "sentadillas.png", 0, 30, null));
+	    ej1.add(new Ejercicios("Flexiones", "Fortalece pecho y brazos", "flexiones.png", 0, 30, null));
+	    ej1.add(new Ejercicios("Plancha", "Trabajo de core", "plancha.png", 0, 30, null));
+	    w1.setEjercicios(ej1);
+
+	    // Workout 2
+	    Workout w2 = new Workout("Cardio Express", "https://youtu.be/xyz2", 1, 2);
+	    ArrayList<Ejercicios> ej2 = new ArrayList<>();
+	    ej2.add(new Ejercicios("Jumping Jacks", "Cardio intenso", "jumping.png", 1, 20, null));
+	    ej2.add(new Ejercicios("Burpees", "Ejercicio completo", "burpees.png", 1, 30, null));
+	    w2.setEjercicios(ej2);
+
+	    listaWorkouts.add(w1);
+	    listaWorkouts.add(w2);
 	}
 
 	private void mostrarWorkouts(ArrayList<Workout> workouts) {
-		modelo.setRowCount(0); // limpiar tabla
+		modelo.setRowCount(0);
 		for (Workout w : workouts) {
 			modelo.addRow(new Object[] { w.getNombre(), w.getNumEjers(), w.getNivel(), w.getVideo() });
 		}
 	}
 
-	
+	private void mostrarEjercicios(ArrayList<Ejercicios> ejercicios) {
+		modelo2.setRowCount(0);
+		if (ejercicios != null) {
+			for (Ejercicios e : ejercicios) {
+				modelo2.addRow(new Object[] { 
+					e.getNombre(), 
+					e.getDescripcion(), 
+					e.getNivel(), 
+					e.getTiempoDescanso() 
+				});
+			}
+		}
+	}
+
 	private void filtrarPorNivel() {
 		String seleccionado = (String) comboNivel.getSelectedItem();
 		if (seleccionado.equals("Todos")) {
@@ -144,5 +174,4 @@ public class VentanaWorkouts extends JFrame {
 			mostrarWorkouts(filtrados);
 		}
 	}
-
 }
