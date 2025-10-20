@@ -1,11 +1,13 @@
 package controlador;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import modelo.GestorWorkout;
 import modelo.Usuarios;
 import modelo.UsuariosConexion;
+import modelo.Workout;
 
 public class Controlador {
 
@@ -21,7 +23,7 @@ public class Controlador {
 		return gestor.login(usuario, contraseña);
 	}
 
-	public void leerWorkoutsBD() throws IOException, InterruptedException, ExecutionException {
-		gestor2.leerWorkoutsBD();
+	public ArrayList<Workout> leerWorkoutsBD() throws IOException, InterruptedException, ExecutionException {
+		return gestor2.leerWorkoutsBD();
 	}
 }
