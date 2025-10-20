@@ -128,6 +128,7 @@ public class VentanaWorkouts extends JFrame {
 		}
 	}
 
+	
 	private void filtrarPorNivel() {
 		String seleccionado = (String) comboNivel.getSelectedItem();
 		if (seleccionado.equals("Todos")) {
