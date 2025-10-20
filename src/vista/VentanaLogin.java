@@ -91,7 +91,9 @@ public class VentanaLogin extends JFrame {
 						
 						boolean exito = controlador.login(usuario, contraseña);
 						if(exito) {
-							JOptionPane.showMessageDialog(null, "todo bien");
+							dispose();
+							VentanaWorkouts workout = new VentanaWorkouts();
+							workout.setVisible(true);
 						}else {
 							JOptionPane.showMessageDialog(null, "todo mal", "Error", JOptionPane.ERROR_MESSAGE);
 
