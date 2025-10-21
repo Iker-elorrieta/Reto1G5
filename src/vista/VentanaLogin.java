@@ -8,6 +8,7 @@ import javax.swing.border.EmptyBorder;
 
 import controlador.Controlador;
 import modelo.Usuarios;
+import modelo.Workout;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -91,6 +92,10 @@ public class VentanaLogin extends JFrame {
 						
 						boolean exito = controlador.login(usuario, contraseña);
 						if(exito) {
+							Usuarios usuarioBackup = new Usuarios();
+							usuarioBackup = controlador.obtenerUsuario(usuario, contraseña);
+							ArrayList<Workout> workouts = controlador.leerWorkoutsBDBackups();
+							controlador.guardarBackup(usuarioBackup, workouts);
 							dispose();
 							VentanaWorkouts workout = new VentanaWorkouts();
 							workout.setVisible(true);

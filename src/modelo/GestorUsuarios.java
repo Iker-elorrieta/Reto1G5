@@ -14,27 +14,30 @@ import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.CollectionReference;
 import com.google.cloud.firestore.DocumentReference;
 
-public class UsuariosConexion {
+public class GestorUsuarios {
 
-//	public ArrayList<Usuarios> cargarUsuarios() throws IOException, InterruptedException, ExecutionException {
-//		Firestore db = ConectorFirebase.recogerConexion();
-//		QuerySnapshot query = db.collection("usuarios").get().get();
-//		ArrayList<Usuarios> usuariosArray = new ArrayList<>();
-//
-//		List<QueryDocumentSnapshot> usuarios = query.getDocuments();
-//		for (QueryDocumentSnapshot usuario : usuarios) {
-//			Usuarios meter = new Usuarios();
-//			meter.setIdUsuario(usuario.getId());
-//			meter.setNombre(usuario.getString("Nombre"));
-//			meter.setApellido(usuario.getString("Apellido"));
-//			meter.setContraseña(usuario.getString("Contraseña"));
-//			meter.setEmail(usuario.getString("Email"));
-//			meter.setFecNac(usuario.getDate("FecNac"));
-//			usuariosArray.add(meter);
-//
-//		}
-//		return usuariosArray;
-//	}
+	public Usuarios obtenerUsuario(String nombre, String contraseña) throws InterruptedException, ExecutionException, IOException {
+		Firestore db = ConectorFirebase.conectar();
+		CollectionReference usuariosCol = db.collection("usuarios");
+
+		QuerySnapshot query = usuariosCol.whereEqualTo("Nombre", nombre).whereEqualTo("Contraseña", contraseña).get()
+				.get();
+
+		for (QueryDocumentSnapshot doc : query.getDocuments()) {
+			Usuarios u = new Usuarios();
+			u.setNombre(doc.getString("Nombre"));
+			u.setContraseña(doc.getString("Contraseña"));
+			u.setNivel(doc.getDouble("nivel").intValue());
+			u.setApellido(doc.getString("Apellido"));
+			u.setEmail(doc.getString("Email"));
+			u.setFecNac(doc.getDate("FecNac"));
+			System.out.println(u);
+
+			return u;
+		}
+
+		return null; // no se encontró usuario
+	}
 
 	public void registrarUsuario(Usuarios usuario) throws IOException, InterruptedException, ExecutionException {
 
@@ -53,7 +56,8 @@ public class UsuariosConexion {
 		docRef.set(datos);
 	}
 
-	public boolean login(String usuario, String contraseña) throws IOException, InterruptedException, ExecutionException {
+	public boolean login(String usuario, String contraseña)
+			throws IOException, InterruptedException, ExecutionException {
 
 		Firestore db = ConectorFirebase.conectar();
 		ApiFuture<QuerySnapshot> future = db.collection("usuarios").whereEqualTo("Nombre", usuario)
