@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import modelo.Backups;
+import modelo.GestorBackup;
 import modelo.GestorWorkout;
 import modelo.Usuarios;
 import modelo.GestorUsuarios;
@@ -15,6 +16,7 @@ public class Controlador {
 	private GestorUsuarios gestor = new GestorUsuarios();
 	private GestorWorkout gestor2 = new GestorWorkout();
 	private Backups backup = new Backups();
+	private GestorBackup gestor3 = new GestorBackup();
 
 	public Usuarios obtenerUsuario(String nombre, String contraseña) throws InterruptedException, ExecutionException, IOException {
 	    GestorUsuarios gestor = new GestorUsuarios();
@@ -39,5 +41,9 @@ public class Controlador {
 	public void guardarBackup(Usuarios usuario, ArrayList<Workout> workouts) {
     	backup.guardarBackup(usuario, workouts);
     }
+	public boolean comprobarConexion() throws IOException {
+		return gestor3.comprobarConexion();
+	}
+
 
 }

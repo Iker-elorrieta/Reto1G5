@@ -90,6 +90,8 @@ public class VentanaLogin extends JFrame {
 				} else {
 					try {
 						
+						boolean conexion= controlador.comprobarConexion();
+						if(conexion) {
 						boolean exito = controlador.login(usuario, contraseña);
 						if(exito) {
 							Usuarios usuarioBackup = new Usuarios();
@@ -101,7 +103,9 @@ public class VentanaLogin extends JFrame {
 							workout.setVisible(true);
 						}else {
 							JOptionPane.showMessageDialog(null, "todo mal", "Error", JOptionPane.ERROR_MESSAGE);
-
+						}
+						}else {
+							System.out.println("no hay conexion");
 						}
 					} catch (IOException | InterruptedException | ExecutionException e1) {
 						// TODO Auto-generated catch block
