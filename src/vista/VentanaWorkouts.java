@@ -13,6 +13,7 @@ import javax.swing.table.DefaultTableModel;
 
 import controlador.Controlador;
 import modelo.Ejercicios;
+import modelo.Usuarios;
 import modelo.Workout;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
@@ -77,7 +78,7 @@ public class VentanaWorkouts extends JFrame {
 		);
 
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(30, 120, 406, 400);
+		scrollPane.setBounds(30, 155, 406, 400);
 		contentPane.add(scrollPane);
 
 		modelo = new DefaultTableModel(new Object[][] {},
@@ -92,7 +93,7 @@ public class VentanaWorkouts extends JFrame {
 		scrollPane.setViewportView(table);
 
 		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(484, 120, 406, 400);
+		scrollPane_1.setBounds(484, 155, 406, 400);
 		contentPane.add(scrollPane_1);
 
 		modelo2 = new DefaultTableModel(new Object[][] {}, 
@@ -104,12 +105,23 @@ public class VentanaWorkouts extends JFrame {
 		table_1 = new JTable(modelo2);
 		table_1.getTableHeader().setReorderingAllowed(false);
 		scrollPane_1.setViewportView(table_1);
+		
+		JLabel lblNewLabel = new JLabel("WORKOUTS");
+		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel.setBounds(160, 116, 100, 28);
+		contentPane.add(lblNewLabel);
+		
+		JLabel lblNewLabel_1 = new JLabel("EJERCICIOS");
+		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_1.setBounds(649, 116, 90, 28);
+		contentPane.add(lblNewLabel_1);
 
 		// Simular datos (esto luego lo cambiamos por los de la BD)
 		try {
+			Usuarios usuario = new Usuarios();
+			int nivelUsuario = usuario.getNivel();
 			
-		
-		listaWorkouts = controlador.leerWorkoutsBD();
+		listaWorkouts = controlador.leerWorkoutsBD(nivelUsuario);
 		mostrarWorkouts(listaWorkouts);
 		} catch (IOException | InterruptedException | ExecutionException e1) {
 			// TODO Auto-generated catch block
@@ -130,27 +142,27 @@ public class VentanaWorkouts extends JFrame {
 	// -------------------------
 	// MÉTODOS AUXILIARES
 	// -------------------------
-	private void cargarWorkoutsSimulados() {
-	    listaWorkouts = new ArrayList<>();
-
-	    // Workout 1
-	    Workout w1 = new Workout("Full Body Beginner", "https://youtu.be/xyz1", 0, 3);
-	    ArrayList<Ejercicios> ej1 = new ArrayList<>();
-	    ej1.add(new Ejercicios("Sentadillas", "Ejercicio básico para piernas", "sentadillas.png", 0, 30, null));
-	    ej1.add(new Ejercicios("Flexiones", "Fortalece pecho y brazos", "flexiones.png", 0, 30, null));
-	    ej1.add(new Ejercicios("Plancha", "Trabajo de core", "plancha.png", 0, 30, null));
-	    w1.setEjercicios(ej1);
-
-	    // Workout 2
-	    Workout w2 = new Workout("Cardio Express", "https://youtu.be/xyz2", 1, 2);
-	    ArrayList<Ejercicios> ej2 = new ArrayList<>();
-	    ej2.add(new Ejercicios("Jumping Jacks", "Cardio intenso", "jumping.png", 1, 20, null));
-	    ej2.add(new Ejercicios("Burpees", "Ejercicio completo", "burpees.png", 1, 30, null));
-	    w2.setEjercicios(ej2);
-
-	    listaWorkouts.add(w1);
-	    listaWorkouts.add(w2);
-	}
+//	private void cargarWorkoutsSimulados() {
+//	    listaWorkouts = new ArrayList<>();
+//
+//	    // Workout 1
+//	    Workout w1 = new Workout("Full Body Beginner", "https://youtu.be/xyz1", 0, 3);
+//	    ArrayList<Ejercicios> ej1 = new ArrayList<>();
+//	    ej1.add(new Ejercicios("Sentadillas", "Ejercicio básico para piernas", "sentadillas.png", 0, 30, null));
+//	    ej1.add(new Ejercicios("Flexiones", "Fortalece pecho y brazos", "flexiones.png", 0, 30, null));
+//	    ej1.add(new Ejercicios("Plancha", "Trabajo de core", "plancha.png", 0, 30, null));
+//	    w1.setEjercicios(ej1);
+//
+//	    // Workout 2
+//	    Workout w2 = new Workout("Cardio Express", "https://youtu.be/xyz2", 1, 2);
+//	    ArrayList<Ejercicios> ej2 = new ArrayList<>();
+//	    ej2.add(new Ejercicios("Jumping Jacks", "Cardio intenso", "jumping.png", 1, 20, null));
+//	    ej2.add(new Ejercicios("Burpees", "Ejercicio completo", "burpees.png", 1, 30, null));
+//	    w2.setEjercicios(ej2);
+//
+//	    listaWorkouts.add(w1);
+//	    listaWorkouts.add(w2);
+//	}
 
 	private void mostrarWorkouts(ArrayList<Workout> workouts) {
 		modelo.setRowCount(0);

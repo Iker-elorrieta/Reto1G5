@@ -5,13 +5,11 @@ public class Series {
 	private String nombre;
 	private int repeticiones;
 	private int duracion;
-	private Ejercicios ejercicio;
 	
-	 public Series(String nombre, int repeticiones, int duracion, Ejercicios ejercicio) {
+	 public Series(String nombre, int repeticiones, int duracion) {
 		this.nombre = nombre;
 		this.repeticiones = repeticiones;
 		this.duracion = duracion;
-		this.ejercicio = ejercicio;
 	}
 	 
 	 public String getNombre() {
@@ -32,10 +30,5 @@ public class Series {
 	 public void setDuracion(int duracion) {
 		this.duracion = duracion;
 	}
-	 public Ejercicios getEjercicio() {
-		return ejercicio;
-	}
-	 public void setEjercicio(Ejercicios ejercicio) {
-		this.ejercicio = ejercicio;
-	}
+	
 }

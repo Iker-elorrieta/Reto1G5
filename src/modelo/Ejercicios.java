@@ -1,32 +1,16 @@
 package modelo;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Ejercicios {
 
-	private int idEjercicio;
 	private String nombre;
 	private String descripcion;
 	private String img;
 	private int nivel;
 	private int tiempoDescanso;
 	private ArrayList<Series> series;
-	
-	
-	
-	public Ejercicios(int idEjercicio, String nombre, String descripcion, String img, int nivel, int tiempoDescanso,
-			ArrayList<Series> series) {
-		this.idEjercicio = idEjercicio;
-		this.nombre = nombre;
-		this.descripcion = descripcion;
-		this.img = img;
-		this.nivel = nivel;
-		this.tiempoDescanso = tiempoDescanso;
-		this.series = series;
-	}
-	
-	//Por si queremos que el id se genere en la base de datos
+
 	public Ejercicios(String nombre, String descripcion, String img, int nivel, int tiempoDescanso,
 			ArrayList<Series> series) {
 		this.nombre = nombre;
@@ -35,14 +19,6 @@ public class Ejercicios {
 		this.nivel = nivel;
 		this.tiempoDescanso = tiempoDescanso;
 		this.series = series;
-	}
-
-	public int getIdEjercicio() {
-		return idEjercicio;
-	}
-
-	public void setIdEjercicio(int idEjercicio) {
-		this.idEjercicio = idEjercicio;
 	}
 
 	public String getNombre() {
@@ -92,7 +68,5 @@ public class Ejercicios {
 	public void setSeries(ArrayList<Series> series) {
 		this.series = series;
 	}
-	
-	
-	
+
 }

@@ -23,7 +23,7 @@ public class Controlador {
 		return gestor.login(usuario, contraseña);
 	}
 
-	public ArrayList<Workout> leerWorkoutsBD() throws IOException, InterruptedException, ExecutionException {
-		return gestor2.leerWorkoutsBD();
+	public ArrayList<Workout> leerWorkoutsBD(int nivelUsuario) throws IOException, InterruptedException, ExecutionException {
+		return gestor2.leerWorkoutsBD(nivelUsuario);
 	}
 }

@@ -11,6 +11,7 @@ public class Usuarios {
 	private String email;
 	private Date fecNac;
 	private String contraseña;
+	private int nivel;
 
 	public Usuarios() {
 
@@ -19,12 +20,13 @@ public class Usuarios {
 	// Como el usuario para cuando lo creamos todavia no existe, no se le ha
 	// asignado ningun id, asi que no se lo pasamos al constructor
 
-	public Usuarios(String nombre, String apellido, String email, String contraseña, Date fecNac) {
+	public Usuarios(String nombre, String apellido, String email, String contraseña, Date fecNac, int nivel) {
 		this.nombre = nombre;
 		this.apellido = apellido;
 		this.email = email;
 		this.contraseña = contraseña;
 		this.fecNac = fecNac;
+		this.nivel=nivel;
 
 	}
 
@@ -75,5 +77,14 @@ public class Usuarios {
 	public void setContraseña(String contraseña) {
 		this.contraseña = contraseña;
 	}
+
+	public int getNivel() {
+		return nivel;
+	}
+
+	public void setNivel(int nivel) {
+		this.nivel = nivel;
+	}
+	
 
 }
