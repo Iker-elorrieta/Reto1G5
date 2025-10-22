@@ -16,26 +16,74 @@ import com.google.cloud.firestore.DocumentReference;
 
 public class GestorUsuarios {
 
-	public Usuarios obtenerUsuario(String nombre, String contraseña) throws InterruptedException, ExecutionException, IOException {
-		Firestore db = ConectorFirebase.conectar();
-		CollectionReference usuariosCol = db.collection("usuarios");
-
-		QuerySnapshot query = usuariosCol.whereEqualTo("Nombre", nombre).whereEqualTo("Contraseña", contraseña).get()
-				.get();
-
-		for (QueryDocumentSnapshot doc : query.getDocuments()) {
-			Usuarios u = new Usuarios();
-			u.setNombre(doc.getString("Nombre"));
-			u.setContraseña(doc.getString("Contraseña"));
-			u.setNivel(doc.getDouble("nivel").intValue());
-			u.setApellido(doc.getString("Apellido"));
-			u.setEmail(doc.getString("Email"));
-			u.setFecNac(doc.getDate("FecNac"));
-
-			return u;
+	public Usuarios obtenerUsuario(String nombre, String contraseña)
+			throws InterruptedException, ExecutionException, IOException {
+		// Comprobar que los parámetros no estén vacíos
+		if (nombre == null || nombre.trim().isEmpty() || contraseña == null || contraseña.trim().isEmpty()) {
+			System.out.println("Nombre o contraseña vacíos");
+			return null;
 		}
 
-		return null; // no se encontró usuario
+		Firestore db = null;
+		try {
+			db = ConectorFirebase.conectar();
+			CollectionReference usuariosCol = db.collection("usuarios");
+
+			QuerySnapshot query = usuariosCol.whereEqualTo("Nombre", nombre).whereEqualTo("Contraseña", contraseña)
+					.get().get();
+
+			if (query == null || query.isEmpty()) {
+				System.out.println("No se encontró ningún usuario con esos datos");
+				return null;
+			}
+
+			for (QueryDocumentSnapshot doc : query.getDocuments()) {
+				if (doc == null)
+					continue; // por si hay documentos nulos
+
+				Usuarios u = new Usuarios();
+
+				if (doc.getString("Nombre") != null) {
+					u.setNombre(doc.getString("Nombre"));
+				} else {
+					u.setNombre("");
+				}
+
+				if (doc.getString("Contraseña") != null) {
+					u.setContraseña(doc.getString("Contraseña"));
+				} else {
+					u.setContraseña("");
+				}
+
+				if (doc.getDouble("nivel") != null) {
+					u.setNivel(doc.getDouble("nivel").intValue());
+				} else {
+					u.setNivel(0);
+				}
+
+				if (doc.getString("Apellido") != null) {
+					u.setApellido(doc.getString("Apellido"));
+				} else {
+					u.setApellido("");
+				}
+
+				if (doc.getString("Email") != null) {
+					u.setEmail(doc.getString("Email"));
+				} else {
+					u.setEmail("");
+				}
+
+				u.setFecNac(doc.getDate("FecNac")); // puede quedar null si no hay fecha
+
+				return u; // retornamos el primer usuario encontrado
+			}
+
+			return null; // en caso de que no se cree ningún usuario válido
+		} finally {
+			// Cerrar Firestore para evitar warnings de gRPC
+			if (db != null)
+				ConectorFirebase.cerrar(db);
+		}
 	}
 
 	public void registrarUsuario(Usuarios usuario) throws IOException, InterruptedException, ExecutionException {

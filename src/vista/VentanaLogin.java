@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import controlador.Controlador;
+import modelo.Backups;
 import modelo.Usuarios;
 import modelo.Workout;
 
@@ -94,14 +95,23 @@ public class VentanaLogin extends JFrame {
 //						if(conexion) {
 						boolean exito = controlador.login(usuario, contraseña);
 						if(exito) {
-							Usuarios usuarioBackup = new Usuarios();
-							usuarioBackup = controlador.obtenerUsuario(usuario, contraseña);
-							System.out.println("Usuario: " + usuarioBackup.getNombre() + "--------" +" Nivel: " + usuarioBackup.getNivel());
-							ArrayList<Workout> workouts = controlador.leerWorkoutsBDBackups();
-							controlador.guardarBackup(usuarioBackup, workouts);
-							dispose();
-							VentanaWorkouts workout = new VentanaWorkouts(usuarioBackup);
-							workout.setVisible(true);
+							 Usuarios usuarioBackup = controlador.obtenerUsuario(usuario, contraseña);
+			                    if (usuarioBackup == null) {
+			                        JOptionPane.showMessageDialog(null, "Error al obtener datos del usuario", "Error", JOptionPane.ERROR_MESSAGE);
+			                        return;
+			                    }
+
+			                    // Leer workouts para el backup
+			                    ArrayList<Workout> workouts = controlador.leerWorkoutsBDBackups();
+
+			                    // Crear e iniciar hilo de backup
+			                    Backups backupHilo = new Backups(usuarioBackup, workouts, usuarioBackup.getHistorico());
+			                    backupHilo.start(); // Se ejecuta en segundo plano
+
+			                    // Abrir ventana principal
+			                    dispose();
+			                    VentanaWorkouts workout = new VentanaWorkouts(usuarioBackup);
+			                    workout.setVisible(true);
 						}else {
 							JOptionPane.showMessageDialog(null, "todo mal", "Error", JOptionPane.ERROR_MESSAGE);
 						}

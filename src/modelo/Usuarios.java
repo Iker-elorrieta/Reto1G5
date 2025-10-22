@@ -1,5 +1,6 @@
 package modelo;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Usuarios {
@@ -12,6 +13,7 @@ public class Usuarios {
 	private Date fecNac;
 	private String contraseña;
 	private int nivel;
+	private ArrayList<HistoricoWorkouts> historico = new ArrayList<>();
 
 	public Usuarios() {
 
@@ -20,13 +22,14 @@ public class Usuarios {
 	// Como el usuario para cuando lo creamos todavia no existe, no se le ha
 	// asignado ningun id, asi que no se lo pasamos al constructor
 
-	public Usuarios(String nombre, String apellido, String email, String contraseña, Date fecNac, int nivel) {
+	public Usuarios(String nombre, String apellido, String email, String contraseña, Date fecNac, int nivel, ArrayList<HistoricoWorkouts> historico) {
 		this.nombre = nombre;
 		this.apellido = apellido;
 		this.email = email;
 		this.contraseña = contraseña;
 		this.fecNac = fecNac;
 		this.nivel=nivel;
+		this.historico = historico;
 
 	}
 
@@ -84,6 +87,14 @@ public class Usuarios {
 
 	public void setNivel(int nivel) {
 		this.nivel = nivel;
+	}
+
+	public ArrayList<HistoricoWorkouts> getHistorico() {
+		return historico;
+	}
+
+	public void setHistorico(ArrayList<HistoricoWorkouts> historico) {
+		this.historico = historico;
 	}
 	
 

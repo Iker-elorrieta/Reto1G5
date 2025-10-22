@@ -15,7 +15,7 @@ public class Controlador {
 
 	private GestorUsuarios gestor = new GestorUsuarios();
 	private GestorWorkout gestor2 = new GestorWorkout();
-	private Backups backup = new Backups();
+	private Backups backup = new Backups(null, null, null);
 	private GestorBackup gestor3 = new GestorBackup();
 
 	public Usuarios obtenerUsuario(String nombre, String contraseña) throws InterruptedException, ExecutionException, IOException {
@@ -38,8 +38,11 @@ public class Controlador {
 	public ArrayList<Workout> leerWorkoutsBDBackups() throws IOException, InterruptedException, ExecutionException {
 		return gestor2.leerWorkoutsBDBackups();
 	}
-	public void guardarBackup(Usuarios usuario, ArrayList<Workout> workouts) {
-    	backup.guardarBackup(usuario, workouts);
+    public String guardarBackup() {
+    	return backup.guardarBackup();
+    }
+    public String guardarHistoricoXml() {
+    	return backup.guardarHistoricoXml();
     }
 //	public boolean comprobarConexion() throws IOException {
 //		return gestor3.comprobarConexion();
