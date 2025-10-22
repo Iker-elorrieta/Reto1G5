@@ -99,7 +99,7 @@ public class VentanaLogin extends JFrame {
 							ArrayList<Workout> workouts = controlador.leerWorkoutsBDBackups();
 							controlador.guardarBackup(usuarioBackup, workouts);
 							dispose();
-							VentanaWorkouts workout = new VentanaWorkouts();
+							VentanaWorkouts workout = new VentanaWorkouts(usuarioBackup);
 							workout.setVisible(true);
 						}else {
 							JOptionPane.showMessageDialog(null, "todo mal", "Error", JOptionPane.ERROR_MESSAGE);

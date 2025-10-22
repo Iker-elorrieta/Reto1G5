@@ -15,9 +15,7 @@ import controlador.Controlador;
 import modelo.Ejercicios;
 import modelo.Usuarios;
 import modelo.Workout;
-import java.beans.PropertyChangeListener;
 import java.io.IOException;
-import java.beans.PropertyChangeEvent;
 
 public class VentanaWorkouts extends JFrame {
 
@@ -30,20 +28,13 @@ public class VentanaWorkouts extends JFrame {
 	private ArrayList<Workout> listaWorkouts; 
 	private JTable table_1;
 	private Controlador controlador;
+	private Usuarios usuarioActual;
 
-	public static void main(String[] args) {
-		EventQueue.invokeLater(() -> {
-			try {
-				VentanaWorkouts frame = new VentanaWorkouts();
-				frame.setVisible(true);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		});
-	}
 
-	public VentanaWorkouts() {
+
+	public VentanaWorkouts(Usuarios usuario) {
 		controlador = new Controlador();
+		usuarioActual=usuario;
 		setTitle("Workouts");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 937, 623);
@@ -118,8 +109,8 @@ public class VentanaWorkouts extends JFrame {
 
 		// Simular datos (esto luego lo cambiamos por los de la BD)
 		try {
-			Usuarios usuario = new Usuarios();
-			int nivelUsuario = usuario.getNivel();
+			
+			int nivelUsuario = usuarioActual.getNivel();
 			
 		listaWorkouts = controlador.leerWorkoutsBD(nivelUsuario);
 		mostrarWorkouts(listaWorkouts);

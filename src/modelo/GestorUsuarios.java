@@ -31,7 +31,6 @@ public class GestorUsuarios {
 			u.setApellido(doc.getString("Apellido"));
 			u.setEmail(doc.getString("Email"));
 			u.setFecNac(doc.getDate("FecNac"));
-			System.out.println(u);
 
 			return u;
 		}
