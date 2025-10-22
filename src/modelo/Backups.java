@@ -127,61 +127,88 @@ public class Backups extends Thread {
         }
     }
 
-	 public String guardarHistoricoXmlGlobal(List<HistoricoWorkouts> historicoGlobal) {
-	        if (historicoGlobal == null || historicoGlobal.isEmpty())
-	            return "No hay histórico para guardar.";
+	public String guardarHistoricoXmlGlobal(List<HistoricoWorkouts> historicoGlobal) {
+        if (historicoGlobal == null || historicoGlobal.isEmpty()) {
+            return "No hay histórico para guardar.";
+        }
 
-	        try {
-	            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-	            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-	            Document doc = dBuilder.newDocument();
+        try {
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.newDocument();
 
-	            Element root = doc.createElement("HistoricoGlobal");
-	            doc.appendChild(root);
+            Element root = doc.createElement("HistoricoGlobal");
+            doc.appendChild(root);
 
-	            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-	            for (HistoricoWorkouts h : historicoGlobal) {
-	                Element workoutElem = doc.createElement("Workout");
-	                workoutElem.setAttribute("nombre", defaultString(h.getNombreWorkout(), "WorkoutDesconocido"));
-	                workoutElem.setAttribute("nivel", String.valueOf(defaultInt(h.getNivel(), 1)));
-	                workoutElem.setAttribute("tiempoTotal", String.valueOf(defaultInt(h.getTiempoTotal(), 0)));
-	                workoutElem.setAttribute("tiempoPrevisto", String.valueOf(defaultInt(h.getTiempoPrevisto(), 0)));
-	                workoutElem.setAttribute("fecha",
-	                        (h.getFecha() != null) ? sdf.format(h.getFecha()) : "1970-01-01 00:00:00");
-	                workoutElem.setAttribute("porcentajeCompletado",
-	                        String.valueOf(defaultDouble(h.getPorcentajeCompletado(), 0.0)));
-	                workoutElem.setAttribute("usuario", defaultString(h.getUsuario(), "desconocido")); // opcional, para identificar usuario
-	                root.appendChild(workoutElem);
-	            }
+            for (HistoricoWorkouts h : historicoGlobal) {
+                Element workoutElem = doc.createElement("Workout");
 
-	            TransformerFactory transformerFactory = TransformerFactory.newInstance();
-	            Transformer transformer = transformerFactory.newTransformer();
-	            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-	            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-	            DOMSource source = new DOMSource(doc);
-	            StreamResult result = new StreamResult(new File("historico_global.xml"));
-	            transformer.transform(source, result);
+                String nombre = h.getNombreWorkout();
+                if (nombre == null || nombre.isEmpty()) {
+                    nombre = "WorkoutDesconocido";
+                }
+                workoutElem.setAttribute("nombre", nombre);
 
-	            System.out.println("XML global generado correctamente: historico_global.xml");
-	            return "Histórico global XML guardado correctamente.";
+                int nivel = h.getNivel();
+                workoutElem.setAttribute("nivel", String.valueOf(nivel));
 
-	        } catch (ParserConfigurationException | TransformerException e) {
-	            e.printStackTrace();
-	            return "Error al guardar histórico global XML";
-	        }
-	    }
+                int tiempoTotal = h.getTiempoTotal();
+                workoutElem.setAttribute("tiempoTotal", String.valueOf(tiempoTotal));
+
+                int tiempoPrevisto = h.getTiempoPrevisto();
+                workoutElem.setAttribute("tiempoPrevisto", String.valueOf(tiempoPrevisto));
+
+                if (h.getFecha() != null) {
+                    workoutElem.setAttribute("fecha", sdf.format(h.getFecha()));
+                } else {
+                    workoutElem.setAttribute("fecha", "1970-01-01 00:00:00");
+                }
+
+                double porcentaje = h.getPorcentajeCompletado();
+                workoutElem.setAttribute("porcentajeCompletado", String.valueOf(porcentaje));
+
+                String usuario = h.getUsuario();
+                if (usuario == null || usuario.isEmpty()) {
+                    usuario = "desconocido";
+                }
+                workoutElem.setAttribute("usuario", usuario);
+
+                root.appendChild(workoutElem);
+            }
+
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+            DOMSource source = new DOMSource(doc);
+            StreamResult result = new StreamResult(new File("historico_global.xml"));
+            transformer.transform(source, result);
+
+            System.out.println("XML global generado correctamente: historico_global.xml");
+            return "Histórico global XML guardado correctamente.";
+
+        } catch (ParserConfigurationException | TransformerException e) {
+            e.printStackTrace();
+            return "Error al guardar histórico global XML";
+        }
+    }
 
     // --- MÉTODOS AUXILIARES ---
     private String defaultString(String valor, String defecto) {
-        return (valor == null || valor.isEmpty()) ? defecto : valor;
+        if (valor == null || valor.isEmpty()) {
+            return defecto;
+        } else {
+            return valor;
+        }
     }
 
     private int defaultInt(Number valor, int defecto) {
-        return (valor == null) ? defecto : valor.intValue();
-    }
-
-    private double defaultDouble(Double valor, double defecto) {
-        return (valor == null) ? defecto : valor;
+        if (valor == null) {
+            return defecto;
+        } else {
+            return valor.intValue();
+        }
     }
 }
