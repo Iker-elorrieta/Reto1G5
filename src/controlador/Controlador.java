@@ -2,7 +2,6 @@ package controlador;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import modelo.Backups;
@@ -17,7 +16,6 @@ public class Controlador {
 
 	private GestorUsuarios gestor = new GestorUsuarios();
 	private GestorWorkout gestor2 = new GestorWorkout();
-	private Backups backup = new Backups();
 //	private GestorBackup gestor3 = new GestorBackup();
 
 	public Usuarios obtenerUsuario(String nombre, String contraseña)
@@ -45,18 +43,12 @@ public class Controlador {
 		return gestor2.leerWorkoutsBDBackups();
 	}
 
-    public String guardarBackup(List<Usuarios> usuarios, ArrayList<Workout> workouts) {
-    	return backup.guardarBackup(usuarios, workouts);
-    }
-
 	public ArrayList<HistoricoWorkouts> cargarDatos(String email)
 			throws IOException, InterruptedException, ExecutionException {
 		return gestor2.cargarDatos(email);
 
 	}
-//    public String guardarHistoricoXml() {
-//    	return backup.guardarHistoricoXml();
-//    }
+
 //	public boolean comprobarConexion() throws IOException {
 //		return gestor3.comprobarConexion();
 //	}
