@@ -5,22 +5,31 @@ import modelo.HistoricoWorkouts;
 import modelo.Usuarios;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
+
+import controlador.Controlador;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class VentanaHistoricoWK extends JFrame {
 
-    private JTable table;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private JTable table;
     private DefaultTableModel tableModel;
     private Usuarios usu; // ID del usuario logeado
+    private Controlador controlador;
 
     public VentanaHistoricoWK(Usuarios usuario) {
         usu = usuario;
-
+        controlador = new Controlador();
         setTitle("Histórico de Workouts");
         setSize(865, 600);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -48,59 +57,16 @@ public class VentanaHistoricoWK extends JFrame {
 
         
         // --- Cargar datos ---
-        cargarDatos();
+        try {
+			controlador.cargarDatos(usu.getEmail());
+		} catch (IOException | InterruptedException | ExecutionException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
         repaint();
         
         setVisible(true);
     }
 
-    private void cargarDatos() {
-        try {
-            Firestore db = ConectorFirebase.conectar();
-            CollectionReference historicoRef = db.collection("usuarios")
-                    .document(String.valueOf(usu.getEmail()))
-                    .collection("Historico");
-
-            ApiFuture<QuerySnapshot> query = historicoRef.orderBy("fecha", Query.Direction.DESCENDING).get(); //Lo que hace esto es coger los documentos y ordenarlos por fecha del más reciente al mas antiguo
-            
-            QuerySnapshot snapshot = query.get();
-            System.out.println("Docs encontrados: " + snapshot.size()); // Debug para ver si encuentra documentos
-            
-            
-            List<HistoricoWorkouts> lista = new ArrayList<>();
-            for (DocumentSnapshot doc : query.get().getDocuments()) {
-                HistoricoWorkouts hw = new HistoricoWorkouts(
-                        doc.getString("Nombre"),
-                        doc.getLong("Nivel").intValue(),
-                        doc.getLong("tiempoTotal").intValue(),
-                        doc.getLong("tiempoPrevisto").intValue(),
-                        doc.getDate("fecha"),
-                        doc.getDouble("Porcentaje")
-                );
-                lista.add(hw);
-            }
-
-            // Llenar la tabla
-            for (HistoricoWorkouts hw : lista) {
-                tableModel.addRow(new Object[]{
-                        hw.getNombreWorkout(),
-                        hw.getNivel(),
-                        formatearTiempo(hw.getTiempoTotal()),
-                        formatearTiempo(hw.getTiempoPrevisto()),
-                        hw.getFecha(),
-                        hw.getPorcentajeCompletado() + "%"
-                });
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error al cargar histórico: " + e.getMessage());
-        }
-        tableModel.fireTableDataChanged();
-    }
-
-    private String formatearTiempo(int segundos) {
-        int min = segundos / 60;
-        int seg = segundos % 60;
-        return String.format("%02d:%02d", min, seg);
-    }
+ 
 }

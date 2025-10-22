@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.awt.event.ActionEvent;
-import vista.VentanaRegistro;
 import javax.swing.JPasswordField;
 import java.awt.Font;
 
@@ -90,29 +89,30 @@ public class VentanaLogin extends JFrame {
 					JOptionPane.showMessageDialog(null, "Campos vacios", "Error", JOptionPane.ERROR_MESSAGE);
 				} else {
 					try {
-						
+
 //						boolean conexion= controlador.comprobarConexion();
 //						if(conexion) {
 						boolean exito = controlador.login(usuario, contraseña);
-						if(exito) {
-							 Usuarios usuarioBackup = controlador.obtenerUsuario(usuario, contraseña);
-			                    if (usuarioBackup == null) {
-			                        JOptionPane.showMessageDialog(null, "Error al obtener datos del usuario", "Error", JOptionPane.ERROR_MESSAGE);
-			                        return;
-			                    }
+						if (exito) {
+							Usuarios usuarioBackup = controlador.obtenerUsuario(usuario, contraseña);
+							if (usuarioBackup == null) {
+								JOptionPane.showMessageDialog(null, "Error al obtener datos del usuario", "Error",
+										JOptionPane.ERROR_MESSAGE);
+								return;
+							}
 
-			                    // Leer workouts para el backup
-			                    ArrayList<Workout> workouts = controlador.leerWorkoutsBDBackups();
+							// Leer workouts para el backup
+							ArrayList<Workout> workouts = controlador.leerWorkoutsBDBackups();
 
-			                    // Crear e iniciar hilo de backup
-			                    Backups backupHilo = new Backups(usuarioBackup, workouts, usuarioBackup.getHistorico());
-			                    backupHilo.start(); // Se ejecuta en segundo plano
+							// Crear e iniciar hilo de backup
+							Backups backupHilo = new Backups();
+							backupHilo.start(); // Se ejecuta en segundo plano
 
-			                    // Abrir ventana principal
-			                    dispose();
-			                    VentanaWorkouts workout = new VentanaWorkouts(usuarioBackup);
-			                    workout.setVisible(true);
-						}else {
+							// Abrir ventana principal
+							dispose();
+							VentanaWorkouts workout = new VentanaWorkouts(usuarioBackup);
+							workout.setVisible(true);
+						} else {
 							JOptionPane.showMessageDialog(null, "todo mal", "Error", JOptionPane.ERROR_MESSAGE);
 						}
 //						}else {

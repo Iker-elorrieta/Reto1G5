@@ -2,121 +2,191 @@ package modelo;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.CollectionReference;
-import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.Query;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
 
 public class GestorWorkout {
 
-	public ArrayList<Workout> leerWorkoutsBD(int nivelUsuario)
-			throws IOException, InterruptedException, ExecutionException {
-		Firestore db = ConectorFirebase.conectar();
-		CollectionReference workout = db.collection("Workouts");
-		ArrayList<Workout> works = new ArrayList<>();
+    public ArrayList<Workout> leerWorkoutsBD(int nivelUsuario)
+            throws IOException, InterruptedException, ExecutionException {
 
-		QuerySnapshot querySnapshot = workout.get().get();
-		List<QueryDocumentSnapshot> workouts = querySnapshot.getDocuments();
-		for (QueryDocumentSnapshot work : workouts) {
-			int nivelWorkout = work.getDouble("nivel").intValue();
+        Firestore db = null;
+        ArrayList<Workout> works = new ArrayList<>();
+        try {
+            db = ConectorFirebase.conectar();
+            CollectionReference workout = db.collection("Workouts");
 
-			// Filtrar por nivel
-			if (nivelWorkout <= nivelUsuario) {
+            QuerySnapshot querySnapshot = workout.get().get();
+            List<QueryDocumentSnapshot> workouts = querySnapshot.getDocuments();
+            for (QueryDocumentSnapshot work : workouts) {
+                int nivelWorkout = work.getDouble("nivel").intValue();
 
-				Workout w = new Workout();
-				w.setNombre(work.getString("nombre"));
-				w.setVideo(work.getString("video"));
-				w.setNivel(nivelWorkout);
-				w.setNumEjers(work.getDouble("numEjer").intValue());
+                // Filtrar por nivel
+                if (nivelWorkout <= nivelUsuario) {
 
-				// Leer ejercicios
-				CollectionReference ejerciciosCol = work.getReference().collection("Ejercicios");
-				List<QueryDocumentSnapshot> ejerciciosDocs = ejerciciosCol.get().get().getDocuments();
-				ArrayList<Ejercicios> listaEjercicios = new ArrayList<>();
+                    Workout w = new Workout();
+                    w.setNombre(work.getString("nombre"));
+                    w.setVideo(work.getString("video"));
+                    w.setNivel(nivelWorkout);
+                    w.setNumEjers(work.getDouble("numEjer").intValue());
 
-				for (QueryDocumentSnapshot ejDoc : ejerciciosDocs) {
-					Ejercicios e = new Ejercicios(ejDoc.getString("Nombre"), ejDoc.getString("Descripcion"),
-							ejDoc.getString("Img"), ejDoc.getDouble("Nivel").intValue(),
-							ejDoc.getDouble("tiempoDescanso").intValue(), new ArrayList<>());
+                    // Leer ejercicios
+                    CollectionReference ejerciciosCol = work.getReference().collection("Ejercicios");
+                    List<QueryDocumentSnapshot> ejerciciosDocs = ejerciciosCol.get().get().getDocuments();
+                    ArrayList<Ejercicios> listaEjercicios = new ArrayList<>();
 
-					// Leer series si existen
-					CollectionReference seriesCol = ejDoc.getReference().collection("Series");
-					List<QueryDocumentSnapshot> seriesDocs = seriesCol.get().get().getDocuments();
-					ArrayList<Series> listaSeries = new ArrayList<>();
-					for (QueryDocumentSnapshot sDoc : seriesDocs) {
-						Series s = new Series(sDoc.getString("nombre"), sDoc.getDouble("repeticiones").intValue(),
-								sDoc.getDouble("duracion").intValue());
-						listaSeries.add(s);
-					}
-					e.setSeries(listaSeries);
+                    for (QueryDocumentSnapshot ejDoc : ejerciciosDocs) {
+                        Ejercicios e = new Ejercicios(ejDoc.getString("Nombre"), ejDoc.getString("Descripcion"),
+                                ejDoc.getString("Img"), ejDoc.getDouble("Nivel").intValue(),
+                                ejDoc.getDouble("tiempoDescanso").intValue(), new ArrayList<>());
 
-					listaEjercicios.add(e);
-				}
+                        // Leer series si existen
+                        CollectionReference seriesCol = ejDoc.getReference().collection("Series");
+                        List<QueryDocumentSnapshot> seriesDocs = seriesCol.get().get().getDocuments();
+                        ArrayList<Series> listaSeries = new ArrayList<>();
+                        for (QueryDocumentSnapshot sDoc : seriesDocs) {
+                            Series s = new Series(sDoc.getString("Nombre"), sDoc.getDouble("repeticiones").intValue(),
+                                    sDoc.getDouble("duracion").intValue());
+                            listaSeries.add(s);
+                        }
+                        e.setSeries(listaSeries);
 
-				w.setEjercicios(listaEjercicios);
-				works.add(w);
-			}
-		}
+                        listaEjercicios.add(e);
+                    }
 
-		return works;
+                    w.setEjercicios(listaEjercicios);
+                    works.add(w);
+                }
+            }
 
-	}
+        } finally {
+            if (db != null) {
+                try {
+                    db.close();
+                    System.out.println("Firestore cerrado en leerWorkoutsBD");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
-	public ArrayList<Workout> leerWorkoutsBDBackups() throws IOException, InterruptedException, ExecutionException {
-		Firestore db = ConectorFirebase.conectar();
-		CollectionReference workout = db.collection("Workouts");
-		ArrayList<Workout> works = new ArrayList<>();
+        return works;
+    }
 
-		QuerySnapshot querySnapshot = workout.get().get();
-		List<QueryDocumentSnapshot> workouts = querySnapshot.getDocuments();
-		for (QueryDocumentSnapshot work : workouts) {
-			int nivelWorkout = work.getDouble("nivel").intValue();
+    public ArrayList<Workout> leerWorkoutsBDBackups()
+            throws IOException, InterruptedException, ExecutionException {
 
-			// Filtrar por nivel
+        Firestore db = null;
+        ArrayList<Workout> works = new ArrayList<>();
+        try {
+            db = ConectorFirebase.conectar();
+            CollectionReference workout = db.collection("Workouts");
 
-			Workout w = new Workout();
-			w.setNombre(work.getString("nombre"));
-			w.setVideo(work.getString("video"));
-			w.setNivel(nivelWorkout);
-			w.setNumEjers(work.getDouble("numEjer").intValue());
+            QuerySnapshot querySnapshot = workout.get().get();
+            List<QueryDocumentSnapshot> workouts = querySnapshot.getDocuments();
+            for (QueryDocumentSnapshot work : workouts) {
+                int nivelWorkout = work.getDouble("nivel").intValue();
 
-			// Leer ejercicios
-			CollectionReference ejerciciosCol = work.getReference().collection("Ejercicios");
-			List<QueryDocumentSnapshot> ejerciciosDocs = ejerciciosCol.get().get().getDocuments();
-			ArrayList<Ejercicios> listaEjercicios = new ArrayList<>();
+                Workout w = new Workout();
+                w.setNombre(work.getString("nombre"));
+                w.setVideo(work.getString("video"));
+                w.setNivel(nivelWorkout);
+                w.setNumEjers(work.getDouble("numEjer").intValue());
 
-			for (QueryDocumentSnapshot ejDoc : ejerciciosDocs) {
-				Ejercicios e = new Ejercicios(ejDoc.getString("Nombre"), ejDoc.getString("Descripcion"), // corregido
-																											// typo
-						ejDoc.getString("Img"), ejDoc.getDouble("Nivel").intValue(),
-						ejDoc.getDouble("tiempoDescanso").intValue(), new ArrayList<>());
+                CollectionReference ejerciciosCol = work.getReference().collection("Ejercicios");
+                List<QueryDocumentSnapshot> ejerciciosDocs = ejerciciosCol.get().get().getDocuments();
+                ArrayList<Ejercicios> listaEjercicios = new ArrayList<>();
 
-				// Leer series si existen
-				CollectionReference seriesCol = ejDoc.getReference().collection("Series");
-				List<QueryDocumentSnapshot> seriesDocs = seriesCol.get().get().getDocuments();
-				ArrayList<Series> listaSeries = new ArrayList<>();
-				for (QueryDocumentSnapshot sDoc : seriesDocs) {
-					Series s = new Series(sDoc.getString("nombre"), sDoc.getDouble("repeticiones").intValue(),
-							sDoc.getDouble("duracion").intValue());
-					listaSeries.add(s);
-				}
-				e.setSeries(listaSeries);
+                for (QueryDocumentSnapshot ejDoc : ejerciciosDocs) {
+                    Ejercicios e = new Ejercicios(ejDoc.getString("Nombre"), ejDoc.getString("Descripcion"),
+                            ejDoc.getString("Img"), ejDoc.getDouble("Nivel").intValue(),
+                            ejDoc.getDouble("tiempoDescanso").intValue(), new ArrayList<>());
 
-				listaEjercicios.add(e);
-			}
+                    CollectionReference seriesCol = ejDoc.getReference().collection("Series");
+                    List<QueryDocumentSnapshot> seriesDocs = seriesCol.get().get().getDocuments();
+                    ArrayList<Series> listaSeries = new ArrayList<>();
+                    for (QueryDocumentSnapshot sDoc : seriesDocs) {
+                        Series s = new Series(sDoc.getString("Nombre"), sDoc.getDouble("repeticiones").intValue(),
+                                sDoc.getDouble("duracion").intValue());
+                        listaSeries.add(s);
+                    }
+                    e.setSeries(listaSeries);
+                    listaEjercicios.add(e);
+                }
 
-			w.setEjercicios(listaEjercicios);
-			works.add(w);
-		}
+                w.setEjercicios(listaEjercicios);
+                works.add(w);
+            }
 
-		return works;
+        } finally {
+            if (db != null) {
+                try {
+                    db.close();
+                    System.out.println("Firestore cerrado en leerWorkoutsBDBackups");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
-	}
+        return works;
+    }
+
+    public ArrayList<HistoricoWorkouts> cargarDatos(String email)
+            throws IOException, InterruptedException, ExecutionException {
+
+        ArrayList<HistoricoWorkouts> lista = new ArrayList<>();
+        if (email == null || email.isEmpty()) {
+            System.err.println("Error: email vacío o nulo");
+            return lista;
+        }
+
+        Firestore db = null;
+        try {
+            db = ConectorFirebase.conectar();
+            CollectionReference historicoRef = db.collection("usuarios").document(email).collection("Historico");
+
+            ApiFuture<QuerySnapshot> query = historicoRef.orderBy("fecha", Query.Direction.DESCENDING).get();
+            QuerySnapshot snapshot = query.get();
+
+            System.out.println("Docs encontrados para " + email + ": " + snapshot.size());
+
+            for (DocumentSnapshot doc : snapshot.getDocuments()) {
+                HistoricoWorkouts hw = new HistoricoWorkouts(doc.getString("Nombre"), doc.getLong("Nivel").intValue(),
+                        doc.getLong("tiempoTotal").intValue(), doc.getLong("tiempoPrevisto").intValue(),
+                        doc.getDate("fecha"), (int) Math.round(doc.getDouble("Porcentaje")),
+                        doc.getString("usuario"));
+                lista.add(hw);
+
+                System.out.println("Cargado: " + hw.getNombreWorkout() + " - Nivel: " + hw.getNivel() + " - Porcentaje: "
+                        + hw.getPorcentajeCompletado() + "%");
+            }
+
+        } finally {
+            if (db != null) {
+                try {
+                    db.close();
+                    System.out.println("Firestore cerrado en cargarDatos para " + email);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return lista;
+    }
+
+    public String formatearTiempo(int segundos) {
+        int min = segundos / 60;
+        int seg = segundos % 60;
+        return String.format("%02d:%02d", min, seg);
+    }
 }

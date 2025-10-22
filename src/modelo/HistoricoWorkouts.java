@@ -10,18 +10,20 @@ public class HistoricoWorkouts {
 	    private int tiempoPrevisto;
 	    private Date fecha;
 	    private double porcentajeCompletado;
+	    private String usuario;
 	    
 	    public HistoricoWorkouts() {
 	    	
 	    }
 	    
-	    public HistoricoWorkouts(String nombreWorkout, int nivel, int tiempoTotal, int tiempoPrevisto, Date fecha, double porcentajeCompletado) {
+	    public HistoricoWorkouts(String nombreWorkout, int nivel, int tiempoTotal, int tiempoPrevisto, Date fecha, double porcentajeCompletado, String usuario) {
 	        this.nombreWorkout = nombreWorkout;
 	        this.nivel = nivel;
 	        this.tiempoTotal = tiempoTotal;
 	        this.tiempoPrevisto = tiempoPrevisto;
 	        this.fecha = fecha;
 	        this.porcentajeCompletado = porcentajeCompletado;
+	        this.usuario=usuario;
 	    }
 	    
 	    public String getNombreWorkout() {
@@ -65,6 +67,14 @@ public class HistoricoWorkouts {
 
 		public void setPorcentajeCompletado(double porcentajeCompletado) {
 			this.porcentajeCompletado = porcentajeCompletado;
+		}
+
+		public String getUsuario() {
+			return usuario;
+		}
+
+		public void setUsuario(String usuario) {
+			this.usuario = usuario;
 		}
 	    
 	    

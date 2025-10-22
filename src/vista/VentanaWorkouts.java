@@ -1,6 +1,5 @@
 package vista;
 
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -77,6 +76,11 @@ public class VentanaWorkouts extends JFrame {
 
 		modelo = new DefaultTableModel(new Object[][] {},
 				new String[] { "Nombre", "Nº Ejercicios", "Nivel", "Video (URL)" }) {
+			/**
+					 * 
+					 */
+					private static final long serialVersionUID = 1L;
+
 			public boolean isCellEditable(int row, int column) {
 				return false;
 			}
@@ -92,6 +96,11 @@ public class VentanaWorkouts extends JFrame {
 
 		modelo2 = new DefaultTableModel(new Object[][] {}, 
 				new String[] { "Nombre", "Descripción", "Nivel", "Descanso (s)" }) {
+			/**
+					 * 
+					 */
+					private static final long serialVersionUID = 1L;
+
 			public boolean isCellEditable(int row, int column) {
 				return false;
 			}

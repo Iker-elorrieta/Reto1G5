@@ -3,7 +3,8 @@ package modelo;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import javax.swing.JOptionPane;
+import java.util.List;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -14,131 +15,173 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import com.google.api.core.ApiFuture;
+import com.google.cloud.firestore.CollectionReference;
+import com.google.cloud.firestore.DocumentSnapshot;
+import com.google.cloud.firestore.QueryDocumentSnapshot;
+import com.google.cloud.firestore.QuerySnapshot;
+import com.google.cloud.firestore.Firestore;
+
 public class Backups extends Thread {
 
-	private Usuarios usuario;
-	private ArrayList<Workout> workouts; // Para .dat
-	private ArrayList<HistoricoWorkouts> historico; // Para XML
+    @Override
+    public void run() {
+        Firestore db = null;
+        try {
+            db = ConectorFirebase.conectar();
+            CollectionReference usuariosRef = db.collection("usuarios");
+            ApiFuture<QuerySnapshot> future = usuariosRef.get();
+            List<QueryDocumentSnapshot> usuariosDocs = future.get().getDocuments();
 
-	public Backups(Usuarios usuario, ArrayList<Workout> workouts, ArrayList<HistoricoWorkouts> historico) {
-		this.usuario = usuario;
-		this.workouts = workouts;
-		this.historico = historico;
-	}
+            System.out.println("Usuarios encontrados: " + usuariosDocs.size());
 
-	@Override
-	public void run() {
-		String resultadoDat = guardarBackup();
-		String resultadoXml = guardarHistoricoXml();
+            // Creamos lista de todos los usuarios
+            ArrayList<Usuarios> todosUsuarios = new ArrayList<>();
+            ArrayList<HistoricoWorkouts> historicoGlobal = new ArrayList<>();
+            for (DocumentSnapshot docUsuario : usuariosDocs) {
+                Usuarios usuario = new Usuarios();
+                usuario.setNombre(defaultString(docUsuario.getString("Nombre"), "UsuarioDesconocido"));
+                usuario.setEmail(defaultString(docUsuario.getString("Email"), "email@desconocido.com"));
+                usuario.setContraseña(defaultString(docUsuario.getString("Contraseña"), "1234"));
+                usuario.setNivel(defaultInt(docUsuario.getDouble("nivel"), 1));
+                todosUsuarios.add(usuario);
 
-		javax.swing.SwingUtilities.invokeLater(() -> {
-			JOptionPane.showMessageDialog(null, resultadoDat + "\n" + resultadoXml, "Backup",
-					JOptionPane.INFORMATION_MESSAGE);
-		});
-	}
+                // Guardamos el histórico XML individual
+                ArrayList<Workout> workouts = new GestorWorkout().leerWorkoutsBDBackups();
+                guardarBackup(todosUsuarios, workouts);
+                
+                guardarHistoricoXmlGlobal(historicoGlobal);
+            }
 
-	// --- DAT ---
-	public String guardarBackup() {
-		if (usuario == null)
-			return "Error: usuario nulo";
+            // Guardamos todos los usuarios y workouts en un solo .dat
+            ArrayList<Workout> workouts = new GestorWorkout().leerWorkoutsBDBackups();
+            guardarBackup(todosUsuarios, workouts);
 
-		try (DataOutputStream out = new DataOutputStream(
-				new FileOutputStream("backup_" + usuario.getNombre() + ".dat"))) {
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (db != null) {
+                try {
+                    db.close();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+    }
 
-			writeStringSafe(out, usuario.getNombre());
-			writeStringSafe(out, usuario.getEmail());
-			writeStringSafe(out, usuario.getContraseña());
-			out.writeInt(usuario.getNivel());
+    // --- DAT GLOBAL ---
+	public String guardarBackup(List<Usuarios> usuarios, ArrayList<Workout> workouts) {
+        if (usuarios == null || usuarios.isEmpty()) 
+            return "No hay usuarios para guardar.";
 
-			if (workouts != null) {
-				out.writeInt(workouts.size());
-				for (Workout w : workouts) {
-					writeStringSafe(out, w.getNombre());
-					writeStringSafe(out, w.getVideo());
-					out.writeInt(w.getNivel());
-					out.writeInt(w.getNumEjers());
+        try (DataOutputStream out = new DataOutputStream(new FileOutputStream("backup_usuarios.dat"))) {
 
-					if (w.getEjercicios() != null) {
-						out.writeInt(w.getEjercicios().size());
-						for (Ejercicios e : w.getEjercicios()) {
-							writeStringSafe(out, e.getNombre());
-							writeStringSafe(out, e.getDescripcion());
-							writeStringSafe(out, e.getImg());
-							out.writeInt(e.getNivel());
-							out.writeInt(e.getTiempoDescanso());
+            out.writeInt(usuarios.size()); // Cantidad de usuarios
 
-							if (e.getSeries() != null) {
-								out.writeInt(e.getSeries().size());
-								for (Series s : e.getSeries()) {
-									writeStringSafe(out, s.getNombre());
-									out.writeInt(s.getRepeticiones());
-									out.writeInt(s.getDuracion());
-								}
-							} else
-								out.writeInt(0);
-						}
-					} else
-						out.writeInt(0);
-				}
-			} else
-				out.writeInt(0);
+            for (Usuarios usuario : usuarios) {
+                // Usuario
+                out.writeUTF(defaultString(usuario.getNombre(), "UsuarioDesconocido"));
+                out.writeUTF(defaultString(usuario.getEmail(), "email@desconocido.com"));
+                out.writeUTF(defaultString(usuario.getContraseña(), "1234"));
+                out.writeInt(defaultInt(usuario.getNivel(), 1));
 
-			return "Backup .dat guardado correctamente para " + usuario.getNombre();
+                // Workouts
+                if (workouts != null) {
+                    out.writeInt(workouts.size());
+                    for (Workout w : workouts) {
+                        out.writeUTF(defaultString(w.getNombre(), "WorkoutDesconocido"));
+                        out.writeUTF(defaultString(w.getVideo(), ""));
+                        out.writeInt(defaultInt(w.getNivel(), 1));
+                        out.writeInt(defaultInt(w.getNumEjers(), 0));
 
-		} catch (IOException e) {
-			e.printStackTrace();
-			return "Error al guardar backup .dat para " + (usuario != null ? usuario.getNombre() : "desconocido");
-		}
-	}
+                        if (w.getEjercicios() != null) {
+                            out.writeInt(w.getEjercicios().size());
+                            for (Ejercicios e : w.getEjercicios()) {
+                                out.writeUTF(defaultString(e.getNombre(), "EjercicioDesconocido"));
+                                out.writeUTF(defaultString(e.getDescripcion(), ""));
+                                out.writeUTF(defaultString(e.getImg(), ""));
+                                out.writeInt(defaultInt(e.getNivel(), 1));
+                                out.writeInt(defaultInt(e.getTiempoDescanso(), 0));
 
-	// --- XML ---
-	public String guardarHistoricoXml() {
-		if (usuario == null)
-			return "Usuario no definido. No se puede guardar XML.";
-		if (historico == null || historico.isEmpty())
-			return "No hay histórico para guardar.";
+                                if (e.getSeries() != null) {
+                                    out.writeInt(e.getSeries().size());
+                                    for (Series s : e.getSeries()) {
+                                        out.writeUTF(defaultString(s.getNombre(), "SerieDesconocida"));
+                                        out.writeInt(defaultInt(s.getRepeticiones(), 0));
+                                        out.writeInt(defaultInt(s.getDuracion(), 0));
+                                    }
+                                } else out.writeInt(0);
+                            }
+                        } else out.writeInt(0);
+                    }
+                } else out.writeInt(0);
+            }
 
-		try {
-			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			Document doc = dBuilder.newDocument();
+            System.out.println("Backup global .dat guardado correctamente.");
+            return "Backup global .dat guardado correctamente.";
 
-			Element root = doc.createElement("HistoricoWorkouts");
-			doc.appendChild(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "Error al guardar backup global .dat";
+        }
+    }
 
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	 public String guardarHistoricoXmlGlobal(List<HistoricoWorkouts> historicoGlobal) {
+	        if (historicoGlobal == null || historicoGlobal.isEmpty())
+	            return "No hay histórico para guardar.";
 
-			for (HistoricoWorkouts h : historico) {
-				Element workoutElem = doc.createElement("Workout");
-				workoutElem.setAttribute("nombre", h.getNombreWorkout());
-				workoutElem.setAttribute("nivel", String.valueOf(h.getNivel()));
-				workoutElem.setAttribute("tiempoTotal", String.valueOf(h.getTiempoTotal()));
-				workoutElem.setAttribute("tiempoPrevisto", String.valueOf(h.getTiempoPrevisto()));
-				workoutElem.setAttribute("fecha", sdf.format(h.getFecha()));
-				workoutElem.setAttribute("porcentajeCompletado", String.valueOf(h.getPorcentajeCompletado()));
-				root.appendChild(workoutElem);
-			}
+	        try {
+	            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+	            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+	            Document doc = dBuilder.newDocument();
 
-			TransformerFactory transformerFactory = TransformerFactory.newInstance();
-			Transformer transformer = transformerFactory.newTransformer();
-			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-			DOMSource source = new DOMSource(doc);
-			StreamResult result = new StreamResult(new File("historico_" + usuario.getNombre() + ".xml"));
-			transformer.transform(source, result);
+	            Element root = doc.createElement("HistoricoGlobal");
+	            doc.appendChild(root);
 
-			return "Histórico XML guardado correctamente para " + usuario.getNombre();
+	            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-		} catch (ParserConfigurationException | TransformerException e) {
-			e.printStackTrace();
-			return "Error al guardar histórico XML para " + usuario.getNombre();
-		}
-	}
+	            for (HistoricoWorkouts h : historicoGlobal) {
+	                Element workoutElem = doc.createElement("Workout");
+	                workoutElem.setAttribute("nombre", defaultString(h.getNombreWorkout(), "WorkoutDesconocido"));
+	                workoutElem.setAttribute("nivel", String.valueOf(defaultInt(h.getNivel(), 1)));
+	                workoutElem.setAttribute("tiempoTotal", String.valueOf(defaultInt(h.getTiempoTotal(), 0)));
+	                workoutElem.setAttribute("tiempoPrevisto", String.valueOf(defaultInt(h.getTiempoPrevisto(), 0)));
+	                workoutElem.setAttribute("fecha",
+	                        (h.getFecha() != null) ? sdf.format(h.getFecha()) : "1970-01-01 00:00:00");
+	                workoutElem.setAttribute("porcentajeCompletado",
+	                        String.valueOf(defaultDouble(h.getPorcentajeCompletado(), 0.0)));
+	                workoutElem.setAttribute("usuario", defaultString(h.getUsuario(), "desconocido")); // opcional, para identificar usuario
+	                root.appendChild(workoutElem);
+	            }
 
-	private void writeStringSafe(DataOutputStream out, String str) throws IOException {
-		if (str == null)
-			str = "";
-		out.writeInt(str.length());
-		out.writeChars(str);
-	}
+	            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+	            Transformer transformer = transformerFactory.newTransformer();
+	            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+	            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+	            DOMSource source = new DOMSource(doc);
+	            StreamResult result = new StreamResult(new File("historico_global.xml"));
+	            transformer.transform(source, result);
+
+	            System.out.println("XML global generado correctamente: historico_global.xml");
+	            return "Histórico global XML guardado correctamente.";
+
+	        } catch (ParserConfigurationException | TransformerException e) {
+	            e.printStackTrace();
+	            return "Error al guardar histórico global XML";
+	        }
+	    }
+
+    // --- MÉTODOS AUXILIARES ---
+    private String defaultString(String valor, String defecto) {
+        return (valor == null || valor.isEmpty()) ? defecto : valor;
+    }
+
+    private int defaultInt(Number valor, int defecto) {
+        return (valor == null) ? defecto : valor.intValue();
+    }
+
+    private double defaultDouble(Double valor, double defecto) {
+        return (valor == null) ? defecto : valor;
+    }
 }

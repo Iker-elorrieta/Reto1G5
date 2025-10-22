@@ -2,11 +2,13 @@ package controlador;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import modelo.Backups;
-import modelo.GestorBackup;
+//import modelo.GestorBackup;
 import modelo.GestorWorkout;
+import modelo.HistoricoWorkouts;
 import modelo.Usuarios;
 import modelo.GestorUsuarios;
 import modelo.Workout;
@@ -15,14 +17,16 @@ public class Controlador {
 
 	private GestorUsuarios gestor = new GestorUsuarios();
 	private GestorWorkout gestor2 = new GestorWorkout();
-	private Backups backup = new Backups(null, null, null);
-	private GestorBackup gestor3 = new GestorBackup();
+	private Backups backup = new Backups();
+//	private GestorBackup gestor3 = new GestorBackup();
 
-	public Usuarios obtenerUsuario(String nombre, String contraseña) throws InterruptedException, ExecutionException, IOException {
-	    GestorUsuarios gestor = new GestorUsuarios();
-	    Usuarios u = gestor.obtenerUsuario(nombre, contraseña);
-	    return u;
+	public Usuarios obtenerUsuario(String nombre, String contraseña)
+			throws InterruptedException, ExecutionException, IOException {
+		GestorUsuarios gestor = new GestorUsuarios();
+		Usuarios u = gestor.obtenerUsuario(nombre, contraseña);
+		return u;
 	}
+
 	public void registrarUsuario(Usuarios usuario) throws IOException, InterruptedException, ExecutionException {
 		gestor.registrarUsuario(usuario);
 	}
@@ -32,21 +36,29 @@ public class Controlador {
 		return gestor.login(usuario, contraseña);
 	}
 
-	public ArrayList<Workout> leerWorkoutsBD(int nivelUsuario) throws IOException, InterruptedException, ExecutionException {
+	public ArrayList<Workout> leerWorkoutsBD(int nivelUsuario)
+			throws IOException, InterruptedException, ExecutionException {
 		return gestor2.leerWorkoutsBD(nivelUsuario);
 	}
+
 	public ArrayList<Workout> leerWorkoutsBDBackups() throws IOException, InterruptedException, ExecutionException {
 		return gestor2.leerWorkoutsBDBackups();
 	}
-    public String guardarBackup() {
-    	return backup.guardarBackup();
+
+    public String guardarBackup(List<Usuarios> usuarios, ArrayList<Workout> workouts) {
+    	return backup.guardarBackup(usuarios, workouts);
     }
-    public String guardarHistoricoXml() {
-    	return backup.guardarHistoricoXml();
-    }
+
+	public ArrayList<HistoricoWorkouts> cargarDatos(String email)
+			throws IOException, InterruptedException, ExecutionException {
+		return gestor2.cargarDatos(email);
+
+	}
+//    public String guardarHistoricoXml() {
+//    	return backup.guardarHistoricoXml();
+//    }
 //	public boolean comprobarConexion() throws IOException {
 //		return gestor3.comprobarConexion();
 //	}
-
 
 }
