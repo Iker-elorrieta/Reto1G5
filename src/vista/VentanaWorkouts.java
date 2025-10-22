@@ -31,6 +31,9 @@ public class VentanaWorkouts extends JFrame {
 	private Controlador controlador;
 	private Usuarios usuarioActual;
 	
+
+
+
 	public VentanaWorkouts(Usuarios usuario) {
 		controlador = new Controlador();
 		usuarioActual=usuario;
@@ -63,9 +66,10 @@ public class VentanaWorkouts extends JFrame {
 		JButton btnHistorico = new JButton("Ver histórico");
 		btnHistorico.setBounds(750, 80, 140, 25);
 		contentPane.add(btnHistorico);
-		btnHistorico.addActionListener(e -> 
-			JOptionPane.showMessageDialog(VentanaWorkouts.this, "Aquí se abriría la pantalla del histórico de workouts")
-		);
+		btnHistorico.addActionListener(e -> {
+			VentanaHistoricoWK historicoWK = new VentanaHistoricoWK(usuarioActual);
+			historicoWK.setVisible(true);
+		});
 
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(30, 155, 406, 400);
