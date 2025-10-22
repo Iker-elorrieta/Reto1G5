@@ -25,10 +25,12 @@ public class VentanaWorkouts extends JFrame {
 	private JComboBox<String> comboNivel;
 	private DefaultTableModel modelo;
 	private DefaultTableModel modelo2;
-	private ArrayList<Workout> listaWorkouts; 
+	private ArrayList<Workout> listaWorkouts;
+	private ArrayList<Workout> listaMostrada;
 	private JTable table_1;
 	private Controlador controlador;
 	private Usuarios usuarioActual;
+	
 
 
 
@@ -123,7 +125,7 @@ public class VentanaWorkouts extends JFrame {
 			if (!e.getValueIsAdjusting()) {
 				int fila = table.getSelectedRow();
 				if (fila >= 0) {
-					Workout seleccionado = listaWorkouts.get(fila);
+					Workout seleccionado = listaMostrada.get(fila);
 					mostrarEjercicios(seleccionado.getEjercicios());
 				}
 			}
@@ -157,6 +159,7 @@ public class VentanaWorkouts extends JFrame {
 
 	private void mostrarWorkouts(ArrayList<Workout> workouts) {
 		modelo.setRowCount(0);
+		listaMostrada = workouts;
 		for (Workout w : workouts) {
 			modelo.addRow(new Object[] { w.getNombre(), w.getNumEjers(), w.getNivel(), w.getVideo() });
 		}

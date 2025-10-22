@@ -42,8 +42,7 @@ public class GestorWorkout {
 				ArrayList<Ejercicios> listaEjercicios = new ArrayList<>();
 
 				for (QueryDocumentSnapshot ejDoc : ejerciciosDocs) {
-					Ejercicios e = new Ejercicios(ejDoc.getString("Nombre"), ejDoc.getString("Descripcion"), // corregido
-																												// typo
+					Ejercicios e = new Ejercicios(ejDoc.getString("Nombre"), ejDoc.getString("Descripcion"),
 							ejDoc.getString("Img"), ejDoc.getDouble("Nivel").intValue(),
 							ejDoc.getDouble("tiempoDescanso").intValue(), new ArrayList<>());
 
