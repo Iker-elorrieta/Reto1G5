@@ -58,24 +58,24 @@ public class VentanaHistoricoWK extends JFrame {
         try {
             Firestore db = ConectorFirebase.conectar();
             CollectionReference historicoRef = db.collection("usuarios")
-                    .document(String.valueOf(usu.getIdUsuario()))
+                    .document(String.valueOf(usu.getEmail()))
                     .collection("Historico");
 
-            ApiFuture<QuerySnapshot> query = historicoRef.orderBy("fecha", Query.Direction.DESCENDING).get();
+            ApiFuture<QuerySnapshot> query = historicoRef.orderBy("fecha", Query.Direction.DESCENDING).get(); //Lo que hace esto es coger los documentos y ordenarlos por fecha del más reciente al mas antiguo
             
             QuerySnapshot snapshot = query.get();
-            System.out.println("Docs encontrados: " + snapshot.size()); // debug
+            System.out.println("Docs encontrados: " + snapshot.size()); // Debug para ver si encuentra documentos
             
             
             List<HistoricoWorkouts> lista = new ArrayList<>();
             for (DocumentSnapshot doc : query.get().getDocuments()) {
                 HistoricoWorkouts hw = new HistoricoWorkouts(
-                        doc.getString("nombreWorkout"),
-                        doc.getLong("nivel").intValue(),
+                        doc.getString("Nombre"),
+                        doc.getLong("Nivel").intValue(),
                         doc.getLong("tiempoTotal").intValue(),
                         doc.getLong("tiempoPrevisto").intValue(),
                         doc.getDate("fecha"),
-                        doc.getDouble("porcentajeCompletado")
+                        doc.getDouble("Porcentaje")
                 );
                 lista.add(hw);
             }
