@@ -31,9 +31,6 @@ public class VentanaWorkouts extends JFrame {
 	private Controlador controlador;
 	private Usuarios usuarioActual;
 	
-
-
-
 	public VentanaWorkouts(Usuarios usuario) {
 		controlador = new Controlador();
 		usuarioActual=usuario;

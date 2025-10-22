@@ -96,6 +96,7 @@ public class VentanaLogin extends JFrame {
 						if(exito) {
 							Usuarios usuarioBackup = new Usuarios();
 							usuarioBackup = controlador.obtenerUsuario(usuario, contraseña);
+							System.out.println("Usuario: " + usuarioBackup.getNombre() + "--------" +" Nivel: " + usuarioBackup.getNivel());
 							ArrayList<Workout> workouts = controlador.leerWorkoutsBDBackups();
 							controlador.guardarBackup(usuarioBackup, workouts);
 							dispose();

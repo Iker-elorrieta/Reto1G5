@@ -1,28 +1,38 @@
 package vista;
 
 import javax.swing.SwingUtilities;
-
 import modelo.ConectorFirebase;
+import com.google.cloud.firestore.Firestore;
 
 public class Main {
 
-	public static void main(String[] args) {
-		try {
-			// Inicializar Firebase
-			ConectorFirebase.conectar();
+    private static Firestore db; //
 
-			// Mostrar ventana de registro
-			SwingUtilities.invokeLater(new Runnable() {
-				public void run() {
-					VentanaLogin login = new VentanaLogin();
-					login.setVisible(true);
-				}
-			});
+    public static void main(String[] args) {
+        try {
+            // Inicializar Firebase y guardar la conexión
+            db = ConectorFirebase.conectar();
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+            // Mostrar ventana de login
+            SwingUtilities.invokeLater(() -> {
+                VentanaLogin login = new VentanaLogin();
+                login.setVisible(true);
+            });
 
-	}
+            // Añadir un hook para cerrar Firestore al cerrar la app
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                if (db != null) {
+                    try {
+                        db.close(); // 
+                        System.out.println("Firestore cerrado correctamente.");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }));
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
