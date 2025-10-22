@@ -41,9 +41,9 @@ public class Controlador {
 	public void guardarBackup(Usuarios usuario, ArrayList<Workout> workouts) {
     	backup.guardarBackup(usuario, workouts);
     }
-	public boolean comprobarConexion() throws IOException {
-		return gestor3.comprobarConexion();
-	}
+//	public boolean comprobarConexion() throws IOException {
+//		return gestor3.comprobarConexion();
+//	}
 
 
 }
