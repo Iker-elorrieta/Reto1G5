@@ -9,7 +9,6 @@ import javax.swing.border.EmptyBorder;
 import controlador.Controlador;
 import modelo.Backups;
 import modelo.Usuarios;
-import modelo.Workout;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -17,7 +16,6 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.awt.event.ActionEvent;
 import javax.swing.JPasswordField;
@@ -102,7 +100,7 @@ public class VentanaLogin extends JFrame {
 							}
 
 							// Leer workouts para el backup
-							ArrayList<Workout> workouts = controlador.leerWorkoutsBDBackups();
+//							ArrayList<Workout> workouts = controlador.leerWorkoutsBDBackups();
 
 							// Crear e iniciar hilo de backup
 							Backups backupHilo = new Backups();

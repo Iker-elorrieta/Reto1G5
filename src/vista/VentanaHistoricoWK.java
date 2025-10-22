@@ -1,19 +1,13 @@
 package vista;
 
-import modelo.ConectorFirebase;
-import modelo.HistoricoWorkouts;
-import modelo.Usuarios;
-import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.*;
 
 import controlador.Controlador;
+import modelo.Usuarios;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class VentanaHistoricoWK extends JFrame {
