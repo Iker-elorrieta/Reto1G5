@@ -68,14 +68,9 @@ public class GestorWorkout {
             }
 
         } finally {
-            if (db != null) {
-                try {
-                    db.close();
-                    System.out.println("Firestore cerrado en leerWorkoutsBD");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+            // Do not close Firestore here. The connection is a singleton managed by ConectorFirebase
+            // and should be closed once at application shutdown (see Main). Closing here causes
+            // the repeated "Firestore cerrado" messages and reinitialization overhead.
         }
 
         return works;
@@ -127,14 +122,8 @@ public class GestorWorkout {
             }
 
         } finally {
-            if (db != null) {
-                try {
-                    db.close();
-                    System.out.println("Firestore cerrado en leerWorkoutsBDBackups");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+            // Do not close Firestore here. The connection is a singleton managed by ConectorFirebase
+            // and should be closed once at application shutdown (see Main).
         }
 
         return works;
@@ -171,14 +160,8 @@ public class GestorWorkout {
             }
 
         } finally {
-            if (db != null) {
-                try {
-                    db.close();
-                    System.out.println("Firestore cerrado en cargarDatos para " + email);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+            // Do not close Firestore here. The connection is a singleton managed by ConectorFirebase
+            // and should be closed once at application shutdown (see Main).
         }
 
         return lista;

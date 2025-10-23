@@ -4,11 +4,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-import modelo.Backups;
 //import modelo.GestorBackup;
 import modelo.GestorWorkout;
 import modelo.HistoricoWorkouts;
 import modelo.Usuarios;
+import modelo.GestorBackup;
 import modelo.GestorUsuarios;
 import modelo.Workout;
 
@@ -16,7 +16,7 @@ public class Controlador {
 
 	private GestorUsuarios gestor = new GestorUsuarios();
 	private GestorWorkout gestor2 = new GestorWorkout();
-//	private GestorBackup gestor3 = new GestorBackup();
+	private GestorBackup gestor3 = new GestorBackup();
 
 	public Usuarios obtenerUsuario(String nombre, String contraseña)
 			throws InterruptedException, ExecutionException, IOException {
@@ -47,6 +47,9 @@ public class Controlador {
 			throws IOException, InterruptedException, ExecutionException {
 		return gestor2.cargarDatos(email);
 
+	}
+	public void llamarBackup() {
+		gestor3.llamarBackup();
 	}
 
 //	public boolean comprobarConexion() throws IOException {

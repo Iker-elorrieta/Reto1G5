@@ -23,7 +23,7 @@ public class Main {
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 if (db != null) {
                     try {
-                        db.close(); // 
+                        ConectorFirebase.cerrar(db);
                         System.out.println("Firestore cerrado correctamente.");
                     } catch (Exception e) {
                         e.printStackTrace();

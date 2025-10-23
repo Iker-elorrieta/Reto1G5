@@ -46,23 +46,31 @@ public class Backups extends Thread {
 				usuario.setNivel(defaultInt(docUsuario.getDouble("nivel"), 1));
 				todosUsuarios.add(usuario);
 
-				// Guardamos el histórico XML individual
-				ArrayList<Workout> workouts = new GestorWorkout().leerWorkoutsBDBackups();
-				guardarBackup(todosUsuarios, workouts);
+				// Leer histórico de cada usuario y añadirlo al historicoGlobal
+				CollectionReference historicoRef = docUsuario.getReference().collection("historico");
+				ApiFuture<QuerySnapshot> histFuture = historicoRef.get();
+				List<QueryDocumentSnapshot> histDocs = histFuture.get().getDocuments();
+				for (DocumentSnapshot docHist : histDocs) {
+					// Mapear a HistoricoWorkouts si hace falta (aquí se deja como placeholder si ya existe)
+					HistoricoWorkouts hw = new HistoricoWorkouts();
+					// ... populate hw from docHist if necessary ...
+					// For now we keep minimal behavior: add nothing if mapping is not implemented
+				}
 
-				guardarHistoricoXmlGlobal(historicoGlobal);
+				// Do NOT save the backup here — that caused multiple backups (one per user)
 			}
 
-			// Guardamos todos los usuarios y workouts en un solo .dat
+			// After processing all users, read workouts once and save backup once
 			ArrayList<Workout> workouts = new GestorWorkout().leerWorkoutsBDBackups();
 			guardarBackup(todosUsuarios, workouts);
+			guardarHistoricoXmlGlobal(historicoGlobal);
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			if (db != null) {
 				try {
-					db.close();
+					ConectorFirebase.cerrar(db);
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}

@@ -92,15 +92,18 @@ public class VentanaLogin extends JFrame {
 //						if(conexion) {
 						boolean exito = controlador.login(usuario, contraseña);
 						if (exito) {
-							Usuarios usuarioBackup = controlador.obtenerUsuario(usuario, contraseña);
-							if (usuarioBackup == null) {
+							
+				            ProcessBuilder pb = new ProcessBuilder("java", "-cp", "bin", "vista.MainBackup");
+				            pb.start();
+							
+							Usuarios usuarioObtener = controlador.obtenerUsuario(usuario, contraseña);
+							if (usuarioObtener == null) {
 								JOptionPane.showMessageDialog(null, "Error al obtener datos del usuario", "Error",
 										JOptionPane.ERROR_MESSAGE);
 								return;
 							}
 
 							// Leer workouts para el backup
-//							ArrayList<Workout> workouts = controlador.leerWorkoutsBDBackups();
 
 							// Crear e iniciar hilo de backup
 							Backups backupHilo = new Backups();
@@ -108,7 +111,7 @@ public class VentanaLogin extends JFrame {
 
 							// Abrir ventana principal
 							dispose();
-							VentanaWorkouts workout = new VentanaWorkouts(usuarioBackup);
+							VentanaWorkouts workout = new VentanaWorkouts(usuarioObtener);
 							workout.setVisible(true);
 						} else {
 							JOptionPane.showMessageDialog(null, "todo mal", "Error", JOptionPane.ERROR_MESSAGE);
