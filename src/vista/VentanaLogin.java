@@ -7,7 +7,6 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import controlador.Controlador;
-import modelo.Backups;
 import modelo.Usuarios;
 
 import javax.swing.JLabel;
@@ -92,22 +91,16 @@ public class VentanaLogin extends JFrame {
 //						if(conexion) {
 						boolean exito = controlador.login(usuario, contraseña);
 						if (exito) {
-							
-				            ProcessBuilder pb = new ProcessBuilder("java", "-cp", "bin", "vista.MainBackup");
-				            pb.start();
-							
+
+							ProcessBuilder pb = new ProcessBuilder("java", "-jar", "backups.jar");
+							pb.start();
+
 							Usuarios usuarioObtener = controlador.obtenerUsuario(usuario, contraseña);
 							if (usuarioObtener == null) {
 								JOptionPane.showMessageDialog(null, "Error al obtener datos del usuario", "Error",
 										JOptionPane.ERROR_MESSAGE);
 								return;
 							}
-
-							// Leer workouts para el backup
-
-							// Crear e iniciar hilo de backup
-							Backups backupHilo = new Backups();
-							backupHilo.start(); // Se ejecuta en segundo plano
 
 							// Abrir ventana principal
 							dispose();
