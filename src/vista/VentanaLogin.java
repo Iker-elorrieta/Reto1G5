@@ -115,7 +115,7 @@ public class VentanaLogin extends JFrame {
 							VentanaWorkouts workout = new VentanaWorkouts(usuarioObtener);
 							workout.setVisible(true);
 						} else {
-							JOptionPane.showMessageDialog(null, "todo mal", "Error", JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(null, "Usuario y/o contraseña incorrectos", "Error", JOptionPane.ERROR_MESSAGE);
 						}
 //						}else {
 //							System.out.println("no hay conexion");

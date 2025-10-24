@@ -51,6 +51,10 @@ public class Controlador {
 	public void llamarBackup() {
 		gestor3.llamarBackup();
 	}
+	public boolean existeUsuario(String nombre, String email)
+			throws InterruptedException, ExecutionException, IOException {
+		return gestor.existeUsuario(nombre, email);
+	}
 
 //	public boolean comprobarConexion() throws IOException {
 //		return gestor3.comprobarConexion();

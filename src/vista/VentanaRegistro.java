@@ -109,6 +109,9 @@ public class VentanaRegistro extends JFrame {
 					} else if (!esFechaValida(txtFecNac.getText())) {
 						JOptionPane.showMessageDialog(null, "Formato de fecha incorrecto. Usa dd/MM/yyyy", "Error",
 								JOptionPane.ERROR_MESSAGE);
+					}else if(controlador.existeUsuario(txtEmail.getText(), txtNombre.getText())) {
+						JOptionPane.showMessageDialog(null, "El email ya está registrado", "Error",
+								JOptionPane.ERROR_MESSAGE);
 					}
 
 					else {
