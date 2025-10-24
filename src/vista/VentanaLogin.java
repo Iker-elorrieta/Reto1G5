@@ -1,5 +1,6 @@
 package vista;
 
+import java.awt.Color;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -12,6 +13,8 @@ import modelo.Usuarios;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -19,6 +22,7 @@ import java.util.concurrent.ExecutionException;
 import java.awt.event.ActionEvent;
 import javax.swing.JPasswordField;
 import java.awt.Font;
+import java.awt.Image;
 
 public class VentanaLogin extends JFrame {
 
@@ -57,26 +61,30 @@ public class VentanaLogin extends JFrame {
 		contentPane.setLayout(null);
 
 		JLabel lblUsuario = new JLabel("Usuario:");
-		lblUsuario.setFont(new Font("Segoe UI", Font.PLAIN, 30));
-		lblUsuario.setBounds(127, 101, 148, 36);
+		lblUsuario.setFont(new Font("Tahoma", Font.BOLD, 25));
+		lblUsuario.setBounds(246, 102, 148, 36);
 		contentPane.add(lblUsuario);
 
 		JLabel lblContraseña = new JLabel("Contraseña:");
-		lblContraseña.setFont(new Font("Segoe UI", Font.PLAIN, 30));
-		lblContraseña.setBounds(127, 173, 188, 36);
+		lblContraseña.setFont(new Font("Tahoma", Font.BOLD, 25));
+		lblContraseña.setBounds(246, 173, 188, 36);
 		contentPane.add(lblContraseña);
 
 		txtUsuario = new JTextField();
 		txtUsuario.setToolTipText("");
-		txtUsuario.setBounds(331, 101, 199, 37);
+		txtUsuario.setBounds(464, 101, 199, 37);
 		contentPane.add(txtUsuario);
 		txtUsuario.setColumns(10);
 
 		passwordField = new JPasswordField();
-		passwordField.setBounds(331, 173, 199, 37);
+		passwordField.setBounds(464, 172, 199, 37);
 		contentPane.add(passwordField);
 
 		JButton btnLogin = new JButton("Login");
+		btnLogin.setBackground(Color.RED);
+		btnLogin.setForeground(Color.WHITE);
+		btnLogin.setFont(new Font("Segoe UI", Font.BOLD, 16));
+		btnLogin.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
@@ -121,7 +129,7 @@ public class VentanaLogin extends JFrame {
 
 			}
 		});
-		btnLogin.setBounds(127, 299, 199, 52);
+		btnLogin.setBounds(207, 299, 199, 52);
 		contentPane.add(btnLogin);
 
 		JButton btnRegistro = new JButton("Registrarse");
@@ -132,8 +140,24 @@ public class VentanaLogin extends JFrame {
 				registro.setVisible(true);
 			}
 		});
-		btnRegistro.setBounds(371, 299, 199, 52);
+		btnRegistro.setBounds(440, 299, 199, 52);
+		btnRegistro.setBackground(Color.RED);
+		btnRegistro.setForeground(Color.WHITE);
+		btnRegistro.setFont(new Font("Segoe UI", Font.BOLD, 16));
+		btnRegistro.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		contentPane.add(btnRegistro);
+		
+
+		JLabel lblIMG = new JLabel("");
+		lblIMG.setBounds(10, 11, 219, 218);
+		ImageIcon icono = new ImageIcon("iconoSF.png" );
+		if (icono.getImage() != null) { // verificamos que no sea null
+		    Image imagen = icono.getImage().getScaledInstance(lblIMG.getWidth(), lblIMG.getHeight(), Image.SCALE_SMOOTH);
+		    lblIMG.setIcon(new ImageIcon(imagen));
+		} else {
+		    System.out.println("Imagen no encontrada");
+		}
+		contentPane.add(lblIMG);
 
 	}
 

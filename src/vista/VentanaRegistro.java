@@ -1,6 +1,9 @@
 package vista;
 
+import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.Image;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -11,6 +14,8 @@ import modelo.Usuarios;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import java.awt.event.ActionListener;
@@ -59,29 +64,38 @@ public class VentanaRegistro extends JFrame {
 	public VentanaRegistro() {
 		controlador = new Controlador();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 852, 597);
+		setBounds(100, 100, 629, 497);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
 		lblNombre = new JLabel("Nombre");
-		lblNombre.setBounds(89, 131, 98, 14);
+		lblNombre.setBounds(230, 134, 68, 14);
+		lblNombre.setFont(new Font("Tahoma", Font.BOLD, 12));
 		contentPane.add(lblNombre);
 
 		lblApellido = new JLabel("Apellido");
-		lblApellido.setBounds(394, 131, 182, 14);
+		lblApellido.setBounds(441, 134, 182, 14);
+		lblApellido.setFont(new Font("Tahoma", Font.BOLD, 12));
 		contentPane.add(lblApellido);
 
 		lblEmail = new JLabel("Email");
-		lblEmail.setBounds(89, 200, 113, 14);
+		lblEmail.setBounds(230, 200, 86, 14);
+		lblEmail.setFont(new Font("Tahoma", Font.BOLD, 12));
 		contentPane.add(lblEmail);
 
 		lblFecNac = new JLabel("FecNac");
-		lblFecNac.setBounds(394, 200, 142, 14);
+		lblFecNac.setBounds(441, 200, 142, 14);
+		lblFecNac.setFont(new Font("Tahoma", Font.BOLD, 12));
 		contentPane.add(lblFecNac);
 
 		btnRegistro = new JButton("Registro");
+		btnRegistro.setBounds(167, 405, 131, 35);
+		btnRegistro.setBackground(Color.RED);
+		btnRegistro.setForeground(Color.WHITE);
+		btnRegistro.setFont(new Font("Segoe UI", Font.BOLD, 16));
+		btnRegistro.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		btnRegistro.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
@@ -109,38 +123,47 @@ public class VentanaRegistro extends JFrame {
 
 			}
 		});
-		btnRegistro.setBounds(286, 415, 89, 23);
+		
+		
+		
+		btnRegistro.setBounds(167, 417, 89, 23);
 		contentPane.add(btnRegistro);
 
 		txtNombre = new JTextField();
-		txtNombre.setBounds(157, 131, 86, 20);
+		txtNombre.setBounds(302, 131, 86, 20);
 		contentPane.add(txtNombre);
 		txtNombre.setColumns(10);
 
 		txtEmail = new JTextField();
 		txtEmail.setColumns(10);
-		txtEmail.setBounds(157, 197, 86, 20);
+		txtEmail.setBounds(302, 197, 86, 20);
 		contentPane.add(txtEmail);
 
 		txtApellido = new JTextField();
 		txtApellido.setColumns(10);
-		txtApellido.setBounds(467, 128, 86, 20);
+		txtApellido.setBounds(525, 131, 86, 20);
 		contentPane.add(txtApellido);
 
 		txtFecNac = new JTextField();
 		txtFecNac.setColumns(10);
-		txtFecNac.setBounds(467, 197, 86, 20);
+		txtFecNac.setBounds(525, 197, 86, 20);
 		contentPane.add(txtFecNac);
 
 		txtContra = new JPasswordField();
-		txtContra.setBounds(296, 304, 153, 20);
+		txtContra.setBounds(319, 326, 153, 20);
 		contentPane.add(txtContra);
 
 		lblContra = new JLabel("Contraseña");
-		lblContra.setBounds(207, 307, 79, 14);
+		lblContra.setBounds(230, 329, 79, 14);
+		lblContra.setFont(new Font("Tahoma", Font.BOLD, 12));
 		contentPane.add(lblContra);
 		
 		JButton btnVolver = new JButton("Volver");
+		btnVolver.setBounds(415, 406, 123, 34);
+		btnVolver.setBackground(Color.RED);
+		btnVolver.setForeground(Color.WHITE);
+		btnVolver.setFont(new Font("Segoe UI", Font.BOLD, 16));
+		btnVolver.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		btnVolver.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
@@ -149,8 +172,20 @@ public class VentanaRegistro extends JFrame {
 				
 			}
 		});
-		btnVolver.setBounds(475, 417, 89, 23);
+		btnVolver.setBounds(415, 417, 89, 23);
 		contentPane.add(btnVolver);
+		
+		JLabel lblImagen = new JLabel("");
+		lblImagen.setBounds(0, 50, 219, 218);
+		ImageIcon icono = new ImageIcon("iconoSF.png" );
+		if (icono.getImage() != null) { // verificamos que no sea null
+		    Image imagen = icono.getImage().getScaledInstance(lblImagen.getWidth(), lblImagen.getHeight(), Image.SCALE_SMOOTH);
+		    lblImagen.setIcon(new ImageIcon(imagen));
+		} else {
+		    System.out.println("Imagen no encontrada");
+		}
+		contentPane.add(lblImagen);
+		
 
 	}
 
