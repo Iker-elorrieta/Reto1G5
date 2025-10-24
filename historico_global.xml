@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <Historico>
-    <Workout fecha="2025-10-24" historicoId="1" nivel="1" nombre="WorkoutDesconocido" porcentajeCompletado="100.0" tiempoTotal="1000" usuarioId="1"/>
-    <Workout fecha="2025-10-24" historicoId="2" nivel="1" nombre="WorkoutDesconocido" porcentajeCompletado="100.0" tiempoTotal="200" usuarioId="1"/>
-    <Workout fecha="2025-10-24" historicoId="FF" nivel="1" nombre="WorkoutDesconocido" porcentajeCompletado="99.0" tiempoTotal="3333" usuarioId="2"/>
-    <Workout fecha="2025-10-24" historicoId="yH1V0OhGjXNZahGwKoXi" nivel="1" nombre="WorkoutDesconocido" porcentajeCompletado="100.0" tiempoTotal="1000" usuarioId="2"/>
-    <Workout fecha="2025-10-24" historicoId="QGMuoUjNjP7mtIVjuhzM" nivel="1" nombre="WorkoutDesconocido" porcentajeCompletado="101.0" tiempoTotal="1001" usuarioId="ESWSAQW"/>
+    <Workouts fecha="2025-10-24" historicoId="1" nivel="1" nombre="WorkoutDesconocido" porcentajeCompletado="100.0" tiempoTotal="1000" usuarioId="1"/>
+    <Workouts fecha="2025-10-24" historicoId="2" nivel="1" nombre="WorkoutDesconocido" porcentajeCompletado="100.0" tiempoTotal="200" usuarioId="1"/>
+    <Workouts fecha="2025-10-24" historicoId="FF" nivel="1" nombre="WorkoutDesconocido" porcentajeCompletado="99.0" tiempoTotal="3333" usuarioId="2"/>
+    <Workouts fecha="2025-10-24" historicoId="yH1V0OhGjXNZahGwKoXi" nivel="1" nombre="WorkoutDesconocido" porcentajeCompletado="100.0" tiempoTotal="1000" usuarioId="2"/>
+    <Workouts fecha="2025-10-24" historicoId="QGMuoUjNjP7mtIVjuhzM" nivel="1" nombre="WorkoutDesconocido" porcentajeCompletado="101.0" tiempoTotal="1001" usuarioId="ESWSAQW"/>
 </Historico>

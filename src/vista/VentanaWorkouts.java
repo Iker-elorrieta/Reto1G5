@@ -66,6 +66,7 @@ public class VentanaWorkouts extends JFrame {
 		btnHistorico.setBounds(750, 80, 140, 25);
 		contentPane.add(btnHistorico);
 		btnHistorico.addActionListener(e -> {
+			dispose();
 			VentanaHistoricoWK historicoWK = new VentanaHistoricoWK(usuarioActual);
 			historicoWK.setVisible(true);
 		});

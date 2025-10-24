@@ -11,6 +11,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.*;
 
 import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.*;
 
 public class backup extends Thread {
@@ -41,6 +42,8 @@ public class backup extends Thread {
 			List<Map<String, Object>> usuariosList = new ArrayList<>();
 			List<Map<String, Object>> workoutsList = new ArrayList<>();
 			List<Map<String, Object>> historicoGlobal = new ArrayList<>();
+			List<Map<String, Object>> EjerciciosList = new ArrayList<>();
+			List<Map<String, Object>> SeriesList = new ArrayList<>();
 
 			// --- Procesar usuarios ---
 			for (DocumentSnapshot docUsuario : usuariosDocs) {
@@ -53,7 +56,7 @@ public class backup extends Thread {
 				usuarioData.put("nivel", docUsuario.getDouble("nivel"));
 				usuarioData.put("FecNac", docUsuario.getDate("FecNac"));
 				usuariosList.add(usuarioData);
-				System.out.println("Usuario añadido: " + docUsuario.getDate("FecNac"));
+				System.out.println("Usuario añadido: " + docUsuario.getId());
 
 				// --- 3️ Leer subcolección historico de cada usuario ---
 				CollectionReference historicoRef = docUsuario.getReference().collection("Historico");
@@ -67,7 +70,8 @@ public class backup extends Thread {
 					h.put("historicoId", docHistorico.getId());
 					h.put("Porcentaje", docHistorico.getDouble("Porcentaje"));
 					h.put("fecha", docHistorico.getDate("fecha"));
-					h.put("idWorkout", docHistorico.get("idWorkout"));
+					DocumentReference refid = (DocumentReference) h.get("idWorkout");
+					h.put("idWorkout", refid);
 					h.put("tiempoTotal", docHistorico.getDouble("tiempoTotal"));
 					historicoGlobal.add(h);
 					System.out.println("Registro de historico añadido: " + docHistorico.getId());
@@ -84,10 +88,46 @@ public class backup extends Thread {
 				data.put("video", doc.getString("video"));
 				workoutsList.add(data);
 				System.out.println("Workout añadido: " + doc.getId());
+
+				CollectionReference EjerciciosRef = doc.getReference().collection("Ejercicios");
+				List<QueryDocumentSnapshot> EjerciciosDocs = EjerciciosRef.get().get().getDocuments();
+				System.out.println("Ejercicios encontrado para workout " + doc.getId() + ": " + EjerciciosDocs.size());
+
+				for (DocumentSnapshot docEjercicio : EjerciciosDocs) {
+					Map<String, Object> h2 = new HashMap<>(docEjercicio.getData());
+					h2.put("WorkoutdId", doc.getId());
+					h2.put("EjerciciosId", docEjercicio.getId());
+					h2.put("Nombre", docEjercicio.getString("Nombre"));
+					h2.put("Descripcion", docEjercicio.getString("Descripcion"));
+					h2.put("Nivel", docEjercicio.getDouble("Nivel"));
+					DocumentReference refid = (DocumentReference) h2.get("Workout");
+					h2.put("Workout", refid);
+					h2.put("img", docEjercicio.getString("img"));
+					h2.put("tiempoDescanso", docEjercicio.getDouble("tiempoDescanso"));
+					EjerciciosList.add(h2);
+					System.out.println("Registro de Ejercicio añadido: " + docEjercicio.getId());
+
+					CollectionReference SeriesRef = doc.getReference().collection("Series");
+					List<QueryDocumentSnapshot> SeriesDocs = SeriesRef.get().get().getDocuments();
+					System.out.println(
+							"Serie encontrado para Ejercicio " + docEjercicio.getId() + ": " + SeriesDocs.size());
+
+					for (DocumentSnapshot docSerie : SeriesDocs) {
+						Map<String, Object> h3 = new HashMap<>(docSerie.getData());
+						h3.put("SerieId", docSerie.getId());
+						h3.put("EjerciciosId", docEjercicio.getId());
+						h3.put("Nombre", docSerie.getString("Nombre"));
+						h3.put("duracion", docSerie.getDouble("duracion"));
+						h3.put("repeticiones", docSerie.getDouble("repeticiones"));
+
+						SeriesList.add(h3);
+						System.out.println("Registro de Ejercicio añadido: " + docEjercicio.getId());
+					}
+				}
 			}
 
 			// --- Guardar .dat y XML ---
-			guardarBackupDat(usuariosList, workoutsList);
+			guardarBackupDat(usuariosList, workoutsList, EjerciciosList, SeriesList);
 			guardarHistoricoXmlGlobal(historicoGlobal, db);
 
 		} catch (Exception e) {
@@ -119,24 +159,26 @@ public class backup extends Thread {
 	}
 
 	// --- GUARDAR BACKUP .DAT ---
-	private void guardarBackupDat(List<Map<String, Object>> usuarios, List<Map<String, Object>> workouts) {
+	private void guardarBackupDat(List<Map<String, Object>> usuarios, List<Map<String, Object>> workouts,
+			List<Map<String, Object>> ejercicios, List<Map<String, Object>> series) {
 		try (DataOutputStream out = new DataOutputStream(new FileOutputStream("backup_global.dat"))) {
-			out.writeInt(usuarios.size());
 
+// --- Usuarios ---
+			out.writeInt(usuarios.size());
 			for (Map<String, Object> u : usuarios) {
 				out.writeUTF(defaultString((String) u.get("Nombre"), "Desconocido"));
 				out.writeUTF(defaultString((String) u.get("Apellido"), "Desconocido"));
 				Date fecha = (Date) u.get("FecNac");
-				if (fecha != null) {
+				if (fecha != null)
 					out.writeUTF(fecha.toString());
-				} else {
+				else
 					out.writeUTF("Desconocida");
-				}
 				out.writeUTF(defaultString((String) u.get("Email"), "email@desconocido.com"));
 				out.writeUTF(defaultString((String) u.get("Contraseña"), "1234"));
 				out.writeInt(defaultInt(u.get("nivel"), 1));
 			}
 
+// --- Workouts ---
 			out.writeInt(workouts.size());
 			for (Map<String, Object> w : workouts) {
 				out.writeUTF(defaultString((String) w.get("nombre"), "WorkoutDesconocido"));
@@ -146,7 +188,28 @@ public class backup extends Thread {
 				out.writeUTF(defaultString((String) w.get("usuarioId"), "sinUsuario"));
 			}
 
-			System.out.println("Backup global (.dat) guardado correctamente.");
+// --- Ejercicios ---
+			out.writeInt(ejercicios.size());
+			for (Map<String, Object> e : ejercicios) {
+				out.writeUTF(defaultString((String) e.get("Nombre"), "EjercicioDesconocido"));
+				out.writeUTF(defaultString((String) e.get("Descripcion"), ""));
+				out.writeUTF(defaultString((String) e.get("WorkoutdId"), "sinWorkout"));
+				out.writeUTF(defaultString((String) e.get("img"), ""));
+				out.writeInt(defaultInt(e.get("Nivel"), 1));
+				out.writeInt(defaultInt(e.get("tiempoDescanso"), 0));
+			}
+
+// --- Series ---
+			out.writeInt(series.size());
+			for (Map<String, Object> s : series) {
+				out.writeUTF(defaultString((String) s.get("Nombre"), "SerieDesconocida"));
+				out.writeUTF(defaultString((String) s.get("EjerciciosId"), "sinEjercicio"));
+				out.writeInt(defaultInt(s.get("duracion"), 0));
+				out.writeInt(defaultInt(s.get("repeticiones"), 0));
+			}
+
+			System.out.println(
+					"Backup global (.dat) con usuarios, workouts, ejercicios y series guardado correctamente.");
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -172,7 +235,7 @@ public class backup extends Thread {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
 			for (Map<String, Object> h : historico) {
-				Element workoutElem = doc.createElement("Workout");
+				Element workoutElem = doc.createElement("Workouts");
 
 				// Datos del usuario y del histórico
 				workoutElem.setAttribute("usuarioId", defaultString((String) h.get("usuarioId"), "desconocido"));
@@ -181,8 +244,8 @@ public class backup extends Thread {
 				// Fecha del histórico
 				Object fechaObj = h.get("fecha");
 				Date fecha = new Date();
-				if (fechaObj instanceof com.google.cloud.Timestamp) {
-					fecha = ((com.google.cloud.Timestamp) fechaObj).toDate();
+				if (fechaObj instanceof Timestamp) {
+					fecha = ((Timestamp) fechaObj).toDate();
 				}
 				workoutElem.setAttribute("fecha", sdf.format(fecha));
 
