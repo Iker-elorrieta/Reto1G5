@@ -268,11 +268,9 @@ public class backup extends Thread {
 				}
 
 				if (workoutDoc != null) {
-					workoutElem.setAttribute("nombre",
-							defaultString(workoutDoc.getString("nombre"), "WorkoutDesconocido"));
+					
 					workoutElem.setAttribute("nivel", String.valueOf(defaultInt(workoutDoc.getLong("nivel"), 1)));
 				} else {
-					workoutElem.setAttribute("nombre", "WorkoutDesconocido");
 					workoutElem.setAttribute("nivel", "1");
 				}
 
