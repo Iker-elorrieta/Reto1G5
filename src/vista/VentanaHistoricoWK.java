@@ -12,6 +12,8 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class VentanaHistoricoWK extends JFrame {
 
@@ -35,7 +37,14 @@ public class VentanaHistoricoWK extends JFrame {
         });
 
         JButton btnAtras = new JButton("Ir atrás");
-        btnAtras.addActionListener(e -> this.dispose()); 
+        btnAtras.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		dispose();
+        		VentanaWorkouts wk = new VentanaWorkouts(usuario);
+        		wk.setVisible(true);
+        		
+        	}
+        });
 
         JPanel panelBotones = new JPanel();
         panelBotones.setLayout(new FlowLayout(FlowLayout.LEFT));
