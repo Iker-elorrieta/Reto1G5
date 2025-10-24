@@ -43,9 +43,9 @@ public class Controlador {
 		return gestor2.leerWorkoutsBDBackups();
 	}
 
-	public ArrayList<HistoricoWorkouts> cargarDatos(String email)
+	public ArrayList<HistoricoWorkouts> cargarDatos(Usuarios usu)
 			throws IOException, InterruptedException, ExecutionException {
-		return gestor2.cargarDatos(email);
+		return gestor2.cargarDatos(usu);
 
 	}
 	public void llamarBackup() {

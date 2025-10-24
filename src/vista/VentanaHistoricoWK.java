@@ -1,8 +1,11 @@
 package vista;
 
 
+
 import controlador.Controlador;
+import modelo.HistoricoWorkouts;
 import modelo.Usuarios;
+
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -12,13 +15,10 @@ import java.util.concurrent.ExecutionException;
 
 public class VentanaHistoricoWK extends JFrame {
 
-    /**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private JTable table;
     private DefaultTableModel tableModel;
-    private Usuarios usu; // ID del usuario logeado
+    private Usuarios usu;
     private Controlador controlador;
 
     public VentanaHistoricoWK(Usuarios usuario) {
@@ -29,15 +29,13 @@ public class VentanaHistoricoWK extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // --- Tabla ---
         tableModel = new DefaultTableModel();
         tableModel.setColumnIdentifiers(new String[]{
                 "Nombre Workout", "Nivel", "Tiempo Total", "Tiempo Previsto", "Fecha", "% Completado"
         });
 
-        // --- Panel inferior con botón "Ir atrás" ---
         JButton btnAtras = new JButton("Ir atrás");
-        btnAtras.addActionListener(e -> this.dispose()); // cierra la ventana actual
+        btnAtras.addActionListener(e -> this.dispose()); 
 
         JPanel panelBotones = new JPanel();
         panelBotones.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -50,17 +48,31 @@ public class VentanaHistoricoWK extends JFrame {
         getContentPane().add(scrollPane, BorderLayout.CENTER);
 
         
-        // --- Cargar datos ---
-        try {
-			controlador.cargarDatos(usu.getEmail());
-		} catch (IOException | InterruptedException | ExecutionException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+        cargarDatosTabla();
         repaint();
         
         setVisible(true);
     }
+    private void cargarDatosTabla() {
+        try {
+            for (HistoricoWorkouts hw : controlador.cargarDatos(usu)) {
+                String nombre = (hw.getNombreWorkout() != null) ? hw.getNombreWorkout() : "";
+                int nivel = (hw.getWorkout() != null) ? hw.getWorkout().getNivel() : 0;
+                int tiempoTotal = hw.getTiempoTotal();
+                int tiempoPrevisto = hw.getTiempoPrevisto();
+                String fechaStr = (hw.getFecha() != null) ? hw.getFecha().toString() : "";
+                String porcentaje = hw.getPorcentajeCompletado() + "%";
 
- 
-}
+                tableModel.addRow(new Object[]{nombre, nivel, tiempoTotal, tiempoPrevisto, fechaStr, porcentaje});
+            }
+        } catch (IOException | InterruptedException | ExecutionException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                    "Error al cargar los históricos: " + ex.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    }
+
+    

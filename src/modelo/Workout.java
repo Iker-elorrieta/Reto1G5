@@ -3,6 +3,7 @@ package modelo;
 import java.util.ArrayList;
 
 public class Workout {
+	private String id;
 	private String nombre;
 	private String video;
 	private int nivel;
@@ -59,6 +60,12 @@ public class Workout {
 	}
 	public void setEjercicios(ArrayList<Ejercicios> ejercicios) {
 		this.ejercicios = ejercicios;
+	}
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
 	}
 	
 	

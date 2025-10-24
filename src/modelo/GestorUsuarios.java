@@ -55,20 +55,25 @@ public class GestorUsuarios {
 
 	public void registrarUsuario(Usuarios usuario) throws IOException, InterruptedException, ExecutionException {
 
-		Firestore db = ConectorFirebase.conectar();
-		CollectionReference usuarios = db.collection("usuarios");
+	    if (existeUsuario(usuario.getNombre(), usuario.getEmail())) {
+	        throw new IllegalArgumentException("Ya existe un usuario con ese nombre o email.");
+	    }
 
-		Map<String, Object> datos = new HashMap<>();
-		datos.put("Nombre", usuario.getNombre());
-		datos.put("Apellido", usuario.getApellido());
-		datos.put("Email", usuario.getEmail());
-		datos.put("Contraseña", usuario.getContraseña());
-		datos.put("FecNac", usuario.getFecNac());
+	    Firestore db = ConectorFirebase.conectar();
+	    CollectionReference usuarios = db.collection("usuarios");
 
-		DocumentReference docRef = usuarios.document("2"); // Generamos un ID automatico, aunque si os parece lo podemos
-															// hacer con el email para no generar numeros random
-		docRef.set(datos);
+	    Map<String, Object> datos = new HashMap<>();
+	    datos.put("Nombre", usuario.getNombre());
+	    datos.put("Apellido", usuario.getApellido());
+	    datos.put("Email", usuario.getEmail());
+	    datos.put("Contraseña", usuario.getContraseña());
+	    datos.put("FecNac", usuario.getFecNac());
+
+	    // Usar ID automático de Firestore
+	    DocumentReference docRef = usuarios.document(); 
+	    docRef.set(datos);
 	}
+
 
 	public boolean login(String usuario, String contraseña)
 			throws IOException, InterruptedException, ExecutionException {
@@ -94,6 +99,8 @@ public class GestorUsuarios {
 
 	    Usuarios u = new Usuarios();
 
+	    u.setIdUsuario(doc.getId());
+	    
 	    
 	    if (doc.getString("Nombre") != null) {
 	        u.setNombre(doc.getString("Nombre"));
@@ -138,6 +145,19 @@ public class GestorUsuarios {
 
 	    return u;
 	}
+	
+	
+	public boolean existeUsuario(String nombre, String email) throws InterruptedException, ExecutionException, IOException {
+	    Firestore db = ConectorFirebase.conectar();
+	    CollectionReference usuariosCol = db.collection("usuarios");
+
+	    // Buscamos por nombre o email
+	    QuerySnapshot queryNombre = usuariosCol.whereEqualTo("Nombre", nombre).get().get();
+	    QuerySnapshot queryEmail = usuariosCol.whereEqualTo("Email", email).get().get();
+
+	    return (!queryNombre.isEmpty() || !queryEmail.isEmpty());
+	}
+
 
 
 }

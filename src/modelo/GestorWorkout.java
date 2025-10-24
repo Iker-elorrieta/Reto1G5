@@ -3,11 +3,15 @@ package modelo;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.CollectionReference;
+import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.Query;
@@ -92,6 +96,7 @@ public class GestorWorkout {
                 int nivelWorkout = work.getDouble("nivel").intValue();
 
                 Workout w = new Workout();
+                w.setId(work.getId());
                 w.setNombre(work.getString("nombre"));
                 w.setVideo(work.getString("video"));
                 w.setNivel(nivelWorkout);
@@ -130,47 +135,94 @@ public class GestorWorkout {
         return works;
     }
 
-    public ArrayList<HistoricoWorkouts> cargarDatos(String email)
+    public ArrayList<HistoricoWorkouts> cargarDatos(Usuarios usu) 
             throws IOException, InterruptedException, ExecutionException {
 
         ArrayList<HistoricoWorkouts> lista = new ArrayList<>();
-        if (email == null || email.isEmpty()) {
-            System.err.println("Error: email vacío o nulo");
+        if (usu == null || usu.getIdUsuario() == null || usu.getIdUsuario().isEmpty()) {
+            System.err.println("Error: usuario o idUsuario vacío");
             return lista;
         }
 
-        Firestore db = null;
-        try {
-            db = ConectorFirebase.conectar();
-            CollectionReference historicoRef = db.collection("usuarios").document(email).collection("Historico");
+        Firestore db = ConectorFirebase.conectar();
 
-            ApiFuture<QuerySnapshot> query = historicoRef.orderBy("fecha", Query.Direction.DESCENDING).get();
-            QuerySnapshot snapshot = query.get();
+        // 1️⃣ Cargar todos los workouts completos
+        ArrayList<Workout> workouts = leerWorkoutsBDBackups(); // todos los workouts
+        Map<String, Workout> mapWorkouts = new HashMap<>();
+        for (Workout w : workouts) {
+            mapWorkouts.put(w.getId(), w); // usar ID para búsqueda rápida
+        }
 
-            System.out.println("Docs encontrados para " + email + ": " + snapshot.size());
+        // 2️⃣ Obtener el histórico del usuario
+        CollectionReference historicoRef = db.collection("usuarios")
+                                             .document(usu.getIdUsuario())
+                                             .collection("Historico");
+        ApiFuture<QuerySnapshot> query = historicoRef.orderBy("fecha", Query.Direction.DESCENDING).get();
+        QuerySnapshot snapshot = query.get();
 
-            for (DocumentSnapshot doc : snapshot.getDocuments()) {
-                HistoricoWorkouts hw = new HistoricoWorkouts(doc.getString("Nombre"), doc.getLong("Nivel").intValue(),
-                        doc.getLong("tiempoTotal").intValue(), doc.getLong("tiempoPrevisto").intValue(),
-                        doc.getDate("fecha"), (int) Math.round(doc.getDouble("Porcentaje")),
-                        doc.getString("usuario"));
-                lista.add(hw);
+        System.out.println("ID usuario: " + usu.getIdUsuario());
+        System.out.println("Históricos encontrados: " + snapshot.size());
 
-                System.out.println("Cargado: " + hw.getNombreWorkout() + " - Nivel: " + hw.getNivel() + " - Porcentaje: "
-                        + hw.getPorcentajeCompletado() + "%");
+        //HACEMOS COMPROBACIONES PARA VER SI COGE EL HISTORICO Y EL WORKOUT CORRECTAMENTE
+        for (DocumentSnapshot doc : snapshot.getDocuments()) {
+            System.out.println("DocID historico: " + doc.getId() + " | idWorkout: " + doc.get("idWorkout"));
+
+            Workout workout = null;
+
+            Object campo = doc.get("idWorkout");
+            if (campo != null) {
+                // Si es DocumentReference
+                if (campo instanceof DocumentReference) {
+                    DocumentReference refWorkout = (DocumentReference) campo;
+                    workout = mapWorkouts.get(refWorkout.getId());
+                } 
+                // Si es String (ID del workout)
+                else if (campo instanceof String) {
+                    String workoutId = (String) campo;
+                    workout = mapWorkouts.get(workoutId);
+                }
             }
 
-        } finally {
-            // Do not close Firestore here. The connection is a singleton managed by ConectorFirebase
-            // and should be closed once at application shutdown (see Main).
+            if (workout == null) {
+                System.err.println("No se encontró el workout para el documento histórico: " + doc.getId());
+                continue;
+            }
+
+            // Tiempo total
+            Long tiempoLong = doc.getLong("tiempoTotal");
+            int tiempoTotal = (tiempoLong != null) ? tiempoLong.intValue() :
+                              (doc.getDouble("tiempoTotal") != null ? doc.getDouble("tiempoTotal").intValue() : 0);
+
+            // Fecha
+            Date fecha = doc.getDate("fecha");
+            if (fecha == null) fecha = new Date();
+
+            // Porcentaje completado
+            Double porcentaje = doc.getDouble("Porcentaje");
+            double porcentajeVal = (porcentaje != null) ? porcentaje : 0;
+
+            // Crear el histórico con el Workout asociado
+            HistoricoWorkouts hw = new HistoricoWorkouts(
+                    workout.getNombre(),
+                    tiempoTotal,
+                    fecha,
+                    porcentajeVal,
+                    workout
+            );
+
+            lista.add(hw);
+
         }
 
         return lista;
     }
 
-    public String formatearTiempo(int segundos) {
-        int min = segundos / 60;
-        int seg = segundos % 60;
-        return String.format("%02d:%02d", min, seg);
-    }
+
+
+
+	public String formatearTiempo(int segundos) {
+		int min = segundos / 60;
+		int seg = segundos % 60;
+		return String.format("%02d:%02d", min, seg);
+	}
 }

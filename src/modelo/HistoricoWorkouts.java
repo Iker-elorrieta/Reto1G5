@@ -5,32 +5,27 @@ import java.util.Date;
 public class HistoricoWorkouts {
 
 	 private String nombreWorkout;
-	    private int nivel;
 	    private int tiempoTotal;
 	    private int tiempoPrevisto;
 	    private Date fecha;
 	    private double porcentajeCompletado;
-	    private String usuario;
+	    private Workout workout;
 	    
 	    public HistoricoWorkouts() {
 	    	
 	    }
 	    
-	    public HistoricoWorkouts(String nombreWorkout, int nivel, int tiempoTotal, int tiempoPrevisto, Date fecha, double porcentajeCompletado, String usuario) {
+	    public HistoricoWorkouts(String nombreWorkout,  int tiempoTotal, Date fecha, double porcentajeCompletado, Workout workout) {
 	        this.nombreWorkout = nombreWorkout;
-	        this.nivel = nivel;
 	        this.tiempoTotal = tiempoTotal;
-	        this.tiempoPrevisto = tiempoPrevisto;
+	        this.tiempoPrevisto = calcularTiempoPrevisto(workout);
 	        this.fecha = fecha;
 	        this.porcentajeCompletado = porcentajeCompletado;
-	        this.usuario=usuario;
+	        this.workout = workout;
 	    }
 	    
 	    public String getNombreWorkout() {
 	        return nombreWorkout;
-	    }
-	    public int getNivel() {
-	        return nivel;
 	    }
 	    public int getTiempoTotal() {
 	        return tiempoTotal;
@@ -49,10 +44,6 @@ public class HistoricoWorkouts {
 			this.nombreWorkout = nombreWorkout;
 		}
 
-		public void setNivel(int nivel) {
-			this.nivel = nivel;
-		}
-
 		public void setTiempoTotal(int tiempoTotal) {
 			this.tiempoTotal = tiempoTotal;
 		}
@@ -68,14 +59,38 @@ public class HistoricoWorkouts {
 		public void setPorcentajeCompletado(double porcentajeCompletado) {
 			this.porcentajeCompletado = porcentajeCompletado;
 		}
-
-		public String getUsuario() {
-			return usuario;
+		
+	    public Workout getWorkout() {
+			return workout;
 		}
 
-		public void setUsuario(String usuario) {
-			this.usuario = usuario;
+		public void setWorkout(Workout workout) {
+			this.workout = workout;
+			this.tiempoPrevisto = calcularTiempoPrevisto(workout);
 		}
-	    
-	    
+		
+		private int calcularTiempoPrevisto(Workout workout) {
+			
+			int tiempoTotalPrevisto = 0;
+			
+			if(workout != null && workout.getEjercicios() != null) {
+				
+				for(Ejercicios ejercicio : workout.getEjercicios()) {
+					int descansoEjercicio = ejercicio.getTiempoDescanso();
+						if(ejercicio.getSeries() != null) {
+							for(Series serie : ejercicio.getSeries()) {
+							tiempoTotalPrevisto += serie.getDuracion(); //SON LO MISMO tiempoTotalPrevisto = tiempoTotalPrevisto + serie.getDuracion();
+							}
+						}
+							tiempoTotalPrevisto += descansoEjercicio;
+				}
+					
+			}
+					return tiempoTotalPrevisto;
+				}
+
+		
+		
+
+	
 }
