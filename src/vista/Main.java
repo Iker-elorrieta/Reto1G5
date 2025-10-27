@@ -10,7 +10,7 @@ public class Main {
 
     public static void main(String[] args) {
         try {
-            // Inicializar Firebase y guardar la conexión
+            // Inicializar Firebase y guardar la conexiónn
             db = ConectorFirebase.conectar();
 
             // Mostrar ventana de login
