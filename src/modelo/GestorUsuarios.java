@@ -24,13 +24,14 @@ public class GestorUsuarios {
 	private final String contrasena = "Contraseña";
 	private final String email = "Email";
 	private final String fecha = "FecNac";
+	private final String vacio = "";
 
 
 
-	public Usuarios obtenerUsuario(String nombreRecogido, String contraseñaRecogida)
+	public Usuarios obtenerUsuario(String nombreRecogido, String contrasenaRecogida)
 			throws InterruptedException, ExecutionException, IOException {
 
-		if (nombreRecogido == null || nombreRecogido.trim().isEmpty() || contraseñaRecogida == null || contraseñaRecogida.trim().isEmpty()) {
+		if (nombreRecogido == null || nombreRecogido.trim().isEmpty() || contrasenaRecogida == null || contrasenaRecogida.trim().isEmpty()) {
 			System.out.println("Nombre o contraseña vacíos");
 			return null;
 		}
@@ -40,7 +41,7 @@ public class GestorUsuarios {
 			db = ConectorFirebase.conectar();
 			CollectionReference usuariosCol = db.collection(coleccion);
 
-			QuerySnapshot query = usuariosCol.whereEqualTo(nombre, nombreRecogido).whereEqualTo(contrasena, contraseñaRecogida)
+			QuerySnapshot query = usuariosCol.whereEqualTo(nombre, nombreRecogido).whereEqualTo(contrasena, contrasenaRecogida)
 					.get().get();
 
 			if (query == null || query.isEmpty()) {
@@ -71,7 +72,7 @@ public class GestorUsuarios {
 		datos.put(nombre, usuario.getNombre());
 		datos.put(apellido, usuario.getApellido());
 		datos.put(email, usuario.getEmail());
-		datos.put(contrasena, usuario.getContraseña());
+		datos.put(contrasena, usuario.getContrasena());
 		datos.put(fecha, usuario.getFecNac());
 
 		// Usar ID automático de Firestore
@@ -79,12 +80,12 @@ public class GestorUsuarios {
 		docRef.set(datos);
 	}
 
-	public boolean login(String usuario, String contraseña)
+	public boolean login(String usuario, String contrasenaRecogida)
 			throws IOException, InterruptedException, ExecutionException {
 
 		Firestore db = ConectorFirebase.conectar();
 		ApiFuture<QuerySnapshot> future = db.collection(coleccion).whereEqualTo(nombre, usuario)
-				.whereEqualTo(contrasena, contraseña).get();
+				.whereEqualTo(contrasena, contrasenaRecogida).get();
 
 		List<QueryDocumentSnapshot> cliente = future.get().getDocuments();
 		if (cliente != null && !cliente.isEmpty()) {
@@ -108,13 +109,13 @@ public class GestorUsuarios {
 		if (doc.getString(nombre) != null) {
 			u.setNombre(doc.getString(nombre));
 		} else {
-			u.setNombre("");
+			u.setNombre(vacio);
 		}
 
 		if (doc.getString(contrasena) != null) {
-			u.setContraseña(doc.getString(contrasena));
+			u.setContrasena(doc.getString(contrasena));
 		} else {
-			u.setContraseña("");
+			u.setContrasena(vacio);
 		}
 
 		if (doc.getLong(nivel) != null) {
@@ -126,13 +127,13 @@ public class GestorUsuarios {
 		if (doc.getString(apellido) != null) {
 			u.setApellido(doc.getString(apellido));
 		} else {
-			u.setApellido("");
+			u.setApellido(vacio);
 		}
 
 		if (doc.getString(email) != null) {
 			u.setEmail(doc.getString(email));
 		} else {
-			u.setEmail("");
+			u.setEmail(vacio);
 		}
 
 		if (doc.getDate(fecha) != null) {

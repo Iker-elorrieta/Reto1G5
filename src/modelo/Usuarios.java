@@ -11,7 +11,7 @@ public class Usuarios {
 	private String apellido;
 	private String email;
 	private Date fecNac;
-	private String contraseña;
+	private String contrasena;
 	private int nivel;
 	private ArrayList<HistoricoWorkouts> historico = new ArrayList<>();
 
@@ -22,11 +22,11 @@ public class Usuarios {
 	// Como el usuario para cuando lo creamos todavia no existe, no se le ha
 	// asignado ningun id, asi que no se lo pasamos al constructor
 
-	public Usuarios(String nombre, String apellido, String email, String contraseña, Date fecNac, int nivel, ArrayList<HistoricoWorkouts> historico) {
+	public Usuarios(String nombre, String apellido, String email, String contrasena, Date fecNac, int nivel, ArrayList<HistoricoWorkouts> historico) {
 		this.nombre = nombre;
 		this.apellido = apellido;
 		this.email = email;
-		this.contraseña = contraseña;
+		this.contrasena = contrasena;
 		this.fecNac = fecNac;
 		this.nivel=nivel;
 		this.historico = historico;
@@ -73,12 +73,12 @@ public class Usuarios {
 		this.fecNac = fecNac;
 	}
 
-	public String getContraseña() {
-		return contraseña;
+	public String getContrasena() {
+		return contrasena;
 	}
 
-	public void setContraseña(String contraseña) {
-		this.contraseña = contraseña;
+	public void setContrasena(String contrasena) {
+		this.contrasena = contrasena;
 	}
 
 	public int getNivel() {

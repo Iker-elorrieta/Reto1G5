@@ -204,7 +204,7 @@ public class VentanaRegistro extends JFrame {
 			usuario.setApellido(txtApellido.getText());
 			usuario.setFecNac(fecha);
 			usuario.setEmail(txtEmail.getText());
-			usuario.setContraseña(new String(txtContra.getPassword()));
+			usuario.setContrasena(new String(txtContra.getPassword()));
 
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block

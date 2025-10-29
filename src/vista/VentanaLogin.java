@@ -89,21 +89,21 @@ public class VentanaLogin extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 
 				String usuario = txtUsuario.getText().trim();
-				String contraseña = new String(passwordField.getPassword());
-				if (usuario.isEmpty() || contraseña.isEmpty()) {
+				String contrasena = new String(passwordField.getPassword());
+				if (usuario.isEmpty() || contrasena.isEmpty()) {
 					JOptionPane.showMessageDialog(null, "Campos vacios", "Error", JOptionPane.ERROR_MESSAGE);
 				} else {
 					try {
 
 //						boolean conexion= controlador.comprobarConexion();
 //						if(conexion) {
-						boolean exito = controlador.login(usuario, contraseña);
+						boolean exito = controlador.login(usuario, contrasena);
 						if (exito) {
 
 							ProcessBuilder pb = new ProcessBuilder("java", "-jar", "backups.jar");
 							pb.start();
 
-							Usuarios usuarioObtener = controlador.obtenerUsuario(usuario, contraseña);
+							Usuarios usuarioObtener = controlador.obtenerUsuario(usuario, contrasena);
 							if (usuarioObtener == null) {
 								JOptionPane.showMessageDialog(null, "Error al obtener datos del usuario", "Error",
 										JOptionPane.ERROR_MESSAGE);
