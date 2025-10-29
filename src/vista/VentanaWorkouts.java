@@ -54,6 +54,36 @@ public class VentanaWorkouts extends JFrame {
 		    System.out.println("Imagen no encontrada");
 		}
 		contentPane.add(lblIMG);
+		
+		
+		JButton btnPerfil = new JButton("");
+		
+		btnPerfil.setBounds(740, 11, 150, 109);
+		ImageIcon iconoPerfil = new ImageIcon("iconoPerfil.png");
+		if (iconoPerfil.getImage() != null) { // verificamos que no sea null
+		    Image imagen = iconoPerfil.getImage().getScaledInstance(btnPerfil.getWidth(), btnPerfil.getHeight(), Image.SCALE_SMOOTH);
+		    btnPerfil.setIcon(new ImageIcon(imagen));
+		} else {
+		    System.out.println("Imagen no encontrada");
+		}
+		
+		// Quitar el fondo, el borde y hacer que parezca solo una imagen
+		btnPerfil.setBorderPainted(false);
+		btnPerfil.setFocusPainted(false);
+		btnPerfil.setContentAreaFilled(false);
+		btnPerfil.setOpaque(false);
+		
+		
+		btnPerfil.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				VentanaConfigUsuarios v1 = new VentanaConfigUsuarios(usuarioActual);
+				v1.setVisible(true);
+			}
+		});
+		
+		
+		
+		contentPane.add(btnPerfil);
 
 		// --- Título principal ---
 		JLabel lblTitulo = new JLabel("POWERHOUSE GYM");
@@ -179,6 +209,7 @@ public class VentanaWorkouts extends JFrame {
 		lblEjercicios.setForeground(new Color(200, 0, 0));
 		lblEjercicios.setBounds(640, 191, 140, 25);
 		contentPane.add(lblEjercicios);
+		
 
 		try {
 			int nivelUsuario = usuarioActual.getNivel();
