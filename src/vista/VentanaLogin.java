@@ -101,6 +101,8 @@ public class VentanaLogin extends JFrame {
 						if (exito) {
 
 							ProcessBuilder pb = new ProcessBuilder("java", "-jar", "backups.jar");
+							pb.redirectErrorStream(true);
+							pb.redirectOutput(ProcessBuilder.Redirect.INHERIT); 
 							pb.start();
 
 							Usuarios usuarioObtener = controlador.obtenerUsuario(usuario, contrasena);

@@ -26,17 +26,14 @@ public class backup extends Thread {
 					.setCredentials(GoogleCredentials.fromStream(srvcAccnt)).build();
 
 			db = opciones.getService();
-			System.out.println("Conexión establecida.");
 
 			// --- 1️ Leer colección de usuarios ---
 			CollectionReference usuariosRef = db.collection("usuarios");
 			List<QueryDocumentSnapshot> usuariosDocs = usuariosRef.get().get().getDocuments();
-			System.out.println("Usuarios encontrados: " + usuariosDocs.size());
 
 			// --- 2️ Leer colección de workouts global ---
 			CollectionReference workoutsRef = db.collection("Workouts");
 			List<QueryDocumentSnapshot> workoutsDocs = workoutsRef.get().get().getDocuments();
-			System.out.println("Workouts globales encontrados: " + workoutsDocs.size());
 
 			// Listas globales
 			List<Map<String, Object>> usuariosList = new ArrayList<>();
@@ -56,14 +53,11 @@ public class backup extends Thread {
 				usuarioData.put("nivel", docUsuario.getDouble("nivel"));
 				usuarioData.put("FecNac", docUsuario.getDate("FecNac"));
 				usuariosList.add(usuarioData);
-				System.out.println("Usuario añadido: " + docUsuario.getId());
 
 				// --- 3️ Leer subcolección historico de cada usuario ---
 				CollectionReference historicoRef = docUsuario.getReference().collection("Historico");
 				List<QueryDocumentSnapshot> historicoDocs = historicoRef.get().get().getDocuments();
-				System.out.println(
-						"Historico encontrado para usuario " + docUsuario.getId() + ": " + historicoDocs.size());
-
+				
 				for (DocumentSnapshot docHistorico : historicoDocs) {
 					Map<String, Object> h = new HashMap<>(docHistorico.getData());
 					h.put("usuarioId", docUsuario.getId());
@@ -74,7 +68,6 @@ public class backup extends Thread {
 					h.put("idWorkout", refid);
 					h.put("tiempoTotal", docHistorico.getDouble("tiempoTotal"));
 					historicoGlobal.add(h);
-					System.out.println("Registro de historico añadido: " + docHistorico.getId());
 				}
 			}
 
@@ -87,11 +80,9 @@ public class backup extends Thread {
 				data.put("numEjer", doc.getDouble("numEjer"));
 				data.put("video", doc.getString("video"));
 				workoutsList.add(data);
-				System.out.println("Workout añadido: " + doc.getId());
 
 				CollectionReference EjerciciosRef = doc.getReference().collection("Ejercicios");
 				List<QueryDocumentSnapshot> EjerciciosDocs = EjerciciosRef.get().get().getDocuments();
-				System.out.println("Ejercicios encontrado para workout " + doc.getId() + ": " + EjerciciosDocs.size());
 
 				for (DocumentSnapshot docEjercicio : EjerciciosDocs) {
 					Map<String, Object> h2 = new HashMap<>(docEjercicio.getData());
@@ -105,13 +96,10 @@ public class backup extends Thread {
 					h2.put("img", docEjercicio.getString("img"));
 					h2.put("tiempoDescanso", docEjercicio.getDouble("tiempoDescanso"));
 					EjerciciosList.add(h2);
-					System.out.println("Registro de Ejercicio añadido: " + docEjercicio.getId());
 
 					CollectionReference SeriesRef = doc.getReference().collection("Series");
 					List<QueryDocumentSnapshot> SeriesDocs = SeriesRef.get().get().getDocuments();
-					System.out.println(
-							"Serie encontrado para Ejercicio " + docEjercicio.getId() + ": " + SeriesDocs.size());
-
+					
 					for (DocumentSnapshot docSerie : SeriesDocs) {
 						Map<String, Object> h3 = new HashMap<>(docSerie.getData());
 						h3.put("SerieId", docSerie.getId());
@@ -121,7 +109,6 @@ public class backup extends Thread {
 						h3.put("repeticiones", docSerie.getDouble("repeticiones"));
 
 						SeriesList.add(h3);
-						System.out.println("Registro de Ejercicio añadido: " + docEjercicio.getId());
 					}
 				}
 			}
@@ -144,7 +131,6 @@ public class backup extends Thread {
 	}
 
 	public static void main(String[] args) {
-		System.out.println("Iniciando backup...");
 
 		backup hiloBackup = new backup();
 		hiloBackup.start();
@@ -284,7 +270,7 @@ public class backup extends Thread {
 			transformer.transform(new DOMSource(doc), new StreamResult(new File("historico_global.xml")));
 
 			System.out
-					.println("Histórico global XML generado correctamente. Total: " + historico.size() + " registros.");
+					.println("Histórico global XML generado correctamente");
 
 		} catch (Exception e) {
 			e.printStackTrace();
