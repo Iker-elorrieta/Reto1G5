@@ -19,6 +19,24 @@ import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
 
 public class GestorWorkout {
+	private final String coleccionW = "Workouts";
+	private final String coleccionU = "usuarios";
+	private final String coleccionE = "Ejercicios";
+	private final String coleccionS = "Series";
+	private final String nombreW = "nombre";
+	private final String nombreU = "Nombre";
+	private final String video = "video";
+	private final String nivelW = "nivel";
+	private final String numEjer = "numEjer";
+	private final String nivelE = "Nivel";
+	private final String tiempo = "tiempoTotal";
+	private final String duracion = "duracion";
+	private final String repeticiones = "repeticiones";
+	private final String img = "Img";
+	private final String descripcion = "Descripcion";
+	private final String tiempoD = "tiempoDescanso";
+
+
 
     public ArrayList<Workout> leerWorkoutsBD(int nivelUsuario)
             throws IOException, InterruptedException, ExecutionException {
@@ -27,39 +45,39 @@ public class GestorWorkout {
         ArrayList<Workout> works = new ArrayList<>();
         try {
             db = ConectorFirebase.conectar();
-            CollectionReference workout = db.collection("Workouts");
+            CollectionReference workout = db.collection(coleccionW);
 
             QuerySnapshot querySnapshot = workout.get().get();
             List<QueryDocumentSnapshot> workouts = querySnapshot.getDocuments();
             for (QueryDocumentSnapshot work : workouts) {
-                int nivelWorkout = work.getDouble("nivel").intValue();
+                int nivelWorkout = work.getDouble(nivelW).intValue();
 
                 // Filtrar por nivel
                 if (nivelWorkout <= nivelUsuario) {
 
                     Workout w = new Workout();
-                    w.setNombre(work.getString("nombre"));
-                    w.setVideo(work.getString("video"));
+                    w.setNombre(work.getString(nombreW));
+                    w.setVideo(work.getString(video));
                     w.setNivel(nivelWorkout);
-                    w.setNumEjers(work.getDouble("numEjer").intValue());
+                    w.setNumEjers(work.getDouble(numEjer).intValue());
 
                     // Leer ejercicios
-                    CollectionReference ejerciciosCol = work.getReference().collection("Ejercicios");
+                    CollectionReference ejerciciosCol = work.getReference().collection(coleccionE);
                     List<QueryDocumentSnapshot> ejerciciosDocs = ejerciciosCol.get().get().getDocuments();
                     ArrayList<Ejercicios> listaEjercicios = new ArrayList<>();
 
                     for (QueryDocumentSnapshot ejDoc : ejerciciosDocs) {
-                        Ejercicios e = new Ejercicios(ejDoc.getString("Nombre"), ejDoc.getString("Descripcion"),
-                                ejDoc.getString("Img"), ejDoc.getDouble("Nivel").intValue(),
-                                ejDoc.getDouble("tiempoDescanso").intValue(), new ArrayList<>());
+                        Ejercicios e = new Ejercicios(ejDoc.getString(nombreU), ejDoc.getString(descripcion),
+                                ejDoc.getString(img), ejDoc.getDouble(nivelE).intValue(),
+                                ejDoc.getDouble(tiempoD).intValue(), new ArrayList<>());
 
                         // Leer series si existen
-                        CollectionReference seriesCol = ejDoc.getReference().collection("Series");
+                        CollectionReference seriesCol = ejDoc.getReference().collection(coleccionS);
                         List<QueryDocumentSnapshot> seriesDocs = seriesCol.get().get().getDocuments();
                         ArrayList<Series> listaSeries = new ArrayList<>();
                         for (QueryDocumentSnapshot sDoc : seriesDocs) {
-                            Series s = new Series(sDoc.getString("Nombre"), sDoc.getDouble("repeticiones").intValue(),
-                                    sDoc.getDouble("duracion").intValue());
+                            Series s = new Series(sDoc.getString(nombreU), sDoc.getDouble(repeticiones).intValue(),
+                                    sDoc.getDouble(duracion).intValue());
                             listaSeries.add(s);
                         }
                         e.setSeries(listaSeries);
@@ -73,9 +91,7 @@ public class GestorWorkout {
             }
 
         } finally {
-            // Do not close Firestore here. The connection is a singleton managed by ConectorFirebase
-            // and should be closed once at application shutdown (see Main). Closing here causes
-            // the repeated "Firestore cerrado" messages and reinitialization overhead.
+
         }
 
         return works;
@@ -88,35 +104,35 @@ public class GestorWorkout {
         ArrayList<Workout> works = new ArrayList<>();
         try {
             db = ConectorFirebase.conectar();
-            CollectionReference workout = db.collection("Workouts");
+            CollectionReference workout = db.collection(coleccionW);
 
             QuerySnapshot querySnapshot = workout.get().get();
             List<QueryDocumentSnapshot> workouts = querySnapshot.getDocuments();
             for (QueryDocumentSnapshot work : workouts) {
-                int nivelWorkout = work.getDouble("nivel").intValue();
+                int nivelWorkout = work.getDouble(nivelW).intValue();
 
                 Workout w = new Workout();
                 w.setId(work.getId());
-                w.setNombre(work.getString("nombre"));
-                w.setVideo(work.getString("video"));
+                w.setNombre(work.getString(nombreW));
+                w.setVideo(work.getString(video));
                 w.setNivel(nivelWorkout);
-                w.setNumEjers(work.getDouble("numEjer").intValue());
+                w.setNumEjers(work.getDouble(numEjer).intValue());
 
-                CollectionReference ejerciciosCol = work.getReference().collection("Ejercicios");
+                CollectionReference ejerciciosCol = work.getReference().collection(coleccionE);
                 List<QueryDocumentSnapshot> ejerciciosDocs = ejerciciosCol.get().get().getDocuments();
                 ArrayList<Ejercicios> listaEjercicios = new ArrayList<>();
 
                 for (QueryDocumentSnapshot ejDoc : ejerciciosDocs) {
-                    Ejercicios e = new Ejercicios(ejDoc.getString("Nombre"), ejDoc.getString("Descripcion"),
-                            ejDoc.getString("Img"), ejDoc.getDouble("Nivel").intValue(),
-                            ejDoc.getDouble("tiempoDescanso").intValue(), new ArrayList<>());
+                    Ejercicios e = new Ejercicios(ejDoc.getString(nombreU), ejDoc.getString(descripcion),
+                            ejDoc.getString(img), ejDoc.getDouble(nivelE).intValue(),
+                            ejDoc.getDouble(tiempoD).intValue(), new ArrayList<>());
 
-                    CollectionReference seriesCol = ejDoc.getReference().collection("Series");
+                    CollectionReference seriesCol = ejDoc.getReference().collection(coleccionS);
                     List<QueryDocumentSnapshot> seriesDocs = seriesCol.get().get().getDocuments();
                     ArrayList<Series> listaSeries = new ArrayList<>();
                     for (QueryDocumentSnapshot sDoc : seriesDocs) {
-                        Series s = new Series(sDoc.getString("Nombre"), sDoc.getDouble("repeticiones").intValue(),
-                                sDoc.getDouble("duracion").intValue());
+                        Series s = new Series(sDoc.getString(nombreU), sDoc.getDouble(repeticiones).intValue(),
+                                sDoc.getDouble(duracion).intValue());
                         listaSeries.add(s);
                     }
                     e.setSeries(listaSeries);
@@ -128,8 +144,6 @@ public class GestorWorkout {
             }
 
         } finally {
-            // Do not close Firestore here. The connection is a singleton managed by ConectorFirebase
-            // and should be closed once at application shutdown (see Main).
         }
 
         return works;
@@ -146,15 +160,15 @@ public class GestorWorkout {
 
         Firestore db = ConectorFirebase.conectar();
 
-        // 1️⃣ Cargar todos los workouts completos
+        // 1️ Cargar todos los workouts completos
         ArrayList<Workout> workouts = leerWorkoutsBDBackups(); // todos los workouts
         Map<String, Workout> mapWorkouts = new HashMap<>();
         for (Workout w : workouts) {
             mapWorkouts.put(w.getId(), w); // usar ID para búsqueda rápida
         }
 
-        // 2️⃣ Obtener el histórico del usuario
-        CollectionReference historicoRef = db.collection("usuarios")
+        // 2️ Obtener el histórico del usuario
+        CollectionReference historicoRef = db.collection(coleccionU)
                                              .document(usu.getIdUsuario())
                                              .collection("Historico");
         ApiFuture<QuerySnapshot> query = historicoRef.orderBy("fecha", Query.Direction.DESCENDING).get();
@@ -189,9 +203,9 @@ public class GestorWorkout {
             }
 
             // Tiempo total
-            Long tiempoLong = doc.getLong("tiempoTotal");
+            Long tiempoLong = doc.getLong(tiempo);
             int tiempoTotal = (tiempoLong != null) ? tiempoLong.intValue() :
-                              (doc.getDouble("tiempoTotal") != null ? doc.getDouble("tiempoTotal").intValue() : 0);
+                              (doc.getDouble(tiempo) != null ? doc.getDouble(tiempo).intValue() : 0);
 
             // Fecha
             Date fecha = doc.getDate("fecha");

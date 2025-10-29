@@ -41,6 +41,7 @@ public class VentanaRegistro extends JFrame {
 	private JButton btnRegistro;
 	private JPasswordField txtContra;
 	private Controlador controlador;
+	private final String vacio = "";
 
 	/**
 	 * Launch the application.
@@ -101,9 +102,9 @@ public class VentanaRegistro extends JFrame {
 
 				try {
 
-					if (txtNombre.getText().equals("") || txtApellido.getText().equals("")
-							|| txtFecNac.getText().equals("") || txtEmail.getText().equals("")
-							|| txtContra.getPassword().equals("")) {
+					if (txtNombre.getText().equals(vacio) || txtApellido.getText().equals(vacio)
+							|| txtFecNac.getText().equals(vacio) || txtEmail.getText().equals(vacio)
+							|| txtContra.getPassword().equals(vacio)) {
 						JOptionPane.showMessageDialog(null, "Error al registrar usuario", "Error",
 								JOptionPane.ERROR_MESSAGE);
 					} else if (!esFechaValida(txtFecNac.getText())) {
@@ -178,7 +179,7 @@ public class VentanaRegistro extends JFrame {
 		btnVolver.setBounds(415, 417, 89, 23);
 		contentPane.add(btnVolver);
 		
-		JLabel lblImagen = new JLabel("");
+		JLabel lblImagen = new JLabel(vacio);
 		lblImagen.setBounds(0, 50, 219, 218);
 		ImageIcon icono = new ImageIcon("iconoSF.png" );
 		if (icono.getImage() != null) { // verificamos que no sea null
