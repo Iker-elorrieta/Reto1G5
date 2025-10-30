@@ -15,7 +15,27 @@ import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.*;
 
 public class backup extends Thread {
-
+	private final String coleccionW = "Workouts";
+	private final String coleccionU = "usuarios";
+	private final String coleccionE = "Ejercicios";
+	private final String coleccionS = "Series";
+	private final String nombreW = "nombre";
+	private final String nombreU = "Nombre";
+	private final String apellido = "Apellido";
+	private final String nivel = "nivel";
+	private final String contrasena = "Contraseña";
+	private final String email = "Email";
+	private final String fechaU = "FecNac";
+	private final String fecha = "fecha";
+	private final String video = "video";
+	private final String numEjer = "numEjer";
+	private final String nivelE = "Nivel";
+	private final String duracion = "duracion";
+	private final String repeticiones = "repeticiones";
+	private final String img = "Img";
+	private final String descripcion = "Descripcion";
+	private final String tiempoD = "tiempoDescanso";
+	
 	@Override
 	public void run() {
 		Firestore db = null;
@@ -28,11 +48,11 @@ public class backup extends Thread {
 			db = opciones.getService();
 
 			// --- 1️ Leer colección de usuarios ---
-			CollectionReference usuariosRef = db.collection("usuarios");
+			CollectionReference usuariosRef = db.collection(coleccionU);
 			List<QueryDocumentSnapshot> usuariosDocs = usuariosRef.get().get().getDocuments();
 
 			// --- 2️ Leer colección de workouts global ---
-			CollectionReference workoutsRef = db.collection("Workouts");
+			CollectionReference workoutsRef = db.collection(coleccionW);
 			List<QueryDocumentSnapshot> workoutsDocs = workoutsRef.get().get().getDocuments();
 
 			// Listas globales
@@ -46,12 +66,12 @@ public class backup extends Thread {
 			for (DocumentSnapshot docUsuario : usuariosDocs) {
 				Map<String, Object> usuarioData = new HashMap<>(docUsuario.getData());
 				usuarioData.put("id", docUsuario.getId());
-				usuarioData.put("Nombre", docUsuario.getString("Nombre"));
-				usuarioData.put("Apellido", docUsuario.getString("Apellido"));
-				usuarioData.put("Contraseña", docUsuario.getString("Contraseña"));
-				usuarioData.put("Email", docUsuario.getString("Email"));
-				usuarioData.put("nivel", docUsuario.getDouble("nivel"));
-				usuarioData.put("FecNac", docUsuario.getDate("FecNac"));
+				usuarioData.put(nombreU, docUsuario.getString(nombreU));
+				usuarioData.put(apellido, docUsuario.getString(apellido));
+				usuarioData.put(contrasena, docUsuario.getString(contrasena));
+				usuarioData.put(email, docUsuario.getString(email));
+				usuarioData.put(nivel, docUsuario.getDouble(nivel));
+				usuarioData.put(fechaU, docUsuario.getDate(fechaU));
 				usuariosList.add(usuarioData);
 
 				// --- 3️ Leer subcolección historico de cada usuario ---
@@ -63,7 +83,7 @@ public class backup extends Thread {
 					h.put("usuarioId", docUsuario.getId());
 					h.put("historicoId", docHistorico.getId());
 					h.put("Porcentaje", docHistorico.getDouble("Porcentaje"));
-					h.put("fecha", docHistorico.getDate("fecha"));
+					h.put(fecha, docHistorico.getDate(fecha));
 					DocumentReference refid = (DocumentReference) h.get("idWorkout");
 					h.put("idWorkout", refid);
 					h.put("tiempoTotal", docHistorico.getDouble("tiempoTotal"));
@@ -75,38 +95,38 @@ public class backup extends Thread {
 			for (DocumentSnapshot doc : workoutsDocs) {
 				Map<String, Object> data = new HashMap<>(doc.getData());
 				data.put("id", doc.getId());
-				data.put("nivel", doc.getDouble("nivel"));
-				data.put("nombre", doc.getString("nombre"));
-				data.put("numEjer", doc.getDouble("numEjer"));
-				data.put("video", doc.getString("video"));
+				data.put(nivel, doc.getDouble(nivel));
+				data.put(nombreW, doc.getString(nombreW));
+				data.put(numEjer, doc.getDouble(numEjer));
+				data.put(video, doc.getString(video));
 				workoutsList.add(data);
 
-				CollectionReference EjerciciosRef = doc.getReference().collection("Ejercicios");
+				CollectionReference EjerciciosRef = doc.getReference().collection(coleccionE);
 				List<QueryDocumentSnapshot> EjerciciosDocs = EjerciciosRef.get().get().getDocuments();
 
 				for (DocumentSnapshot docEjercicio : EjerciciosDocs) {
 					Map<String, Object> h2 = new HashMap<>(docEjercicio.getData());
 					h2.put("WorkoutdId", doc.getId());
 					h2.put("EjerciciosId", docEjercicio.getId());
-					h2.put("Nombre", docEjercicio.getString("Nombre"));
-					h2.put("Descripcion", docEjercicio.getString("Descripcion"));
-					h2.put("Nivel", docEjercicio.getDouble("Nivel"));
+					h2.put(nombreU, docEjercicio.getString(nombreU));
+					h2.put(descripcion, docEjercicio.getString(descripcion));
+					h2.put(nivelE, docEjercicio.getDouble(nivelE));
 					DocumentReference refid = (DocumentReference) h2.get("Workout");
 					h2.put("Workout", refid);
-					h2.put("img", docEjercicio.getString("img"));
-					h2.put("tiempoDescanso", docEjercicio.getDouble("tiempoDescanso"));
+					h2.put(img, docEjercicio.getString(img));
+					h2.put(tiempoD, docEjercicio.getDouble(tiempoD));
 					EjerciciosList.add(h2);
 
-					CollectionReference SeriesRef = doc.getReference().collection("Series");
+					CollectionReference SeriesRef = doc.getReference().collection(coleccionS);
 					List<QueryDocumentSnapshot> SeriesDocs = SeriesRef.get().get().getDocuments();
 					
 					for (DocumentSnapshot docSerie : SeriesDocs) {
 						Map<String, Object> h3 = new HashMap<>(docSerie.getData());
 						h3.put("SerieId", docSerie.getId());
 						h3.put("EjerciciosId", docEjercicio.getId());
-						h3.put("Nombre", docSerie.getString("Nombre"));
-						h3.put("duracion", docSerie.getDouble("duracion"));
-						h3.put("repeticiones", docSerie.getDouble("repeticiones"));
+						h3.put(nombreU, docSerie.getString(nombreU));
+						h3.put(duracion, docSerie.getDouble(duracion));
+						h3.put(repeticiones, docSerie.getDouble(repeticiones));
 
 						SeriesList.add(h3);
 					}
@@ -152,46 +172,46 @@ public class backup extends Thread {
 // --- Usuarios ---
 			out.writeInt(usuarios.size());
 			for (Map<String, Object> u : usuarios) {
-				out.writeUTF(defaultString((String) u.get("Nombre"), "Desconocido"));
-				out.writeUTF(defaultString((String) u.get("Apellido"), "Desconocido"));
+				out.writeUTF(defaultString((String) u.get(nombreU), "Desconocido"));
+				out.writeUTF(defaultString((String) u.get(apellido), "Desconocido"));
 				Date fecha = (Date) u.get("FecNac");
 				if (fecha != null)
 					out.writeUTF(fecha.toString());
 				else
 					out.writeUTF("Desconocida");
-				out.writeUTF(defaultString((String) u.get("Email"), "email@desconocido.com"));
-				out.writeUTF(defaultString((String) u.get("Contraseña"), "1234"));
+				out.writeUTF(defaultString((String) u.get(email), "email@desconocido.com"));
+				out.writeUTF(defaultString((String) u.get(contrasena), "1234"));
 				out.writeInt(defaultInt(u.get("nivel"), 1));
 			}
 
 // --- Workouts ---
 			out.writeInt(workouts.size());
 			for (Map<String, Object> w : workouts) {
-				out.writeUTF(defaultString((String) w.get("nombre"), "WorkoutDesconocido"));
-				out.writeUTF(defaultString((String) w.get("video"), ""));
-				out.writeInt(defaultInt(w.get("nivel"), 1));
-				out.writeInt(defaultInt(w.get("numEjer"), 0));
+				out.writeUTF(defaultString((String) w.get(nombreW), "WorkoutDesconocido"));
+				out.writeUTF(defaultString((String) w.get(video), ""));
+				out.writeInt(defaultInt(w.get(nivel), 1));
+				out.writeInt(defaultInt(w.get(numEjer), 0));
 				out.writeUTF(defaultString((String) w.get("usuarioId"), "sinUsuario"));
 			}
 
 // --- Ejercicios ---
 			out.writeInt(ejercicios.size());
 			for (Map<String, Object> e : ejercicios) {
-				out.writeUTF(defaultString((String) e.get("Nombre"), "EjercicioDesconocido"));
-				out.writeUTF(defaultString((String) e.get("Descripcion"), ""));
+				out.writeUTF(defaultString((String) e.get(nombreU), "EjercicioDesconocido"));
+				out.writeUTF(defaultString((String) e.get(descripcion), ""));
 				out.writeUTF(defaultString((String) e.get("WorkoutdId"), "sinWorkout"));
-				out.writeUTF(defaultString((String) e.get("img"), ""));
-				out.writeInt(defaultInt(e.get("Nivel"), 1));
-				out.writeInt(defaultInt(e.get("tiempoDescanso"), 0));
+				out.writeUTF(defaultString((String) e.get(img), ""));
+				out.writeInt(defaultInt(e.get(nivelE), 1));
+				out.writeInt(defaultInt(e.get(tiempoD), 0));
 			}
 
 // --- Series ---
 			out.writeInt(series.size());
 			for (Map<String, Object> s : series) {
-				out.writeUTF(defaultString((String) s.get("Nombre"), "SerieDesconocida"));
+				out.writeUTF(defaultString((String) s.get(nombreU), "SerieDesconocida"));
 				out.writeUTF(defaultString((String) s.get("EjerciciosId"), "sinEjercicio"));
-				out.writeInt(defaultInt(s.get("duracion"), 0));
-				out.writeInt(defaultInt(s.get("repeticiones"), 0));
+				out.writeInt(defaultInt(s.get(duracion), 0));
+				out.writeInt(defaultInt(s.get(repeticiones), 0));
 			}
 
 			System.out.println(
@@ -228,12 +248,12 @@ public class backup extends Thread {
 				workoutElem.setAttribute("historicoId", defaultString((String) h.get("historicoId"), "sinId"));
 
 				// Fecha del histórico
-				Object fechaObj = h.get("fecha");
-				Date fecha = new Date();
+				Object fechaObj = h.get(fecha);
+				Date fechaNueva = new Date();
 				if (fechaObj instanceof Timestamp) {
-					fecha = ((Timestamp) fechaObj).toDate();
+					fechaNueva = ((Timestamp) fechaObj).toDate();
 				}
-				workoutElem.setAttribute("fecha", sdf.format(fecha));
+				workoutElem.setAttribute(fecha, sdf.format(fechaNueva));
 
 				// Datos del histórico
 				workoutElem.setAttribute("porcentajeCompletado",
@@ -255,9 +275,9 @@ public class backup extends Thread {
 
 				if (workoutDoc != null) {
 					
-					workoutElem.setAttribute("nivel", String.valueOf(defaultInt(workoutDoc.getLong("nivel"), 1)));
+					workoutElem.setAttribute(nivel, String.valueOf(defaultInt(workoutDoc.getLong(nivel), 1)));
 				} else {
-					workoutElem.setAttribute("nivel", "1");
+					workoutElem.setAttribute(nivel, "1");
 				}
 
 				root.appendChild(workoutElem);
