@@ -58,10 +58,10 @@ public class VentanaWorkouts extends JFrame {
 		
 		JButton btnPerfil = new JButton("");
 		
-		btnPerfil.setBounds(740, 11, 150, 109);
-		ImageIcon iconoPerfil = new ImageIcon("iconoPerfil.png");
-		if (iconoPerfil.getImage() != null) { // verificamos que no sea null
-		    Image imagen = iconoPerfil.getImage().getScaledInstance(btnPerfil.getWidth(), btnPerfil.getHeight(), Image.SCALE_SMOOTH);
+		btnPerfil.setBounds(729, 11, 195, 141);
+		ImageIcon iconosPerfil = new ImageIcon("iconosPerfil.png");
+		if (iconosPerfil.getImage() != null) { // verificamos que no sea null
+		    Image imagen = iconosPerfil.getImage().getScaledInstance(btnPerfil.getWidth(), btnPerfil.getHeight(), Image.SCALE_SMOOTH);
 		    btnPerfil.setIcon(new ImageIcon(imagen));
 		} else {
 		    System.out.println("Imagen no encontrada");
@@ -120,7 +120,7 @@ public class VentanaWorkouts extends JFrame {
 		btnHistorico.setBackground(new Color(200, 0, 0));
 		btnHistorico.setForeground(Color.WHITE);
 		btnHistorico.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-		btnHistorico.setBounds(740, 150, 160, 30);
+		btnHistorico.setBounds(738, 163, 160, 30);
 
 		btnHistorico.addMouseListener(new MouseAdapter() {
 			@Override

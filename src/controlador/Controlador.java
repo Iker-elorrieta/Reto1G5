@@ -28,6 +28,10 @@ public class Controlador {
 	public void registrarUsuario(Usuarios usuario) throws IOException, InterruptedException, ExecutionException {
 		gestor.registrarUsuario(usuario);
 	}
+	
+	public void actualizarUsuario(Usuarios usuario) throws IOException, InterruptedException, ExecutionException {
+		gestor.actualizarUsuario(usuario);
+	}
 
 	public boolean login(String usuario, String contraseña)
 			throws IOException, InterruptedException, ExecutionException {
