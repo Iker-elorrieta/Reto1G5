@@ -70,9 +70,7 @@ public class VentanaConfigUsuarios extends JFrame {
 		btnAtras = new JButton("Volver atras");
 		btnAtras.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-				VentanaWorkouts vw = new VentanaWorkouts(usu);
-				vw.setVisible(true);
+				dispose();
 			}
 		});
 		btnAtras.setBounds(436, 454, 118, 23);
