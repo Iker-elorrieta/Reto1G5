@@ -27,6 +27,8 @@ public class VentanaWorkouts extends JFrame {
 	private ArrayList<Workout> listaMostrada;
 	private Controlador controlador;
 	private Usuarios usuarioActual;
+	// store the currently selected workout so we can open VentanaEjercicio from the exercises table
+	private Workout workoutSeleccionado;
 
 	public VentanaWorkouts(Usuarios usuario) {
 		controlador = new Controlador();
@@ -223,7 +225,29 @@ public class VentanaWorkouts extends JFrame {
 			if (!e.getValueIsAdjusting()) {
 				int fila = table.getSelectedRow();
 				if (fila >= 0 && fila < listaMostrada.size()) {
+					// store selected workout
+					workoutSeleccionado = listaMostrada.get(fila);
 					mostrarEjercicios(listaMostrada.get(fila).getEjercicios());
+				}
+			}
+		});
+		
+		// When the user clicks an exercise row, open VentanaEjercicio for the selected workout
+		table_1.addMouseListener(new java.awt.event.MouseAdapter() {
+			@Override
+			public void mouseClicked(java.awt.event.MouseEvent e) {
+				int fila = table_1.getSelectedRow();
+				if (fila >= 0 && workoutSeleccionado != null) {
+					// Open the exercise window for the specific Ejercicios clicked
+					Ejercicios ejerc = null;
+					if (workoutSeleccionado.getEjercicios() != null && fila < workoutSeleccionado.getEjercicios().size()) {
+						ejerc = workoutSeleccionado.getEjercicios().get(fila);
+					}
+					if (ejerc != null) {
+						dispose();
+						VentanaEjercicio ve = new VentanaEjercicio(ejerc, workoutSeleccionado);
+						ve.setVisible(true);
+					}
 				}
 			}
 		});
