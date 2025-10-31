@@ -32,5 +32,5 @@ public class Cronometro extends Thread {
 	public void reiniciar() {
 		segundos = 0;
 	}
-
+	
 }

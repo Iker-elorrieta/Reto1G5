@@ -15,7 +15,8 @@ public class VentanaEjercicio extends JFrame {
 
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
-    private JLabel lblNombreEjercicio, lblDescripcion, lblWorkout, lblCronoGeneral, lblSerieActual, lblDescanso;
+    private JLabel lblNombreEjercicio, lblDescripcion, lblWorkout, lblCronoGeneral, lblDescanso;
+    private JTextArea lblSerieActual;
     private JButton btnControl;
     private Timer timerGeneral, timerSerie, timerDescanso;
     private int tiempoTotal = 0;
@@ -51,7 +52,7 @@ public class VentanaEjercicio extends JFrame {
         // ======== ETIQUETAS DE ENCABEZADO ========
         lblNombreEjercicio = new JLabel("Ejercicio: " + ejercicio.getNombre());
         lblNombreEjercicio.setFont(new Font("Tahoma", Font.BOLD, 26));
-        lblNombreEjercicio.setBounds(300, 10, 500, 40);
+        lblNombreEjercicio.setBounds(300, 11, 320, 40);
         contentPane.add(lblNombreEjercicio);
 
         lblDescripcion = new JLabel("Descripción: " + ejercicio.getDescripcion());
@@ -61,7 +62,7 @@ public class VentanaEjercicio extends JFrame {
 
         lblWorkout = new JLabel("Workout: " + workout.getNombre());
         lblWorkout.setFont(new Font("Tahoma", Font.BOLD, 20));
-        lblWorkout.setBounds(700, 10, 180, 30);
+        lblWorkout.setBounds(575, 18, 299, 30);
         lblWorkout.setForeground(new Color(128, 0, 0));
         contentPane.add(lblWorkout);
 
@@ -72,15 +73,15 @@ public class VentanaEjercicio extends JFrame {
         lblCronoGeneral.setForeground(Color.DARK_GRAY);
         contentPane.add(lblCronoGeneral);
 
-        lblSerieActual = new JLabel("Serie actual:");
+        lblSerieActual = new JTextArea();
         lblSerieActual.setFont(new Font("Segoe UI", Font.BOLD, 22));
-        lblSerieActual.setBounds(300, 200, 500, 40);
-        lblSerieActual.setForeground(new Color(0, 51, 102));
+        lblSerieActual.setBounds(278, 201, 500, 192);
+        lblSerieActual.setBackground(new Color(245, 245, 245));
         contentPane.add(lblSerieActual);
 
         lblDescanso = new JLabel("Descanso:");
         lblDescanso.setFont(new Font("Segoe UI", Font.BOLD, 22));
-        lblDescanso.setBounds(300, 250, 500, 40);
+        lblDescanso.setBounds(300, 390, 500, 40);
         lblDescanso.setForeground(new Color(102, 0, 0));
         contentPane.add(lblDescanso);
 
@@ -149,7 +150,7 @@ public class VentanaEjercicio extends JFrame {
 
         Series serie = series.get(serieIndex);
         duracion = serie.getDuracion();
-        lblSerieActual.setText("Serie: " + serie.getNombre() + " | Repeticiones: " + serie.getRepeticiones());
+        mostrarTodasLasSeries();
         if(enDescanso = true) {
 			btnControl.setEnabled(false);
 		}
@@ -229,7 +230,6 @@ public class VentanaEjercicio extends JFrame {
             JOptionPane.showMessageDialog(this, "Error al guardar el histórico: " + e.getMessage());
         }
 
-        
         dispose();
         VentanaWorkouts ventanaWorkouts = new VentanaWorkouts(usuario);
         ventanaWorkouts.setVisible(true);
@@ -241,4 +241,13 @@ public class VentanaEjercicio extends JFrame {
         int secs = totalSeconds % 60;
         return String.format("%02d:%02d", mins, secs);
     }
+    
+    private void mostrarTodasLasSeries() {
+        lblSerieActual.setText(""); 
+        for (Series s : series) {
+        	lblSerieActual.append("Serie: " + s.getNombre() + " | Repeticiones: " + s.getRepeticiones() + "\n");
+        }
+    }
+
+    
 }
