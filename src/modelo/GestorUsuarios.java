@@ -51,7 +51,17 @@ public class GestorUsuarios {
     }
 	
 	
-
+	public void subirNivelUsuario(Usuarios usuario) throws IOException, InterruptedException, ExecutionException {
+		Firestore db = ConectorFirebase.conectar();
+		
+		 int nuevoNivel = usuario.getNivel() + 1;
+	        usuario.setNivel(nuevoNivel);
+	        
+				db.collection(coleccion).document(usuario.getIdUsuario())
+				    .update(nivel, nuevoNivel)
+				    .get(); 
+	}
+	
 	public Usuarios obtenerUsuario(String nombreRecogido, String contrasenaRecogida)
 			throws InterruptedException, ExecutionException, IOException {
 
@@ -100,8 +110,7 @@ public class GestorUsuarios {
 		datos.put(fecha, usuario.getFecNac());
 
 		// Usar ID automático de Firestore
-		DocumentReference docRef = usuarios.document(usuario.getIdUsuario());
-		docRef.set(datos);
+		usuarios.add(datos);
 	}
 
 	public boolean login(String usuario, String contrasenaRecogida)

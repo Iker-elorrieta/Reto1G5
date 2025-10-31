@@ -18,6 +18,11 @@ public class Controlador {
 	private GestorWorkout gestor2 = new GestorWorkout();
 	private GestorBackup gestor3 = new GestorBackup();
 
+	
+	public void subirNivelUsuario(Usuarios usuario) throws IOException, InterruptedException, ExecutionException {
+		gestor.subirNivelUsuario(usuario);
+	}
+	
 	public Usuarios obtenerUsuario(String nombre, String contraseña)
 			throws InterruptedException, ExecutionException, IOException {
 		GestorUsuarios gestor = new GestorUsuarios();
@@ -60,6 +65,10 @@ public class Controlador {
 		return gestor.existeUsuario(nombre, email);
 	}
 
+	public void guardarHistoricoAutomatico(Usuarios usuario, Workout workout, int tiempoTotal,
+			double porcentajeCompletado) throws IOException, InterruptedException, ExecutionException {
+		gestor2.guardarHistoricoAutomatico(usuario, workout, tiempoTotal, porcentajeCompletado);
+	}
 //	public boolean comprobarConexion() throws IOException {
 //		return gestor3.comprobarConexion();
 //	}

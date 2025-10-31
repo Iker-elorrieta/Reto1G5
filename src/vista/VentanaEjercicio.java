@@ -3,6 +3,9 @@ package vista;
 import modelo.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+
+import controlador.Controlador;
+
 import javax.swing.BorderFactory;
 import java.awt.*;
 import java.awt.event.*;
@@ -25,8 +28,10 @@ public class VentanaEjercicio extends JFrame {
     private int duracion = 0;
     private int descanso = 0;
     private Usuarios usuario;
+    private Controlador controlador ;
     
     public VentanaEjercicio(Ejercicios ejercicio, Workout workout, Usuarios usuario) {
+    	controlador = new Controlador();
     	this.usuario = usuario;
         this.ejercicio = ejercicio;
         this.workout = workout;
@@ -149,7 +154,7 @@ public class VentanaEjercicio extends JFrame {
 			btnControl.setEnabled(false);
 		}
         timerSerie = new Timer(1000, e -> {
-            if (duracion > 0) {
+            if (duracion >= 0) {
                 lblDescanso.setText("Tiempo restante: " + duracion + " s");
                 duracion--;
             } else {
@@ -216,6 +221,13 @@ public class VentanaEjercicio extends JFrame {
             "Resumen",
             JOptionPane.INFORMATION_MESSAGE
         );
+        try {
+            controlador.guardarHistoricoAutomatico(usuario, workout, tiempoTotal, 100.0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al guardar el histórico: " + e.getMessage());
+        }
+
         dispose();
         VentanaWorkouts ventanaWorkouts = new VentanaWorkouts(usuario);
         ventanaWorkouts.setVisible(true);

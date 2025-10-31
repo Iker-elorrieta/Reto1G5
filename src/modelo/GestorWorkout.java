@@ -56,6 +56,7 @@ public class GestorWorkout {
                 if (nivelWorkout <= nivelUsuario) {
 
                     Workout w = new Workout();
+                    w.setId(work.getId());
                     w.setNombre(work.getString(nombreW));
                     w.setVideo(work.getString(video));
                     w.setNivel(nivelWorkout);
@@ -232,6 +233,32 @@ public class GestorWorkout {
     }
 
 
+    public void guardarHistoricoAutomatico(Usuarios usuario, Workout workout, int tiempoTotal, double porcentaje)
+            throws InterruptedException, ExecutionException, IOException {
+
+        if (usuario == null || usuario.getIdUsuario() == null || usuario.getIdUsuario().isEmpty()) {
+            System.err.println("Usuario no válido para guardar histórico");
+            return;
+        }
+
+        Firestore db = ConectorFirebase.conectar();
+
+        // Ruta: usuarios/{id}/Historico
+        CollectionReference historicoRef = db.collection("usuarios")
+                                             .document(usuario.getIdUsuario())
+                                             .collection("Historico");
+
+        Map<String, Object> datos = new HashMap<>();
+        datos.put("fecha", new java.util.Date());
+        datos.put("Porcentaje", porcentaje);
+        datos.put("tiempoTotal", tiempoTotal);
+        DocumentReference workoutRef = db.collection("Workouts").document(workout.getId());
+        datos.put("idWorkout", workoutRef);
+
+
+        historicoRef.add(datos).get(); // Espera a que se guarde
+        System.out.println("Histórico guardado correctamente para el usuario " + usuario.getIdUsuario());
+    }
 
 
 	public String formatearTiempo(int segundos) {
