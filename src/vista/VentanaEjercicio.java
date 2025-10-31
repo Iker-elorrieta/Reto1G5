@@ -14,7 +14,7 @@ public class VentanaEjercicio extends JFrame {
     private JPanel contentPane;
     private JLabel lblNombreEjercicio, lblDescripcion, lblWorkout, lblCronoGeneral, lblSerieActual, lblDescanso;
     private JButton btnControl;
-    private Timer timerGeneral, timerSerie, timerDescanso, timerCuentaRegresiva;
+    private Timer timerGeneral, timerSerie, timerDescanso;
     private int tiempoTotal = 0;
     private int serieIndex = 0;
     private boolean enPausa = false;
@@ -22,11 +22,12 @@ public class VentanaEjercicio extends JFrame {
     private Ejercicios ejercicio;
     private Workout workout;
     private ArrayList<Series> series;
-    private int cuentaRegresiva = 5;
     private int duracion = 0;
     private int descanso = 0;
-
-    public VentanaEjercicio(Ejercicios ejercicio, Workout workout) {
+    private Usuarios usuario;
+    
+    public VentanaEjercicio(Ejercicios ejercicio, Workout workout, Usuarios usuario) {
+    	this.usuario = usuario;
         this.ejercicio = ejercicio;
         this.workout = workout;
         this.series = ejercicio.getSeries();
@@ -48,7 +49,7 @@ public class VentanaEjercicio extends JFrame {
         lblNombreEjercicio.setBounds(300, 10, 500, 40);
         contentPane.add(lblNombreEjercicio);
 
-        lblDescripcion = new JLabel("<html><body>Descripción: " + ejercicio.getDescripcion() + "</body></html>");
+        lblDescripcion = new JLabel("Descripción: " + ejercicio.getDescripcion());
         lblDescripcion.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         lblDescripcion.setBounds(300, 55, 550, 60);
         contentPane.add(lblDescripcion);
@@ -82,7 +83,7 @@ public class VentanaEjercicio extends JFrame {
         btnControl = new JButton("Iniciar");
         btnControl.setFont(new Font("Segoe UI", Font.BOLD, 18));
         btnControl.setBounds(350, 480, 200, 55);
-        btnControl.setBackground(Color.RED);
+        btnControl.setBackground(Color.GREEN);
         btnControl.setForeground(Color.WHITE);
         btnControl.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
         contentPane.add(btnControl);
@@ -91,7 +92,13 @@ public class VentanaEjercicio extends JFrame {
         btnControl.addActionListener(e -> {
             switch (btnControl.getText()) {
                 case "Iniciar":
-                    iniciarCuentaRegresiva();
+                    // Start the general timer (only once) and begin the first series or resume next series
+                    if (timerGeneral == null) {
+                        iniciarCronometroGeneral();
+                    }
+                    btnControl.setText("Pausar");
+                    btnControl.setBackground(Color.ORANGE);
+                    iniciarSerie();
                     break;
                 case "Pausar":
                     pausarTimers();
@@ -117,7 +124,6 @@ public class VentanaEjercicio extends JFrame {
         }
         contentPane.add(lblImagen);
 
-        iniciarCronometroGeneral();
     }
 
     // ====================== FUNCIONALIDAD ======================
@@ -130,24 +136,6 @@ public class VentanaEjercicio extends JFrame {
         timerGeneral.start();
     }
 
-    private void iniciarCuentaRegresiva() {
-        cuentaRegresiva = 5;
-        btnControl.setEnabled(false);
-        timerCuentaRegresiva = new Timer(1000, e -> {
-            if (cuentaRegresiva > 0) {
-                lblSerieActual.setText("Comenzando en: " + cuentaRegresiva + " segundos");
-                cuentaRegresiva--;
-            } else {
-                timerCuentaRegresiva.stop();
-                btnControl.setText("Pausar");
-                btnControl.setBackground(Color.ORANGE);
-                btnControl.setEnabled(true);
-                iniciarSerie();
-            }
-        });
-        timerCuentaRegresiva.start();
-    }
-
     private void iniciarSerie() {
         if (serieIndex >= series.size()) {
             finalizarEjercicio();
@@ -157,7 +145,9 @@ public class VentanaEjercicio extends JFrame {
         Series serie = series.get(serieIndex);
         duracion = serie.getDuracion();
         lblSerieActual.setText("Serie: " + serie.getNombre() + " | Repeticiones: " + serie.getRepeticiones());
-
+        if(enDescanso = true) {
+			btnControl.setEnabled(false);
+		}
         timerSerie = new Timer(1000, e -> {
             if (duracion > 0) {
                 lblDescanso.setText("Tiempo restante: " + duracion + " s");
@@ -175,7 +165,7 @@ public class VentanaEjercicio extends JFrame {
         descanso = ejercicio.getTiempoDescanso();
         lblDescanso.setText("Descanso: " + descanso + " s");
         btnControl.setText("Iniciar");
-        btnControl.setBackground(Color.RED);
+        btnControl.setBackground(Color.GREEN);
 
         timerDescanso = new Timer(1000, e -> {
             if (descanso > 0) {
@@ -194,7 +184,7 @@ public class VentanaEjercicio extends JFrame {
     private void pausarTimers() {
         if (timerSerie != null) timerSerie.stop();
         if (timerDescanso != null) timerDescanso.stop();
-        timerGeneral.stop();
+        if (timerGeneral != null) timerGeneral.stop();
         btnControl.setText("Reanudar");
         btnControl.setBackground(Color.BLUE);
         enPausa = true;
@@ -203,14 +193,14 @@ public class VentanaEjercicio extends JFrame {
     private void reanudarTimers() {
         if (timerSerie != null) timerSerie.start();
         if (timerDescanso != null) timerDescanso.start();
-        timerGeneral.start();
+        if (timerGeneral != null) timerGeneral.start();
         btnControl.setText("Pausar");
         btnControl.setBackground(Color.ORANGE);
         enPausa = false;
     }
 
     private void finalizarEjercicio() {
-        timerGeneral.stop();
+        if (timerGeneral != null) timerGeneral.stop();
         btnControl.setText("Siguiente Ejercicio");
         btnControl.setBackground(new Color(128, 0, 128));
         lblSerieActual.setText("¡Ejercicio completado!");
@@ -227,6 +217,9 @@ public class VentanaEjercicio extends JFrame {
             JOptionPane.INFORMATION_MESSAGE
         );
         dispose();
+        VentanaWorkouts ventanaWorkouts = new VentanaWorkouts(usuario);
+        ventanaWorkouts.setVisible(true);
+        
     }
 
     private String formatTime(int totalSeconds) {

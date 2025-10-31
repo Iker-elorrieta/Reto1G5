@@ -245,7 +245,7 @@ public class VentanaWorkouts extends JFrame {
 					}
 					if (ejerc != null) {
 						dispose();
-						VentanaEjercicio ve = new VentanaEjercicio(ejerc, workoutSeleccionado);
+						VentanaEjercicio ve = new VentanaEjercicio(ejerc, workoutSeleccionado, usuario);
 						ve.setVisible(true);
 					}
 				}
