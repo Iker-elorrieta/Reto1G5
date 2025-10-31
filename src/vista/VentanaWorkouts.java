@@ -212,6 +212,12 @@ public class VentanaWorkouts extends JFrame {
 		lblEjercicios.setBounds(640, 191, 140, 25);
 		contentPane.add(lblEjercicios);
 		
+		JLabel lblNivel = new JLabel("");
+		lblNivel.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		lblNivel.setBounds(619, 57, 134, 43);
+		lblNivel.setText("Nivel actual: " + usuarioActual.getNivel());
+		contentPane.add(lblNivel);
+		
 
 		try {
 			int nivelUsuario = usuarioActual.getNivel();

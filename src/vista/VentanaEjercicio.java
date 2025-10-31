@@ -223,11 +223,13 @@ public class VentanaEjercicio extends JFrame {
         );
         try {
             controlador.guardarHistoricoAutomatico(usuario, workout, tiempoTotal, 100.0);
+            controlador.subirNivelUsuario(usuario);
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error al guardar el histórico: " + e.getMessage());
         }
 
+        
         dispose();
         VentanaWorkouts ventanaWorkouts = new VentanaWorkouts(usuario);
         ventanaWorkouts.setVisible(true);
