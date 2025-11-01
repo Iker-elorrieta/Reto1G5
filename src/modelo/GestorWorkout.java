@@ -33,6 +33,7 @@ public class GestorWorkout {
 	private final String duracion = "duracion";
 	private final String repeticiones = "repeticiones";
 	private final String img = "Img";
+	private final String imagenSerie = "imagen";
 	private final String descripcion = "Descripcion";
 	private final String tiempoD = "tiempoDescanso";
 
@@ -78,7 +79,8 @@ public class GestorWorkout {
                         ArrayList<Series> listaSeries = new ArrayList<>();
                         for (QueryDocumentSnapshot sDoc : seriesDocs) {
                             Series s = new Series(sDoc.getString(nombreU), sDoc.getDouble(repeticiones).intValue(),
-                                    sDoc.getDouble(duracion).intValue());
+                                    sDoc.getDouble(duracion).intValue(), sDoc.getString(imagenSerie));
+                            
                             listaSeries.add(s);
                         }
                         e.setSeries(listaSeries);
@@ -133,7 +135,7 @@ public class GestorWorkout {
                     ArrayList<Series> listaSeries = new ArrayList<>();
                     for (QueryDocumentSnapshot sDoc : seriesDocs) {
                         Series s = new Series(sDoc.getString(nombreU), sDoc.getDouble(repeticiones).intValue(),
-                                sDoc.getDouble(duracion).intValue());
+                                sDoc.getDouble(duracion).intValue(), sDoc.getString(imagenSerie));
                         listaSeries.add(s);
                     }
                     e.setSeries(listaSeries);

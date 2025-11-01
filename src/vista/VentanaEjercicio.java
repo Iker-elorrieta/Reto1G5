@@ -3,12 +3,13 @@ package vista;
 import modelo.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 
 import controlador.Controlador;
 
-import javax.swing.BorderFactory;
 import java.awt.*;
 import java.awt.event.*;
+import java.net.URL;
 import java.util.ArrayList;
 
 public class VentanaEjercicio extends JFrame {
@@ -30,10 +31,10 @@ public class VentanaEjercicio extends JFrame {
     private int descanso = 0;
     private Usuarios usuario;
     private Controlador controlador ;
-    
+
     public VentanaEjercicio(Ejercicios ejercicio, Workout workout, Usuarios usuario) {
-    	controlador = new Controlador();
-    	this.usuario = usuario;
+        controlador = new Controlador();
+        this.usuario = usuario;
         this.ejercicio = ejercicio;
         this.workout = workout;
         this.series = ejercicio.getSeries();
@@ -49,10 +50,9 @@ public class VentanaEjercicio extends JFrame {
         setContentPane(contentPane);
         contentPane.setBackground(new Color(245, 245, 245));
 
-        // ======== ETIQUETAS DE ENCABEZADO ========
         lblNombreEjercicio = new JLabel("Ejercicio: " + ejercicio.getNombre());
         lblNombreEjercicio.setFont(new Font("Tahoma", Font.BOLD, 26));
-        lblNombreEjercicio.setBounds(300, 11, 320, 40);
+        lblNombreEjercicio.setBounds(300, 11, 500, 40);
         contentPane.add(lblNombreEjercicio);
 
         lblDescripcion = new JLabel("Descripción: " + ejercicio.getDescripcion());
@@ -66,7 +66,6 @@ public class VentanaEjercicio extends JFrame {
         lblWorkout.setForeground(new Color(128, 0, 0));
         contentPane.add(lblWorkout);
 
-        // ======== CRONÓMETROS ========
         lblCronoGeneral = new JLabel("Tiempo Total: 00:00");
         lblCronoGeneral.setFont(new Font("Segoe UI", Font.BOLD, 22));
         lblCronoGeneral.setBounds(30, 150, 250, 40);
@@ -77,7 +76,16 @@ public class VentanaEjercicio extends JFrame {
         lblSerieActual.setFont(new Font("Segoe UI", Font.BOLD, 22));
         lblSerieActual.setBounds(278, 201, 500, 192);
         lblSerieActual.setBackground(new Color(245, 245, 245));
+        lblSerieActual.setEditable(false);
+        lblSerieActual.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         contentPane.add(lblSerieActual);
+
+        lblSerieActual.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                mostrarImagenesSeries();
+            }
+        });
 
         lblDescanso = new JLabel("Descanso:");
         lblDescanso.setFont(new Font("Segoe UI", Font.BOLD, 22));
@@ -85,7 +93,6 @@ public class VentanaEjercicio extends JFrame {
         lblDescanso.setForeground(new Color(102, 0, 0));
         contentPane.add(lblDescanso);
 
-        // ======== BOTÓN DE CONTROL ========
         btnControl = new JButton("Iniciar");
         btnControl.setFont(new Font("Segoe UI", Font.BOLD, 18));
         btnControl.setBounds(350, 480, 200, 55);
@@ -94,14 +101,10 @@ public class VentanaEjercicio extends JFrame {
         btnControl.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
         contentPane.add(btnControl);
 
-        // ======== ACCIONES ========
         btnControl.addActionListener(e -> {
             switch (btnControl.getText()) {
                 case "Iniciar":
-                    // Start the general timer (only once) and begin the first series or resume next series
-                    if (timerGeneral == null) {
-                        iniciarCronometroGeneral();
-                    }
+                    if (timerGeneral == null) iniciarCronometroGeneral();
                     btnControl.setText("Pausar");
                     btnControl.setBackground(Color.ORANGE);
                     iniciarSerie();
@@ -118,21 +121,10 @@ public class VentanaEjercicio extends JFrame {
             }
         });
 
-        // ======== IMAGEN ILUSTRATIVA ========
-        JLabel lblImagen = new JLabel("");
-        lblImagen.setBounds(30, 10, 250, 250);
-        ImageIcon icono = new ImageIcon("img/ejercicio.png");
-        if (icono.getImage() != null) {
-            Image imagen = icono.getImage().getScaledInstance(lblImagen.getWidth(), lblImagen.getHeight(), Image.SCALE_SMOOTH);
-            lblImagen.setIcon(new ImageIcon(imagen));
-        } else {
-            System.out.println("Imagen no encontrada");
-        }
-        contentPane.add(lblImagen);
-
+        mostrarTodasLasSeries();
     }
 
-    // ====================== FUNCIONALIDAD ======================
+    // ==================== FUNCIONALIDAD ====================
 
     private void iniciarCronometroGeneral() {
         timerGeneral = new Timer(1000, e -> {
@@ -150,10 +142,9 @@ public class VentanaEjercicio extends JFrame {
 
         Series serie = series.get(serieIndex);
         duracion = serie.getDuracion();
-        mostrarTodasLasSeries();
-        if(enDescanso = true) {
-			btnControl.setEnabled(false);
-		}
+
+        if(enDescanso) btnControl.setEnabled(false);
+
         timerSerie = new Timer(1000, e -> {
             if (duracion >= 0) {
                 lblDescanso.setText("Tiempo restante: " + duracion + " s");
@@ -229,11 +220,9 @@ public class VentanaEjercicio extends JFrame {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error al guardar el histórico: " + e.getMessage());
         }
-
         dispose();
         VentanaWorkouts ventanaWorkouts = new VentanaWorkouts(usuario);
         ventanaWorkouts.setVisible(true);
-        
     }
 
     private String formatTime(int totalSeconds) {
@@ -241,13 +230,60 @@ public class VentanaEjercicio extends JFrame {
         int secs = totalSeconds % 60;
         return String.format("%02d:%02d", mins, secs);
     }
-    
+
     private void mostrarTodasLasSeries() {
-        lblSerieActual.setText(""); 
+        lblSerieActual.setText("");
         for (Series s : series) {
-        	lblSerieActual.append("Serie: " + s.getNombre() + " | Repeticiones: " + s.getRepeticiones() + "\n");
+            lblSerieActual.append("Serie: " + s.getNombre() + " | Repeticiones: " + s.getRepeticiones() + "\n");
         }
     }
 
-    
+    // ==================== PANEL DE IMÁGENES ====================
+    private void mostrarImagenesSeries() {
+        if (series == null || series.isEmpty()) return;
+
+        JDialog ventanaImagenes = new JDialog(this, "Imágenes de Series", true);
+        ventanaImagenes.setSize(900, 600);
+        ventanaImagenes.setLocationRelativeTo(this);
+
+        JPanel panelFotos = new JPanel();
+        panelFotos.setLayout(new BoxLayout(panelFotos, BoxLayout.Y_AXIS)); // se apilan verticalmente
+
+        for (Series s : series) {
+            JPanel panelSerie = new JPanel();
+            panelSerie.setLayout(new BorderLayout());
+            panelSerie.setBorder(BorderFactory.createTitledBorder(s.getNombre()));
+
+            try {
+                ImageIcon icon = new ImageIcon(new URL(s.getImagen()));
+                JLabel lblFoto = new JLabel();
+                lblFoto.setIcon(icon);
+                lblFoto.setHorizontalAlignment(SwingConstants.CENTER);
+                lblFoto.setVerticalAlignment(SwingConstants.CENTER);
+
+                panelSerie.add(lblFoto, BorderLayout.CENTER);
+            } catch (Exception ex) {
+                JLabel lblError = new JLabel("Sin imagen");
+                lblError.setHorizontalAlignment(SwingConstants.CENTER);
+                panelSerie.add(lblError, BorderLayout.CENTER);
+            }
+
+            panelFotos.add(panelSerie);
+            panelFotos.add(Box.createRigidArea(new Dimension(0, 10))); // espacio entre series
+        }
+
+        JScrollPane scroll = new JScrollPane(panelFotos);
+        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+        ventanaImagenes.add(scroll, BorderLayout.CENTER);
+
+        JButton btnCerrar = new JButton("Cerrar");
+        btnCerrar.addActionListener(e -> ventanaImagenes.dispose());
+        ventanaImagenes.add(btnCerrar, BorderLayout.SOUTH);
+
+        ventanaImagenes.setVisible(true);
+    }
+
+
 }
