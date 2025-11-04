@@ -2,6 +2,8 @@ package vista;
 
 import javax.swing.SwingUtilities;
 import modelo.ConectorFirebase;
+import modelo.GestorBackup;
+
 import com.google.cloud.firestore.Firestore;
 
 public class Main {
@@ -9,6 +11,14 @@ public class Main {
     private static Firestore db; //
 
     public static void main(String[] args) {
+    	GestorBackup gb = new GestorBackup();
+
+        System.out.println("=== PRUEBA LECTURA .DAT ===");
+        gb.leerDat(); // intentará leer backup_global.dat o RETOSEGUNDO/backup_global.dat
+
+        System.out.println("\n=== PRUEBA LECTURA .XML ===");
+        gb.leerXml(); // intentará leer historico_global.xml o RETOSEGUNDO/historico_global.xml
+    
         try {
             // Inicializar Firebase y guardar la conexiónn
             db = ConectorFirebase.conectar();

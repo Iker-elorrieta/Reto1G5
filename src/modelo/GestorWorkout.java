@@ -37,6 +37,7 @@ public class GestorWorkout {
 	private final String descripcion = "Descripcion";
 	private final String tiempoD = "tiempoDescanso";
 
+    private List<Workout> workoutsDesdeDat = new ArrayList<>();
 
 
     public ArrayList<Workout> leerWorkoutsBD(int nivelUsuario)
@@ -268,4 +269,44 @@ public class GestorWorkout {
 		int seg = segundos % 60;
 		return String.format("%02d:%02d", min, seg);
 	}
+	 public void cargarWorkoutsDesdeTexto(String textoPlano) {
+	        String[] partes = textoPlano.split(" ");
+	        for (int i = 0; i < partes.length - 2; i++) {
+	            if (partes[i].equalsIgnoreCase("sinUsuario")) {
+	                Workout w = new Workout();
+	                w.setNombre(partes[i + 1]);
+	                w.setVideo(partes[i + 2]);
+	                w.setNivel(0); // Puedes ajustar esto si el nivel está codificado
+	                w.setNumEjers(0); // Se puede calcular si hay ejercicios asociados
+	                workoutsDesdeDat.add(w);
+	            }
+	        }
+	    }
+
+	    public ArrayList<Workout> leerWorkoutsDesdeDat(int nivelUsuario) {
+	        ArrayList<Workout> filtrados = new ArrayList<>();
+	        for (Workout w : workoutsDesdeDat) {
+	            if (w.getNivel() <= nivelUsuario) {
+	                filtrados.add(w);
+	            }
+	        }
+	        return filtrados;
+	    }
+	    public void guardarHistoricoLocal(Usuarios usuario, Workout workout, int tiempoTotal, double porcentaje) {
+	        if (usuario == null || usuario.getIdUsuario() == null || usuario.getIdUsuario().isEmpty()) {
+	            System.err.println("Usuario no válido para guardar histórico");
+	            return;
+	        }
+
+	        Map<String, Object> datos = new HashMap<>();
+	        datos.put("fecha", new Date());
+	        datos.put("Porcentaje", porcentaje);
+	        datos.put("tiempoTotal", tiempoTotal);
+	        datos.put("idWorkout", workout.getNombre());
+
+	        System.out.println("=== Histórico guardado localmente ===");
+	        System.out.println("Usuario: " + usuario.getIdUsuario());
+	        datos.forEach((k, v) -> System.out.println(k + ": " + v));
+	    }
+	
 }

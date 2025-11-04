@@ -163,6 +163,7 @@ public class VentanaEjercicio extends JFrame {
         lblDescanso.setText("Descanso: " + descanso + " s");
         btnControl.setText("Iniciar");
         btnControl.setBackground(Color.GREEN);
+        btnControl.setEnabled(false);
 
         timerDescanso = new Timer(1000, e -> {
             if (descanso > 0) {
