@@ -1,253 +1,168 @@
 package vista;
 
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.border.EmptyBorder;
-
 import controlador.Controlador;
 import modelo.Usuarios;
 
-import java.awt.Image;
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
-import java.awt.Font;
-import java.awt.event.ActionListener;
+import javax.swing.*;
+import java.awt.*;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.awt.event.ActionEvent;
 
 public class VentanaConfigUsuarios extends JFrame {
 
-	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
-	private Controlador controlador;
-	private Usuarios usuarioActual;
-	private JTextField txtNombre;
-	private JTextField txtApellido;
-	private JTextField txtCorreo;
-	private JPasswordField txtContra;
-	private JTextField txtFecNac;
-	private JLabel lblImagen;
-	private JLabel lblNombreUsu;
-	private JLabel lblBienvenida;
-	private JButton btnGuardar;
-	private JButton btnAtras;
-	private JLabel lblNombre;
-	private JLabel lblApellido;
-	private JLabel lblEmail;
-	private JLabel lblContrasena;
-	private JLabel lblFecNac;
-	private JLabel lblNewLabel;
-	private JButton btnTick;
-	private JButton btnX;
+    private static final long serialVersionUID = 1L;
+    private Controlador controlador;
+    private Usuarios usuarioActual;
+    private JTextField txtNombre, txtApellido, txtCorreo, txtFecNac;
+    private JPasswordField txtContra;
 
-	public VentanaConfigUsuarios(Usuarios usu) {
-		usuarioActual = usu;
-		controlador = new Controlador();
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 774, 584);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+    public VentanaConfigUsuarios(Usuarios usu) {
+        usuarioActual = usu;
+        controlador = new Controlador();
 
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
-		
-		btnGuardar = new JButton("Guardar");
-		btnGuardar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				guardarCambios();
-			}
-		});
-		btnGuardar.setBounds(233, 454, 112, 23);
-		contentPane.add(btnGuardar);
-		
-		btnAtras = new JButton("Volver atras");
-		btnAtras.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				dispose();
-			}
-		});
-		btnAtras.setBounds(436, 454, 118, 23);
-		contentPane.add(btnAtras);
-		
-		lblNombre = new JLabel("Nombre");
-		lblNombre.setBounds(214, 207, 46, 14);
-		contentPane.add(lblNombre);
-		
-		lblApellido = new JLabel("Apellido");
-		lblApellido.setBounds(214, 255, 46, 14);
-		contentPane.add(lblApellido);
-		
-		lblEmail = new JLabel("Email");
-		lblEmail.setBounds(214, 301, 46, 14);
-		contentPane.add(lblEmail);
-		
-		lblContrasena = new JLabel("Contraseña");
-		lblContrasena.setBounds(214, 346, 74, 14);
-		contentPane.add(lblContrasena);
-		
-		lblFecNac = new JLabel("FecNac");
-		lblFecNac.setBounds(214, 392, 46, 14);
-		contentPane.add(lblFecNac);
-		
-		txtNombre = new JTextField();
-		txtNombre.setBounds(354, 204, 134, 20);
-		contentPane.add(txtNombre);
-		txtNombre.setColumns(10);
-		txtNombre.setEditable(false);
-		
-		txtApellido = new JTextField();
-		txtApellido.setColumns(10);
-		txtApellido.setBounds(354, 252, 134, 20);
-		contentPane.add(txtApellido);
-		txtApellido.setEditable(false);
-		
-		txtCorreo = new JTextField();
-		txtCorreo.setColumns(10);
-		txtCorreo.setBounds(354, 298, 134, 20);
-		contentPane.add(txtCorreo);
-		txtCorreo.setEditable(false);
-		
-		txtContra = new JPasswordField();
-		txtContra.setColumns(10);
-		txtContra.setBounds(354, 343, 134, 20);
-		contentPane.add(txtContra);
-		txtContra.setEditable(false);
-		
-		txtFecNac = new JTextField();
-		txtFecNac.setColumns(10);
-		txtFecNac.setBounds(354, 389, 134, 20);
-		contentPane.add(txtFecNac);
-		txtFecNac.setEditable(false);
-		
-		lblImagen = new JLabel("");
-		lblImagen.setBounds(28, 22, 185, 181);
-		ImageIcon icono = new ImageIcon("iconoSF.png" );
-		if (icono.getImage() != null) { // verificamos que no sea null
-		    Image imagen = icono.getImage().getScaledInstance(lblImagen.getWidth(), lblImagen.getHeight(), Image.SCALE_SMOOTH);
-		    lblImagen.setIcon(new ImageIcon(imagen));
-		} else {
-		    System.out.println("Imagen no encontrada");
-		}
-		contentPane.add(lblImagen);
-		
-		lblBienvenida = new JLabel("BIENVENIDO");
-		lblBienvenida.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		lblBienvenida.setBounds(271, 11, 118, 54);
-		contentPane.add(lblBienvenida);
-		
-		lblNombreUsu = new JLabel("");
-		lblNombreUsu.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		lblNombreUsu.setBounds(399, 11, 66, 54);
-		lblNombreUsu.setText(usu.getNombre());
-		contentPane.add(lblNombreUsu);
-		
-		lblNewLabel = new JLabel("DESEA REALIZAR ALGUNA MODIFICACIÓN?");
-		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblNewLabel.setBounds(238, 78, 361, 39);
-		contentPane.add(lblNewLabel);
-		
-		
-		//BOTON TICK
-		btnTick = new JButton("");
-		btnTick.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				habilitarEdicion();
-			}
-		});
-		btnTick.setBounds(21, 363, 160, 171);
-		ImageIcon icono2 = new ImageIcon("check.png" );
-		if (icono2.getImage() != null) { // verificamos que no sea null
-		    Image imagen = icono2.getImage().getScaledInstance(lblImagen.getWidth(), lblImagen.getHeight(), Image.SCALE_SMOOTH);
-		    btnTick.setIcon(new ImageIcon(imagen));
-		} else {
-		    System.out.println("Imagen no encontrada");
-		}
-		contentPane.add(btnTick);
-		
-		btnTick.setBorderPainted(false);
-		btnTick.setFocusPainted(false);
-		btnTick.setContentAreaFilled(false);
-		btnTick.setOpaque(false);
-		//BOTON X
-		btnX = new JButton("");
-		btnX.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				deshabilitarEdicion();
-			}
-		});
-		btnX.setBounds(582, 374, 185, 160);
-		ImageIcon icono3 = new ImageIcon("cruz.png" );
-		if (icono3.getImage() != null) { // verificamos que no sea null
-		    Image imagen = icono3.getImage().getScaledInstance(lblImagen.getWidth(), lblImagen.getHeight(), Image.SCALE_SMOOTH);
-		    btnX.setIcon(new ImageIcon(imagen));
-		} else {
-		    System.out.println("Imagen no encontrada");
-		}
-		contentPane.add(btnX);
-		
-		btnX.setBorderPainted(false);
-		btnX.setFocusPainted(false);
-		btnX.setContentAreaFilled(false);
-		btnX.setOpaque(false);
-	}
-	
-	private void habilitarEdicion() {
-		txtNombre.setEditable(true);
-		txtApellido.setEditable(true);
-		txtCorreo.setEditable(true);
-		txtContra.setEditable(true);
-		txtFecNac.setEditable(true);
-	}
-	
-	private void deshabilitarEdicion() {
-		txtNombre.setEditable(false);
-		txtApellido.setEditable(false);
-		txtCorreo.setEditable(false);
-		txtContra.setEditable(false);
-		txtFecNac.setEditable(false);
-	}
-	
-	
-	private void guardarCambios() {
+        setTitle("Configuración de Usuario");
+        setSize(800, 600);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-	    String nuevoNombre = txtNombre.getText();
-	    String nuevoApellido = txtApellido.getText();
-	    String nuevoEmail = txtCorreo.getText();
-	    String nuevaContrasena = new String(txtContra.getPassword());
-	    String nuevaFecha = txtFecNac.getText(); 
+        // 🎨 Fondo degradado
+        JPanel bgPanel = new JPanel() {
+            /**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
 
-	    if (nuevoNombre.isEmpty() || nuevoApellido.isEmpty() || nuevaContrasena.isEmpty()) {
-	        JOptionPane.showMessageDialog(this, "Por favor, completa todos los campos obligatorios.");
-	        return;
-	    }
+			protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2d = (Graphics2D) g;
+                GradientPaint gp = new GradientPaint(0, 0,
+                        new Color(250, 250, 250),
+                        0, getHeight(),
+                        new Color(230, 230, 230));
+                g2d.setPaint(gp);
+                g2d.fillRect(0, 0, getWidth(), getHeight());
+            }
+        };
+        bgPanel.setLayout(new BorderLayout());
+        setContentPane(bgPanel);
 
-	    try {
-	        
-	    	SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
-	        Date fecha = formato.parse(nuevaFecha);
-	    	
-	        usuarioActual.setNombre(nuevoNombre);
-	        usuarioActual.setApellido(nuevoApellido);
-	        usuarioActual.setEmail(nuevoEmail);
-	        usuarioActual.setContrasena(nuevaContrasena);
-	        usuarioActual.setFecNac(fecha);
+        // ✅ Header
+        JLabel lblTitulo = new JLabel("Configuración de Usuario", SwingConstants.CENTER);
+        lblTitulo.setFont(new Font("Tahoma", Font.BOLD, 28));
+        lblTitulo.setForeground(new Color(177, 0, 0));
+        lblTitulo.setBorder(BorderFactory.createEmptyBorder(15, 0, 20, 0));
 
-	        controlador.actualizarUsuario(usuarioActual);
+        // ✅ Panel tipo tarjeta
+        JPanel card = new JPanel();
+        card.setBackground(Color.WHITE);
+        card.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(177, 0, 0), 2),
+                BorderFactory.createEmptyBorder(30, 30, 30, 30)
+        ));
+        card.setLayout(new GridLayout(6, 2, 18, 18));
+        card.setPreferredSize(new Dimension(480, 380));
 
-	        JOptionPane.showMessageDialog(this, "Datos actualizados correctamente.");
+        // Campos
+        txtNombre = createField(usuarioActual.getNombre());
+        txtApellido = createField(usuarioActual.getApellido());
+        txtCorreo = createField(usuarioActual.getEmail());
+        txtContra = new JPasswordField(usuarioActual.getContrasena());
+        txtContra.setEditable(false);
+        txtContra.setFont(new Font("Tahoma", Font.PLAIN, 15));
+        txtContra.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200)));
 
-	    } catch (Exception ex) {
-	        ex.printStackTrace();
-	        JOptionPane.showMessageDialog(this, "Error al actualizar los datos.");
-	    }
-	}
-	
-	
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        txtFecNac = createField(sdf.format(usuarioActual.getFecNac()));
+
+        addRow(card, "Nombre:", txtNombre);
+        addRow(card, "Apellido:", txtApellido);
+        addRow(card, "Email:", txtCorreo);
+        addRow(card, "Contraseña:", txtContra);
+        addRow(card, "Fecha Nacimiento:", txtFecNac);
+
+        // ✅ Botones
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+        buttonPanel.setOpaque(false);
+
+        JButton btnEditar = createBtn("Editar");
+        btnEditar.addActionListener(e -> activarEdicion(true));
+
+        JButton btnGuardar = createBtn("Guardar");
+        btnGuardar.addActionListener(e -> guardarCambios());
+
+        JButton btnVolver = createBtn("Volver");
+        btnVolver.addActionListener(e -> dispose());
+
+        buttonPanel.add(btnEditar);
+        buttonPanel.add(btnGuardar);
+        buttonPanel.add(btnVolver);
+
+        // ✅ Estructura final
+        JPanel centerWrapper = new JPanel();
+        centerWrapper.setOpaque(false);
+        centerWrapper.add(card);
+
+        bgPanel.add(lblTitulo, BorderLayout.NORTH);
+        bgPanel.add(centerWrapper, BorderLayout.CENTER);
+        bgPanel.add(buttonPanel, BorderLayout.SOUTH);
+
+        activarEdicion(false);
+        setVisible(true);
+    }
+
+    private void addRow(JPanel panel, String label, JComponent field) {
+        JLabel lbl = new JLabel(label);
+        lbl.setFont(new Font("Tahoma", Font.BOLD, 16));
+        lbl.setForeground(new Color(60, 60, 60));
+        panel.add(lbl);
+        panel.add(field);
+    }
+
+    private JTextField createField(String text) {
+        JTextField tf = new JTextField(text);
+        tf.setEditable(false);
+        tf.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200)));
+        tf.setFont(new Font("Tahoma", Font.PLAIN, 15));
+        return tf;
+    }
+
+    private JButton createBtn(String text) {
+        JButton btn = new JButton(text);
+        btn.setFont(new Font("Tahoma", Font.BOLD, 15));
+        btn.setBackground(new Color(177, 0, 0));
+        btn.setForeground(Color.WHITE);
+        btn.setFocusPainted(false);
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btn.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.BLACK),
+                BorderFactory.createEmptyBorder(8, 15, 8, 15)
+        ));
+        return btn;
+    }
+
+    private void activarEdicion(boolean on) {
+        txtNombre.setEditable(on);
+        txtApellido.setEditable(on);
+        txtCorreo.setEditable(on);
+        txtContra.setEditable(on);
+        txtFecNac.setEditable(on);
+    }
+
+    private void guardarCambios() {
+        try {
+            usuarioActual.setNombre(txtNombre.getText());
+            usuarioActual.setApellido(txtApellido.getText());
+            usuarioActual.setEmail(txtCorreo.getText());
+            usuarioActual.setContrasena(new String(txtContra.getPassword()));
+
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            usuarioActual.setFecNac(sdf.parse(txtFecNac.getText()));
+
+            controlador.actualizarUsuario(usuarioActual);
+            JOptionPane.showMessageDialog(this, "Datos actualizados correctamente");
+            activarEdicion(false);
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error al actualizar");
+        }
+    }
 }
