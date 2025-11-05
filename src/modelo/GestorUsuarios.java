@@ -3,6 +3,7 @@ package modelo;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
+import com.google.cloud.firestore.WriteResult;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -27,7 +28,40 @@ public class GestorUsuarios {
 	private final String vacio = "";
 
 
+	
+	public void actualizarUsuario(Usuarios usuario) {
+        try {
+            Firestore db = ConectorFirebase.conectar();
 
+            // Suponiendo que el ID del documento es el email del usuario
+            DocumentReference docRef = db.collection(coleccion).document(usuario.getIdUsuario()); // Cogemos el id de usuario para que sepa cual es
+
+            ApiFuture<WriteResult> result = docRef.update(
+                "Nombre", usuario.getNombre(),
+                "Apellido", usuario.getApellido(),
+                "Contraseña", usuario.getContrasena(),
+                "FecNac", usuario.getFecNac()
+            );
+
+            System.out.println("Actualizado en: " + result.get().getUpdateTime());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+	
+	
+	public void subirNivelUsuario(Usuarios usuario) throws IOException, InterruptedException, ExecutionException {
+		Firestore db = ConectorFirebase.conectar();
+		
+		 int nuevoNivel = usuario.getNivel() + 1;
+	        usuario.setNivel(nuevoNivel);
+	        
+				db.collection(coleccion).document(usuario.getIdUsuario())
+				    .update(nivel, nuevoNivel)
+				    .get(); 
+	}
+	
 	public Usuarios obtenerUsuario(String nombreRecogido, String contrasenaRecogida)
 			throws InterruptedException, ExecutionException, IOException {
 
@@ -76,8 +110,7 @@ public class GestorUsuarios {
 		datos.put(fecha, usuario.getFecNac());
 
 		// Usar ID automático de Firestore
-		DocumentReference docRef = usuarios.document();
-		docRef.set(datos);
+		usuarios.add(datos);
 	}
 
 	public boolean login(String usuario, String contrasenaRecogida)

@@ -2,6 +2,8 @@ package vista;
 
 import javax.swing.SwingUtilities;
 import modelo.ConectorFirebase;
+import modelo.GestorBackup;
+
 import com.google.cloud.firestore.Firestore;
 
 public class Main {
@@ -9,6 +11,10 @@ public class Main {
     private static Firestore db; //
 
     public static void main(String[] args) {
+    	@SuppressWarnings("unused")
+		GestorBackup gb = new GestorBackup();
+
+       
         try {
             // Inicializar Firebase y guardar la conexiónn
             db = ConectorFirebase.conectar();

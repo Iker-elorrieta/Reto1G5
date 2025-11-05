@@ -27,6 +27,8 @@ public class VentanaWorkouts extends JFrame {
 	private ArrayList<Workout> listaMostrada;
 	private Controlador controlador;
 	private Usuarios usuarioActual;
+	// store the currently selected workout so we can open VentanaEjercicio from the exercises table
+	private Workout workoutSeleccionado;
 
 	public VentanaWorkouts(Usuarios usuario) {
 		controlador = new Controlador();
@@ -58,10 +60,10 @@ public class VentanaWorkouts extends JFrame {
 		
 		JButton btnPerfil = new JButton("");
 		
-		btnPerfil.setBounds(740, 11, 150, 109);
-		ImageIcon iconoPerfil = new ImageIcon("iconoPerfil.png");
-		if (iconoPerfil.getImage() != null) { // verificamos que no sea null
-		    Image imagen = iconoPerfil.getImage().getScaledInstance(btnPerfil.getWidth(), btnPerfil.getHeight(), Image.SCALE_SMOOTH);
+		btnPerfil.setBounds(729, 11, 195, 141);
+		ImageIcon iconosPerfil = new ImageIcon("iconosPerfil.png");
+		if (iconosPerfil.getImage() != null) { // verificamos que no sea null
+		    Image imagen = iconosPerfil.getImage().getScaledInstance(btnPerfil.getWidth(), btnPerfil.getHeight(), Image.SCALE_SMOOTH);
 		    btnPerfil.setIcon(new ImageIcon(imagen));
 		} else {
 		    System.out.println("Imagen no encontrada");
@@ -120,7 +122,7 @@ public class VentanaWorkouts extends JFrame {
 		btnHistorico.setBackground(new Color(200, 0, 0));
 		btnHistorico.setForeground(Color.WHITE);
 		btnHistorico.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-		btnHistorico.setBounds(740, 150, 160, 30);
+		btnHistorico.setBounds(738, 163, 160, 30);
 
 		btnHistorico.addMouseListener(new MouseAdapter() {
 			@Override
@@ -210,6 +212,12 @@ public class VentanaWorkouts extends JFrame {
 		lblEjercicios.setBounds(640, 191, 140, 25);
 		contentPane.add(lblEjercicios);
 		
+		JLabel lblNivel = new JLabel("");
+		lblNivel.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		lblNivel.setBounds(619, 57, 134, 43);
+		lblNivel.setText("Nivel actual: " + usuarioActual.getNivel());
+		contentPane.add(lblNivel);
+		
 
 		try {
 			int nivelUsuario = usuarioActual.getNivel();
@@ -223,7 +231,29 @@ public class VentanaWorkouts extends JFrame {
 			if (!e.getValueIsAdjusting()) {
 				int fila = table.getSelectedRow();
 				if (fila >= 0 && fila < listaMostrada.size()) {
+					// store selected workout
+					workoutSeleccionado = listaMostrada.get(fila);
 					mostrarEjercicios(listaMostrada.get(fila).getEjercicios());
+				}
+			}
+		});
+		
+		// When the user clicks an exercise row, open VentanaEjercicio for the selected workout
+		table_1.addMouseListener(new java.awt.event.MouseAdapter() {
+			@Override
+			public void mouseClicked(java.awt.event.MouseEvent e) {
+				int fila = table_1.getSelectedRow();
+				if (fila >= 0 && workoutSeleccionado != null) {
+					// Open the exercise window for the specific Ejercicios clicked
+					Ejercicios ejerc = null;
+					if (workoutSeleccionado.getEjercicios() != null && fila < workoutSeleccionado.getEjercicios().size()) {
+						ejerc = workoutSeleccionado.getEjercicios().get(fila);
+					}
+					if (ejerc != null) {
+						dispose();
+						VentanaEjercicio ve = new VentanaEjercicio(ejerc, workoutSeleccionado, usuario);
+						ve.setVisible(true);
+					}
 				}
 			}
 		});

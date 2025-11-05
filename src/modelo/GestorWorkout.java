@@ -33,9 +33,11 @@ public class GestorWorkout {
 	private final String duracion = "duracion";
 	private final String repeticiones = "repeticiones";
 	private final String img = "Img";
+	private final String imagenSerie = "imagen";
 	private final String descripcion = "Descripcion";
 	private final String tiempoD = "tiempoDescanso";
 
+    private List<Workout> workoutsDesdeDat = new ArrayList<>();
 
 
     public ArrayList<Workout> leerWorkoutsBD(int nivelUsuario)
@@ -56,6 +58,7 @@ public class GestorWorkout {
                 if (nivelWorkout <= nivelUsuario) {
 
                     Workout w = new Workout();
+                    w.setId(work.getId());
                     w.setNombre(work.getString(nombreW));
                     w.setVideo(work.getString(video));
                     w.setNivel(nivelWorkout);
@@ -77,7 +80,8 @@ public class GestorWorkout {
                         ArrayList<Series> listaSeries = new ArrayList<>();
                         for (QueryDocumentSnapshot sDoc : seriesDocs) {
                             Series s = new Series(sDoc.getString(nombreU), sDoc.getDouble(repeticiones).intValue(),
-                                    sDoc.getDouble(duracion).intValue());
+                                    sDoc.getDouble(duracion).intValue(), sDoc.getString(imagenSerie));
+                            
                             listaSeries.add(s);
                         }
                         e.setSeries(listaSeries);
@@ -132,7 +136,7 @@ public class GestorWorkout {
                     ArrayList<Series> listaSeries = new ArrayList<>();
                     for (QueryDocumentSnapshot sDoc : seriesDocs) {
                         Series s = new Series(sDoc.getString(nombreU), sDoc.getDouble(repeticiones).intValue(),
-                                sDoc.getDouble(duracion).intValue());
+                                sDoc.getDouble(duracion).intValue(), sDoc.getString(imagenSerie));
                         listaSeries.add(s);
                     }
                     e.setSeries(listaSeries);
@@ -232,6 +236,32 @@ public class GestorWorkout {
     }
 
 
+    public void guardarHistoricoAutomatico(Usuarios usuario, Workout workout, int tiempoTotal, double porcentaje)
+            throws InterruptedException, ExecutionException, IOException {
+
+        if (usuario == null || usuario.getIdUsuario() == null || usuario.getIdUsuario().isEmpty()) {
+            System.err.println("Usuario no válido para guardar histórico");
+            return;
+        }
+
+        Firestore db = ConectorFirebase.conectar();
+
+        // Ruta: usuarios/{id}/Historico
+        CollectionReference historicoRef = db.collection("usuarios")
+                                             .document(usuario.getIdUsuario())
+                                             .collection("Historico");
+
+        Map<String, Object> datos = new HashMap<>();
+        datos.put("fecha", new java.util.Date());
+        datos.put("Porcentaje", porcentaje);
+        datos.put("tiempoTotal", tiempoTotal);
+        DocumentReference workoutRef = db.collection("Workouts").document(workout.getId());
+        datos.put("idWorkout", workoutRef);
+
+
+        historicoRef.add(datos).get(); // Espera a que se guarde
+        System.out.println("Histórico guardado correctamente para el usuario " + usuario.getIdUsuario());
+    }
 
 
 	public String formatearTiempo(int segundos) {
@@ -239,4 +269,44 @@ public class GestorWorkout {
 		int seg = segundos % 60;
 		return String.format("%02d:%02d", min, seg);
 	}
+	 public void cargarWorkoutsDesdeTexto(String textoPlano) {
+	        String[] partes = textoPlano.split(" ");
+	        for (int i = 0; i < partes.length - 2; i++) {
+	            if (partes[i].equalsIgnoreCase("sinUsuario")) {
+	                Workout w = new Workout();
+	                w.setNombre(partes[i + 1]);
+	                w.setVideo(partes[i + 2]);
+	                w.setNivel(0); // Puedes ajustar esto si el nivel está codificado
+	                w.setNumEjers(0); // Se puede calcular si hay ejercicios asociados
+	                workoutsDesdeDat.add(w);
+	            }
+	        }
+	    }
+
+	    public ArrayList<Workout> leerWorkoutsDesdeDat(int nivelUsuario) {
+	        ArrayList<Workout> filtrados = new ArrayList<>();
+	        for (Workout w : workoutsDesdeDat) {
+	            if (w.getNivel() <= nivelUsuario) {
+	                filtrados.add(w);
+	            }
+	        }
+	        return filtrados;
+	    }
+	    public void guardarHistoricoLocal(Usuarios usuario, Workout workout, int tiempoTotal, double porcentaje) {
+	        if (usuario == null || usuario.getIdUsuario() == null || usuario.getIdUsuario().isEmpty()) {
+	            System.err.println("Usuario no válido para guardar histórico");
+	            return;
+	        }
+
+	        Map<String, Object> datos = new HashMap<>();
+	        datos.put("fecha", new Date());
+	        datos.put("Porcentaje", porcentaje);
+	        datos.put("tiempoTotal", tiempoTotal);
+	        datos.put("idWorkout", workout.getNombre());
+
+	        System.out.println("=== Histórico guardado localmente ===");
+	        System.out.println("Usuario: " + usuario.getIdUsuario());
+	        datos.forEach((k, v) -> System.out.println(k + ": " + v));
+	    }
+	
 }
