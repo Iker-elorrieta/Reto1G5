@@ -3,7 +3,6 @@ package vista;
 import modelo.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
 
 import controlador.Controlador;
 
@@ -22,7 +21,8 @@ public class VentanaEjercicio extends JFrame {
     private Timer timerGeneral, timerSerie, timerDescanso;
     private int tiempoTotal = 0;
     private int serieIndex = 0;
-    private boolean enPausa = false;
+    @SuppressWarnings("unused")
+	private boolean enPausa = false;
     private boolean enDescanso = false;
     private Ejercicios ejercicio;
     private Workout workout;
@@ -30,7 +30,7 @@ public class VentanaEjercicio extends JFrame {
     private int duracion = 0;
     private int descanso = 0;
     private Usuarios usuario;
-    private Controlador controlador ;
+    private Controlador controlador;
 
     public VentanaEjercicio(Ejercicios ejercicio, Workout workout, Usuarios usuario) {
         controlador = new Controlador();
@@ -39,67 +39,87 @@ public class VentanaEjercicio extends JFrame {
         this.workout = workout;
         this.series = ejercicio.getSeries();
 
-        setTitle("Pantalla de Ejercicio");
+        setTitle("POWERHOUSE GYM - Entrenamiento");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 900, 600);
+        setBounds(100, 100, 950, 650);
+        setLocationRelativeTo(null);
         setResizable(false);
 
         contentPane = new JPanel();
-        contentPane.setBorder(new EmptyBorder(15, 15, 15, 15));
+        contentPane.setBackground(Color.WHITE);
+        contentPane.setBorder(new EmptyBorder(20, 20, 20, 20));
         contentPane.setLayout(null);
         setContentPane(contentPane);
-        contentPane.setBackground(new Color(245, 245, 245));
+
+        // -------------------- TÍTULO --------------------
+        JLabel lblTitulo = new JLabel("POWERHOUSE GYM");
+        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 30));
+        lblTitulo.setForeground(new Color(200, 0, 0));
+        lblTitulo.setBounds(300, 5, 400, 40);
+        contentPane.add(lblTitulo);
+
+        JLabel lblSub = new JLabel("ENTRENANDO EJERCICIO");
+        lblSub.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        lblSub.setBounds(320, 40, 400, 30);
+        lblSub.setForeground(Color.BLACK);
+        contentPane.add(lblSub);
 
         lblNombreEjercicio = new JLabel("Ejercicio: " + ejercicio.getNombre());
-        lblNombreEjercicio.setFont(new Font("Tahoma", Font.BOLD, 26));
-        lblNombreEjercicio.setBounds(300, 11, 500, 40);
+        lblNombreEjercicio.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        lblNombreEjercicio.setBounds(50, 90, 600, 40);
+        lblNombreEjercicio.setForeground(new Color(200, 0, 0));
         contentPane.add(lblNombreEjercicio);
 
-        lblDescripcion = new JLabel("Descripción: " + ejercicio.getDescripcion());
-        lblDescripcion.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-        lblDescripcion.setBounds(300, 55, 550, 60);
+        lblDescripcion = new JLabel("<html>Descripción: " + ejercicio.getDescripcion() + "</html>");
+        lblDescripcion.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+        lblDescripcion.setBounds(50, 135, 430, 60);
+        lblDescripcion.setForeground(Color.BLACK);
         contentPane.add(lblDescripcion);
 
         lblWorkout = new JLabel("Workout: " + workout.getNombre());
-        lblWorkout.setFont(new Font("Tahoma", Font.BOLD, 20));
-        lblWorkout.setBounds(575, 18, 299, 30);
-        lblWorkout.setForeground(new Color(128, 0, 0));
+        lblWorkout.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        lblWorkout.setBounds(650, 100, 250, 40);
+        lblWorkout.setForeground(new Color(200, 0, 0));
         contentPane.add(lblWorkout);
 
         lblCronoGeneral = new JLabel("Tiempo Total: 00:00");
-        lblCronoGeneral.setFont(new Font("Segoe UI", Font.BOLD, 22));
-        lblCronoGeneral.setBounds(30, 150, 250, 40);
-        lblCronoGeneral.setForeground(Color.DARK_GRAY);
+        lblCronoGeneral.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        lblCronoGeneral.setBounds(50, 210, 300, 40);
+        lblCronoGeneral.setForeground(Color.BLACK);
         contentPane.add(lblCronoGeneral);
 
         lblSerieActual = new JTextArea();
-        lblSerieActual.setFont(new Font("Segoe UI", Font.BOLD, 22));
-        lblSerieActual.setBounds(278, 201, 500, 192);
-        lblSerieActual.setBackground(new Color(245, 245, 245));
+        lblSerieActual.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        lblSerieActual.setBounds(420, 210, 450, 220);
+        lblSerieActual.setBackground(new Color(250, 250, 250));
         lblSerieActual.setEditable(false);
+        lblSerieActual.setBorder(BorderFactory.createLineBorder(new Color(200, 0, 0), 2));
         lblSerieActual.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         contentPane.add(lblSerieActual);
 
-        lblSerieActual.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                mostrarImagenesSeries();
-            }
-        });
+        lblSerieActual.addMouseListener(new MouseAdapter() { @Override public void mouseClicked(MouseEvent e) { mostrarImagenesSeries(); } });
 
         lblDescanso = new JLabel("Descanso:");
-        lblDescanso.setFont(new Font("Segoe UI", Font.BOLD, 22));
-        lblDescanso.setBounds(300, 390, 500, 40);
-        lblDescanso.setForeground(new Color(102, 0, 0));
+        lblDescanso.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        lblDescanso.setBounds(50, 270, 350, 40);
+        lblDescanso.setForeground(new Color(200, 0, 0));
         contentPane.add(lblDescanso);
 
         btnControl = new JButton("Iniciar");
-        btnControl.setFont(new Font("Segoe UI", Font.BOLD, 18));
-        btnControl.setBounds(350, 480, 200, 55);
-        btnControl.setBackground(Color.GREEN);
+        btnControl.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        btnControl.setBounds(340, 480, 260, 70);
+        btnControl.setBackground(new Color(200, 0, 0));
         btnControl.setForeground(Color.WHITE);
-        btnControl.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+        btnControl.setFocusPainted(false);
+        btnControl.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
         contentPane.add(btnControl);
+
+        btnControl.addMouseListener(new MouseAdapter() {
+            public void mouseEntered(MouseEvent e) { btnControl.setBackground(new Color(255, 40, 40)); }
+            public void mouseExited(MouseEvent e) {
+                if (!btnControl.getText().equals("Pausar")) btnControl.setBackground(new Color(200, 0, 0));
+            }
+        });
 
         btnControl.addActionListener(e -> {
             switch (btnControl.getText()) {
@@ -124,8 +144,7 @@ public class VentanaEjercicio extends JFrame {
         mostrarTodasLasSeries();
     }
 
-    // ==================== FUNCIONALIDAD ====================
-
+    // ==================== LÓGICA ORIGINAL ====================
     private void iniciarCronometroGeneral() {
         timerGeneral = new Timer(1000, e -> {
             tiempoTotal++;
@@ -162,7 +181,7 @@ public class VentanaEjercicio extends JFrame {
         descanso = ejercicio.getTiempoDescanso();
         lblDescanso.setText("Descanso: " + descanso + " s");
         btnControl.setText("Iniciar");
-        btnControl.setBackground(Color.GREEN);
+        btnControl.setBackground(new Color(200, 0, 0));
         btnControl.setEnabled(false);
 
         timerDescanso = new Timer(1000, e -> {
@@ -184,7 +203,7 @@ public class VentanaEjercicio extends JFrame {
         if (timerDescanso != null) timerDescanso.stop();
         if (timerGeneral != null) timerGeneral.stop();
         btnControl.setText("Reanudar");
-        btnControl.setBackground(Color.BLUE);
+        btnControl.setBackground(new Color(0, 90, 200));
         enPausa = true;
     }
 
@@ -200,91 +219,65 @@ public class VentanaEjercicio extends JFrame {
     private void finalizarEjercicio() {
         if (timerGeneral != null) timerGeneral.stop();
         btnControl.setText("Siguiente Ejercicio");
-        btnControl.setBackground(new Color(128, 0, 128));
+        btnControl.setBackground(new Color(120, 0, 120));
         lblSerieActual.setText("¡Ejercicio completado!");
         lblDescanso.setText("");
     }
 
     private void siguienteEjercicio() {
-        JOptionPane.showMessageDialog(this,
-            "¡Workout completado!\n" +
-            "Tiempo total: " + formatTime(tiempoTotal) + "\n" +
-            "Ejercicios completados: 100%\n" +
-            "¡Buen trabajo!",
-            "Resumen",
-            JOptionPane.INFORMATION_MESSAGE
-        );
         try {
             controlador.guardarHistoricoAutomatico(usuario, workout, tiempoTotal, 100.0);
             controlador.subirNivelUsuario(usuario);
-        } catch (Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error al guardar el histórico: " + e.getMessage());
-        }
+        } catch (Exception e) { e.printStackTrace(); }
+
+        JOptionPane.showMessageDialog(this,
+            "¡Workout completado!\nTiempo total: " + formatTime(tiempoTotal) + "\n¡Gran trabajo!",
+            "Completado", JOptionPane.INFORMATION_MESSAGE);
+
         dispose();
-        VentanaWorkouts ventanaWorkouts = new VentanaWorkouts(usuario);
-        ventanaWorkouts.setVisible(true);
+        new VentanaWorkouts(usuario).setVisible(true);
     }
 
-    private String formatTime(int totalSeconds) {
-        int mins = totalSeconds / 60;
-        int secs = totalSeconds % 60;
-        return String.format("%02d:%02d", mins, secs);
+    private String formatTime(int t) {
+        return String.format("%02d:%02d", t / 60, t % 60);
     }
 
     private void mostrarTodasLasSeries() {
         lblSerieActual.setText("");
         for (Series s : series) {
-            lblSerieActual.append("Serie: " + s.getNombre() + " | Repeticiones: " + s.getRepeticiones() + "\n");
+            lblSerieActual.append("Serie: " + s.getNombre() + " | Reps: " + s.getRepeticiones() + "\n");
         }
     }
 
-    // ==================== PANEL DE IMÁGENES ====================
     private void mostrarImagenesSeries() {
         if (series == null || series.isEmpty()) return;
 
-        JDialog ventanaImagenes = new JDialog(this, "Imágenes de Series", true);
-        ventanaImagenes.setSize(900, 600);
-        ventanaImagenes.setLocationRelativeTo(this);
+        JDialog ventana = new JDialog(this, "Imágenes de Series", true);
+        ventana.setSize(900, 600);
+        ventana.setLocationRelativeTo(this);
 
         JPanel panelFotos = new JPanel();
-        panelFotos.setLayout(new BoxLayout(panelFotos, BoxLayout.Y_AXIS)); // se apilan verticalmente
+        panelFotos.setLayout(new BoxLayout(panelFotos, BoxLayout.Y_AXIS));
 
         for (Series s : series) {
-            JPanel panelSerie = new JPanel();
-            panelSerie.setLayout(new BorderLayout());
-            panelSerie.setBorder(BorderFactory.createTitledBorder(s.getNombre()));
+            JPanel panel = new JPanel(new BorderLayout());
+            panel.setBorder(BorderFactory.createTitledBorder(s.getNombre()));
 
             try {
-                ImageIcon icon = new ImageIcon(new URL(s.getImagen()));
-                JLabel lblFoto = new JLabel();
-                lblFoto.setIcon(icon);
-                lblFoto.setHorizontalAlignment(SwingConstants.CENTER);
-                lblFoto.setVerticalAlignment(SwingConstants.CENTER);
-
-                panelSerie.add(lblFoto, BorderLayout.CENTER);
+                @SuppressWarnings("deprecation")
+				ImageIcon icon = new ImageIcon(new URL(s.getImagen()));
+                JLabel lbl = new JLabel(icon);
+                lbl.setHorizontalAlignment(SwingConstants.CENTER);
+                panel.add(lbl);
             } catch (Exception ex) {
-                JLabel lblError = new JLabel("Sin imagen");
-                lblError.setHorizontalAlignment(SwingConstants.CENTER);
-                panelSerie.add(lblError, BorderLayout.CENTER);
+                panel.add(new JLabel("Sin imagen", SwingConstants.CENTER));
             }
 
-            panelFotos.add(panelSerie);
-            panelFotos.add(Box.createRigidArea(new Dimension(0, 10))); // espacio entre series
+            panelFotos.add(panel);
+            panelFotos.add(Box.createRigidArea(new Dimension(0, 10)));
         }
 
-        JScrollPane scroll = new JScrollPane(panelFotos);
-        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-
-        ventanaImagenes.add(scroll, BorderLayout.CENTER);
-
-        JButton btnCerrar = new JButton("Cerrar");
-        btnCerrar.addActionListener(e -> ventanaImagenes.dispose());
-        ventanaImagenes.add(btnCerrar, BorderLayout.SOUTH);
-
-        ventanaImagenes.setVisible(true);
+        ventana.add(new JScrollPane(panelFotos));
+        ventana.setVisible(true);
     }
-
-
 }

@@ -8,7 +8,6 @@ import java.util.concurrent.ExecutionException;
 import modelo.GestorWorkout;
 import modelo.HistoricoWorkouts;
 import modelo.Usuarios;
-import modelo.GestorBackup;
 import modelo.GestorUsuarios;
 import modelo.Workout;
 

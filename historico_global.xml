@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <Historico>
-    <Workouts fecha="2025-11-04" historicoId="1" nivel="1" porcentajeCompletado="100.0" tiempoTotal="1000" usuarioId="1"/>
-    <Workouts fecha="2025-11-04" historicoId="2" nivel="1" porcentajeCompletado="100.0" tiempoTotal="200" usuarioId="1"/>
-    <Workouts fecha="2025-11-04" historicoId="0ArNbmGOEnuOZTqIUTBo" nivel="0" porcentajeCompletado="100.0" tiempoTotal="50" usuarioId="2"/>
-    <Workouts fecha="2025-11-04" historicoId="5Pg3hXUW2bQmwBFC0cj5" nivel="0" porcentajeCompletado="100.0" tiempoTotal="27" usuarioId="2"/>
-    <Workouts fecha="2025-11-04" historicoId="FF" nivel="1" porcentajeCompletado="99.0" tiempoTotal="3333" usuarioId="2"/>
-    <Workouts fecha="2025-11-04" historicoId="K06RL2rD24R6ef36XyXD" nivel="0" porcentajeCompletado="100.0" tiempoTotal="29" usuarioId="2"/>
-    <Workouts fecha="2025-11-04" historicoId="UB1CwczCkSNvIZQbaPb8" nivel="0" porcentajeCompletado="100.0" tiempoTotal="29" usuarioId="2"/>
-    <Workouts fecha="2025-11-04" historicoId="kQaq9KJGIKbV4a3cMqtm" nivel="0" porcentajeCompletado="100.0" tiempoTotal="30" usuarioId="2"/>
-    <Workouts fecha="2025-11-04" historicoId="sA6PVOG1r4sWH55uUSgb" nivel="0" porcentajeCompletado="100.0" tiempoTotal="27" usuarioId="2"/>
-    <Workouts fecha="2025-11-04" historicoId="sh2hBaocXJVXYdLNGhDN" nivel="0" porcentajeCompletado="100.0" tiempoTotal="31" usuarioId="2"/>
-    <Workouts fecha="2025-11-04" historicoId="wtaJGzDi1nTWsv3Hyysl" nivel="0" porcentajeCompletado="100.0" tiempoTotal="30" usuarioId="2"/>
-    <Workouts fecha="2025-11-04" historicoId="5ZMgR1xuTcMi6f1G7hY6" nivel="0" porcentajeCompletado="100.0" tiempoTotal="57" usuarioId="7eqS3MR67OUGRREG3n8H"/>
-    <Workouts fecha="2025-11-04" historicoId="QGMuoUjNjP7mtIVjuhzM" nivel="1" porcentajeCompletado="101.0" tiempoTotal="1001" usuarioId="ESWSAQW"/>
-    <Workouts fecha="2025-11-04" historicoId="QDjkDHAxNCK0lzXDVTxS" nivel="0" porcentajeCompletado="100.0" tiempoTotal="50" usuarioId="HEpcbgiGiDI1aKOCiab5"/>
-    <Workouts fecha="2025-11-04" historicoId="ymHY3XQtke81k0Y8avfe" nivel="0" porcentajeCompletado="100.0" tiempoTotal="29" usuarioId="HEpcbgiGiDI1aKOCiab5"/>
+    <Workouts fecha="2025-11-05" historicoId="1" nivel="1" porcentajeCompletado="100.0" tiempoTotal="1000" usuarioId="1"/>
+    <Workouts fecha="2025-11-05" historicoId="2" nivel="1" porcentajeCompletado="100.0" tiempoTotal="200" usuarioId="1"/>
+    <Workouts fecha="2025-11-05" historicoId="0ArNbmGOEnuOZTqIUTBo" nivel="0" porcentajeCompletado="100.0" tiempoTotal="50" usuarioId="2"/>
+    <Workouts fecha="2025-11-05" historicoId="5Pg3hXUW2bQmwBFC0cj5" nivel="0" porcentajeCompletado="100.0" tiempoTotal="27" usuarioId="2"/>
+    <Workouts fecha="2025-11-05" historicoId="FF" nivel="1" porcentajeCompletado="99.0" tiempoTotal="3333" usuarioId="2"/>
+    <Workouts fecha="2025-11-05" historicoId="K06RL2rD24R6ef36XyXD" nivel="0" porcentajeCompletado="100.0" tiempoTotal="29" usuarioId="2"/>
+    <Workouts fecha="2025-11-05" historicoId="LYA7MkH7i4DjwmWQ1DOr" nivel="0" porcentajeCompletado="100.0" tiempoTotal="109" usuarioId="2"/>
+    <Workouts fecha="2025-11-05" historicoId="UB1CwczCkSNvIZQbaPb8" nivel="0" porcentajeCompletado="100.0" tiempoTotal="29" usuarioId="2"/>
+    <Workouts fecha="2025-11-05" historicoId="kQaq9KJGIKbV4a3cMqtm" nivel="0" porcentajeCompletado="100.0" tiempoTotal="30" usuarioId="2"/>
+    <Workouts fecha="2025-11-05" historicoId="sA6PVOG1r4sWH55uUSgb" nivel="0" porcentajeCompletado="100.0" tiempoTotal="27" usuarioId="2"/>
+    <Workouts fecha="2025-11-05" historicoId="sh2hBaocXJVXYdLNGhDN" nivel="0" porcentajeCompletado="100.0" tiempoTotal="31" usuarioId="2"/>
+    <Workouts fecha="2025-11-05" historicoId="wtaJGzDi1nTWsv3Hyysl" nivel="0" porcentajeCompletado="100.0" tiempoTotal="30" usuarioId="2"/>
+    <Workouts fecha="2025-11-05" historicoId="z7Bf60AZA2FUvgNzb3VV" nivel="0" porcentajeCompletado="100.0" tiempoTotal="55" usuarioId="2"/>
+    <Workouts fecha="2025-11-05" historicoId="A40LOZeKmJIQB7sciNvr" nivel="0" porcentajeCompletado="100.0" tiempoTotal="74" usuarioId="6jImoAcNXQ4bIPR5tDMd"/>
+    <Workouts fecha="2025-11-05" historicoId="5ZMgR1xuTcMi6f1G7hY6" nivel="0" porcentajeCompletado="100.0" tiempoTotal="57" usuarioId="7eqS3MR67OUGRREG3n8H"/>
+    <Workouts fecha="2025-11-05" historicoId="QGMuoUjNjP7mtIVjuhzM" nivel="1" porcentajeCompletado="101.0" tiempoTotal="1001" usuarioId="ESWSAQW"/>
+    <Workouts fecha="2025-11-05" historicoId="QDjkDHAxNCK0lzXDVTxS" nivel="0" porcentajeCompletado="100.0" tiempoTotal="50" usuarioId="HEpcbgiGiDI1aKOCiab5"/>
+    <Workouts fecha="2025-11-05" historicoId="ymHY3XQtke81k0Y8avfe" nivel="0" porcentajeCompletado="100.0" tiempoTotal="29" usuarioId="HEpcbgiGiDI1aKOCiab5"/>
 </Historico>
